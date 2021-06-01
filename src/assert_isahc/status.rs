@@ -5,29 +5,29 @@ use isahc::{
     Response as IsahcResponse,
 };
 
-use super::{Asserhttp, TryAsserhttp};
+use super::{AsserhttpStatus, TryAsserhttpStatus};
 
-impl Asserhttp for IsahcResponse<IsahcBody> {
+impl AsserhttpStatus for IsahcResponse<IsahcBody> {
     fn assert_status_eq(&mut self, status: u16) -> &mut Self {
         assert_eq!(self.status().as_u16(), status);
         self
     }
 }
 
-impl Asserhttp for IsahcResponse<IsahcAsyncBody> {
+impl AsserhttpStatus for IsahcResponse<IsahcAsyncBody> {
     fn assert_status_eq(&mut self, status: u16) -> &mut Self {
         assert_eq!(self.status().as_u16(), status);
         self
     }
 }
 
-impl TryAsserhttp<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {
+impl TryAsserhttpStatus<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {
     fn assert_status_eq(&mut self, status: u16) -> &mut IsahcResponse<IsahcBody> {
         self.as_mut().unwrap().assert_status_eq(status)
     }
 }
 
-impl TryAsserhttp<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {
+impl TryAsserhttpStatus<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {
     fn assert_status_eq(&mut self, status: u16) -> &mut IsahcResponse<IsahcAsyncBody> {
         self.as_mut().unwrap().assert_status_eq(status)
     }
