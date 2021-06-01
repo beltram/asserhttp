@@ -2,6 +2,15 @@
 name = "asserhttp"
 version = "0.0.1"
 edition = "2018"
+authors = ["Beltram Maldant"]
+description = "Fluent http assertions"
+homepage = "https://github.com/beltram/asserhttp"
+repository = "https://github.com/beltram/asserhttp"
+license = "Apache-2.0"
+keywords = ["test", "http", "client", "testing"]
+categories = ["development-tools::testing", "api-bindings"]
+
+include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
 [dependencies]
 surf = "2.2.0"
