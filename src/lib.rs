@@ -40,7 +40,9 @@
 //! }
 //! ```
 //!
+#[cfg(feature = "surf")]
 mod assert_surf;
+#[cfg(feature = "isahc")]
 mod assert_isahc;
 
 /// For assertions on http response
