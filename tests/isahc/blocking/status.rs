@@ -152,3 +152,213 @@ mod no_content {
         get(&srv.uri()).assert_status_no_content();
     }
 }
+
+mod bad_request {
+    use super::*;
+
+    #[test]
+    fn should_assert_bad_request() {
+        let srv = Stubr::start_blocking("tests/stubs/status/bad-request.json");
+        get(&srv.uri()).unwrap().assert_status_bad_request();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_bad_request_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_bad_request();
+    }
+
+    #[test]
+    fn result_should_assert_bad_request() {
+        let srv = Stubr::start_blocking("tests/stubs/status/bad-request.json");
+        get(&srv.uri()).assert_status_bad_request();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_bad_request_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_bad_request();
+    }
+}
+
+mod unauthorized {
+    use super::*;
+
+    #[test]
+    fn should_assert_unauthorized() {
+        let srv = Stubr::start_blocking("tests/stubs/status/unauthorized.json");
+        get(&srv.uri()).unwrap().assert_status_unauthorized();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_unauthorized_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_unauthorized();
+    }
+
+    #[test]
+    fn result_should_assert_unauthorized() {
+        let srv = Stubr::start_blocking("tests/stubs/status/unauthorized.json");
+        get(&srv.uri()).assert_status_unauthorized();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_unauthorized_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_unauthorized();
+    }
+}
+
+mod forbidden {
+    use super::*;
+
+    #[test]
+    fn should_assert_forbidden() {
+        let srv = Stubr::start_blocking("tests/stubs/status/forbidden.json");
+        get(&srv.uri()).unwrap().assert_status_forbidden();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_forbidden_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_forbidden();
+    }
+
+    #[test]
+    fn result_should_assert_forbidden() {
+        let srv = Stubr::start_blocking("tests/stubs/status/forbidden.json");
+        get(&srv.uri()).assert_status_forbidden();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_forbidden_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_forbidden();
+    }
+}
+
+mod not_found {
+    use super::*;
+
+    #[test]
+    fn should_assert_not_found() {
+        let srv = Stubr::start_blocking("tests/stubs/status/not-found.json");
+        get(&srv.uri()).unwrap().assert_status_not_found();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_not_found_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_not_found();
+    }
+
+    #[test]
+    fn result_should_assert_not_found() {
+        let srv = Stubr::start_blocking("tests/stubs/status/not-found.json");
+        get(&srv.uri()).assert_status_not_found();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_not_found_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_not_found();
+    }
+}
+
+mod conflict {
+    use super::*;
+
+    #[test]
+    fn should_assert_conflict() {
+        let srv = Stubr::start_blocking("tests/stubs/status/conflict.json");
+        get(&srv.uri()).unwrap().assert_status_conflict();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_conflict_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_conflict();
+    }
+
+    #[test]
+    fn result_should_assert_conflict() {
+        let srv = Stubr::start_blocking("tests/stubs/status/conflict.json");
+        get(&srv.uri()).assert_status_conflict();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_conflict_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_conflict();
+    }
+}
+
+mod gone {
+    use super::*;
+
+    #[test]
+    fn should_assert_gone() {
+        let srv = Stubr::start_blocking("tests/stubs/status/gone.json");
+        get(&srv.uri()).unwrap().assert_status_gone();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_gone_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_gone();
+    }
+
+    #[test]
+    fn result_should_assert_gone() {
+        let srv = Stubr::start_blocking("tests/stubs/status/gone.json");
+        get(&srv.uri()).assert_status_gone();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_gone_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_gone();
+    }
+}
+
+mod server_error {
+    use super::*;
+
+    #[test]
+    fn should_assert_server_error() {
+        let srv = Stubr::start_blocking("tests/stubs/status/server-error.json");
+        get(&srv.uri()).unwrap().assert_status_server_error();
+    }
+
+    #[test]
+    #[should_panic]
+    fn assert_server_error_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().assert_status_server_error();
+    }
+
+    #[test]
+    fn result_should_assert_server_error() {
+        let srv = Stubr::start_blocking("tests/stubs/status/server-error.json");
+        get(&srv.uri()).assert_status_server_error();
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_assert_server_error_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).assert_status_server_error();
+    }
+}
