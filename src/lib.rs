@@ -13,12 +13,12 @@
 //!
 //! #[async_std::test]
 //! async fn sample_test() {
-//!     surf::get("http://localhost/api/any").await.unwrap().assert_status_ok();
+//!     surf::get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     surf::get("http://localhost/api/any").await.assert_status_ed(200);
-//!     surf::get("http://localhost/api/any").await.assert_status_ok();
-//!     surf::get("http://localhost/api/any").await.assert_status_bad_request();
-//!     surf::get("http://localhost/api/any").await.assert_status_server_error();
+//!     surf::get("http://localhost/api/any").await.expect_status_ed(200);
+//!     surf::get("http://localhost/api/any").await.expect_status_ok();
+//!     surf::get("http://localhost/api/any").await.expect_status_bad_request();
+//!     surf::get("http://localhost/api/any").await.expect_status_server_error();
 //!     // and many more !
 //! }
 //! ```
@@ -30,12 +30,12 @@
 //!
 //! #[async_std::test]
 //! async fn sample_test() {
-//!     isahc::get_async("http://localhost/api/any").await.unwrap().assert_status_ok();
+//!     isahc::get_async("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     isahc::get_async("http://localhost/api/any").await.assert_status_ed(200);
-//!     isahc::get_async("http://localhost/api/any").await.assert_status_ok();
-//!     isahc::get_async("http://localhost/api/any").await.assert_status_bad_request();
-//!     isahc::get_async("http://localhost/api/any").await.assert_status_server_error();
+//!     isahc::get_async("http://localhost/api/any").await.expect_status_ed(200);
+//!     isahc::get_async("http://localhost/api/any").await.expect_status_ok();
+//!     isahc::get_async("http://localhost/api/any").await.expect_status_bad_request();
+//!     isahc::get_async("http://localhost/api/any").await.expect_status_server_error();
 //!     // and many more !
 //! }
 //! ```
@@ -52,29 +52,29 @@ pub trait Asserhttp: AsserhttpStatus {}
 pub trait AsserhttpStatus {
     /// Expects response status to be equal
     /// * `status` - expected status
-    fn assert_status_eq(&mut self, status: u16) -> &mut Self;
+    fn expect_status_eq(&mut self, status: u16) -> &mut Self;
     /// Expects response status to be `OK 200`
-    fn assert_status_ok(&mut self) -> &mut Self { self.assert_status_eq(200) }
+    fn expect_status_ok(&mut self) -> &mut Self { self.expect_status_eq(200) }
     /// Expects response status to be `Created 201`
-    fn assert_status_created(&mut self) -> &mut Self { self.assert_status_eq(201) }
+    fn expect_status_created(&mut self) -> &mut Self { self.expect_status_eq(201) }
     /// Expects response status to be `Accepted 202`
-    fn assert_status_accepted(&mut self) -> &mut Self { self.assert_status_eq(202) }
+    fn expect_status_accepted(&mut self) -> &mut Self { self.expect_status_eq(202) }
     /// Expects response status to be `No Content 204`
-    fn assert_status_no_content(&mut self) -> &mut Self { self.assert_status_eq(204) }
+    fn expect_status_no_content(&mut self) -> &mut Self { self.expect_status_eq(204) }
     /// Expects response status to be `Bad Request 400`
-    fn assert_status_bad_request(&mut self) -> &mut Self { self.assert_status_eq(400) }
+    fn expect_status_bad_request(&mut self) -> &mut Self { self.expect_status_eq(400) }
     /// Expects response status to be `Unauthorized 401`
-    fn assert_status_unauthorized(&mut self) -> &mut Self { self.assert_status_eq(401) }
+    fn expect_status_unauthorized(&mut self) -> &mut Self { self.expect_status_eq(401) }
     /// Expects response status to be `Forbidden 403`
-    fn assert_status_forbidden(&mut self) -> &mut Self { self.assert_status_eq(403) }
+    fn expect_status_forbidden(&mut self) -> &mut Self { self.expect_status_eq(403) }
     /// Expects response status to be `Not Found 404`
-    fn assert_status_not_found(&mut self) -> &mut Self { self.assert_status_eq(404) }
+    fn expect_status_not_found(&mut self) -> &mut Self { self.expect_status_eq(404) }
     /// Expects response status to be `Conflict 409`
-    fn assert_status_conflict(&mut self) -> &mut Self { self.assert_status_eq(409) }
+    fn expect_status_conflict(&mut self) -> &mut Self { self.expect_status_eq(409) }
     /// Expects response status to be `Gone 410`
-    fn assert_status_gone(&mut self) -> &mut Self { self.assert_status_eq(410) }
+    fn expect_status_gone(&mut self) -> &mut Self { self.expect_status_eq(410) }
     /// Expects response status to be `Internal Server Error 500`
-    fn assert_status_server_error(&mut self) -> &mut Self { self.assert_status_eq(500) }
+    fn expect_status_server_error(&mut self) -> &mut Self { self.expect_status_eq(500) }
 }
 
 /// For assertions on http response unwrapping result
@@ -84,27 +84,27 @@ pub trait TryAsserhttp<T>: TryAsserhttpStatus<T> {}
 pub trait TryAsserhttpStatus<T> {
     /// Expects response status to be equal
     /// * `status` - expected status
-    fn assert_status_eq(&mut self, status: u16) -> &mut T;
+    fn expect_status_eq(&mut self, status: u16) -> &mut T;
     /// Expects response status to be `OK 200`
-    fn assert_status_ok(&mut self) -> &mut T { self.assert_status_eq(200) }
+    fn expect_status_ok(&mut self) -> &mut T { self.expect_status_eq(200) }
     /// Expects response status to be `Created 201`
-    fn assert_status_created(&mut self) -> &mut T { self.assert_status_eq(201) }
+    fn expect_status_created(&mut self) -> &mut T { self.expect_status_eq(201) }
     /// Expects response status to be `Accepted 202`
-    fn assert_status_accepted(&mut self) -> &mut T { self.assert_status_eq(202) }
+    fn expect_status_accepted(&mut self) -> &mut T { self.expect_status_eq(202) }
     /// Expects response status to be `No Content 204`
-    fn assert_status_no_content(&mut self) -> &mut T { self.assert_status_eq(204) }
+    fn expect_status_no_content(&mut self) -> &mut T { self.expect_status_eq(204) }
     /// Expects response status to be `Bad Request 400`
-    fn assert_status_bad_request(&mut self) -> &mut T { self.assert_status_eq(400) }
+    fn expect_status_bad_request(&mut self) -> &mut T { self.expect_status_eq(400) }
     /// Expects response status to be `Unauthorized 401`
-    fn assert_status_unauthorized(&mut self) -> &mut T { self.assert_status_eq(401) }
+    fn expect_status_unauthorized(&mut self) -> &mut T { self.expect_status_eq(401) }
     /// Expects response status to be `Forbidden 403`
-    fn assert_status_forbidden(&mut self) -> &mut T { self.assert_status_eq(403) }
+    fn expect_status_forbidden(&mut self) -> &mut T { self.expect_status_eq(403) }
     /// Expects response status to be `Not Found 404`
-    fn assert_status_not_found(&mut self) -> &mut T { self.assert_status_eq(404) }
+    fn expect_status_not_found(&mut self) -> &mut T { self.expect_status_eq(404) }
     /// Expects response status to be `Conflict 409`
-    fn assert_status_conflict(&mut self) -> &mut T { self.assert_status_eq(409) }
+    fn expect_status_conflict(&mut self) -> &mut T { self.expect_status_eq(409) }
     /// Expects response status to be `Gone 410`
-    fn assert_status_gone(&mut self) -> &mut T { self.assert_status_eq(410) }
+    fn expect_status_gone(&mut self) -> &mut T { self.expect_status_eq(410) }
     /// Expects response status to be `Internal Server Error 500`
-    fn assert_status_server_error(&mut self) -> &mut T { self.assert_status_eq(500) }
+    fn expect_status_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
 }

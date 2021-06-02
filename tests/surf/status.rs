@@ -7,29 +7,29 @@ mod eq {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_eq() {
+    async fn should_expect_status_eq() {
         let srv = Stubr::start("tests/stubs/status/eq.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_eq(200);
+        get(&srv.uri()).await.unwrap().expect_status_eq(200);
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_eq_should_panic() {
+    async fn expect_status_eq_should_panic() {
         let srv = Stubr::start("tests/stubs/status/eq.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_eq(100);
+        get(&srv.uri()).await.unwrap().expect_status_eq(100);
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_eq() {
+    async fn result_should_expect_status_eq() {
         let srv = Stubr::start("tests/stubs/status/eq.json").await;
-        get(&srv.uri()).await.assert_status_eq(200);
+        get(&srv.uri()).await.expect_status_eq(200);
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_eq_should_panic() {
+    async fn result_expect_status_eq_should_panic() {
         let srv = Stubr::start("tests/stubs/status/eq.json").await;
-        get(&srv.uri()).await.assert_status_eq(100);
+        get(&srv.uri()).await.expect_status_eq(100);
     }
 }
 
@@ -37,36 +37,36 @@ mod ok {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_ok() {
+    async fn should_expect_status_ok() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_ok();
+        get(&srv.uri()).await.unwrap().expect_status_ok();
     }
 
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_ok_should_panic() {
+    async fn expect_status_ok_should_panic() {
         let srv = Stubr::start("tests/stubs/status/created.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_ok();
+        get(&srv.uri()).await.unwrap().expect_status_ok();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_ok() {
+    async fn result_should_expect_status_ok() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_ok();
+        get(&srv.uri()).await.expect_status_ok();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_ok_should_panic() {
+    async fn result_expect_status_ok_should_panic() {
         let srv = Stubr::start("tests/stubs/status/created.json").await;
-        get(&srv.uri()).await.assert_status_ok();
+        get(&srv.uri()).await.expect_status_ok();
     }
 
     #[async_std::test]
-    async fn should_assert_status_created() {
+    async fn should_expect_status_created() {
         let srv = Stubr::start("tests/stubs/status/created.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_created();
+        get(&srv.uri()).await.unwrap().expect_status_created();
     }
 }
 
@@ -75,28 +75,28 @@ mod created {
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_created_should_panic() {
+    async fn expect_status_created_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_created();
+        get(&srv.uri()).await.unwrap().expect_status_created();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_created() {
+    async fn result_should_expect_status_created() {
         let srv = Stubr::start("tests/stubs/status/created.json").await;
-        get(&srv.uri()).await.assert_status_created();
+        get(&srv.uri()).await.expect_status_created();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_created_should_panic() {
+    async fn result_expect_status_created_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_created();
+        get(&srv.uri()).await.expect_status_created();
     }
 
     #[async_std::test]
-    async fn should_assert_status_accepted() {
+    async fn should_expect_status_accepted() {
         let srv = Stubr::start("tests/stubs/status/accepted.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_accepted();
+        get(&srv.uri()).await.unwrap().expect_status_accepted();
     }
 }
 
@@ -105,22 +105,22 @@ mod accepted {
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_accepted_should_panic() {
+    async fn expect_status_accepted_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_accepted();
+        get(&srv.uri()).await.unwrap().expect_status_accepted();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_accepted() {
+    async fn result_should_expect_status_accepted() {
         let srv = Stubr::start("tests/stubs/status/accepted.json").await;
-        get(&srv.uri()).await.assert_status_accepted();
+        get(&srv.uri()).await.expect_status_accepted();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_accepted_should_panic() {
+    async fn result_expect_status_accepted_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_accepted();
+        get(&srv.uri()).await.expect_status_accepted();
     }
 }
 
@@ -128,29 +128,29 @@ mod no_content {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_no_content() {
+    async fn should_expect_status_no_content() {
         let srv = Stubr::start("tests/stubs/status/no-content.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_no_content();
+        get(&srv.uri()).await.unwrap().expect_status_no_content();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_no_content_should_panic() {
+    async fn expect_status_no_content_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_no_content();
+        get(&srv.uri()).await.unwrap().expect_status_no_content();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_no_content() {
+    async fn result_should_expect_status_no_content() {
         let srv = Stubr::start("tests/stubs/status/no-content.json").await;
-        get(&srv.uri()).await.assert_status_no_content();
+        get(&srv.uri()).await.expect_status_no_content();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_no_content_should_panic() {
+    async fn result_expect_status_no_content_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_no_content();
+        get(&srv.uri()).await.expect_status_no_content();
     }
 }
 
@@ -158,29 +158,29 @@ mod bad_request {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_bad_request() {
+    async fn should_expect_status_bad_request() {
         let srv = Stubr::start("tests/stubs/status/bad-request.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_bad_request();
+        get(&srv.uri()).await.unwrap().expect_status_bad_request();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_bad_request_should_panic() {
+    async fn expect_status_bad_request_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_bad_request();
+        get(&srv.uri()).await.unwrap().expect_status_bad_request();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_bad_request() {
+    async fn result_should_expect_status_bad_request() {
         let srv = Stubr::start("tests/stubs/status/bad-request.json").await;
-        get(&srv.uri()).await.assert_status_bad_request();
+        get(&srv.uri()).await.expect_status_bad_request();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_bad_request_should_panic() {
+    async fn result_expect_status_bad_request_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_bad_request();
+        get(&srv.uri()).await.expect_status_bad_request();
     }
 }
 
@@ -188,29 +188,29 @@ mod unauthorized {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_unauthorized() {
+    async fn should_expect_status_unauthorized() {
         let srv = Stubr::start("tests/stubs/status/unauthorized.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_unauthorized();
+        get(&srv.uri()).await.unwrap().expect_status_unauthorized();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_unauthorized_should_panic() {
+    async fn expect_status_unauthorized_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_unauthorized();
+        get(&srv.uri()).await.unwrap().expect_status_unauthorized();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_unauthorized() {
+    async fn result_should_expect_status_unauthorized() {
         let srv = Stubr::start("tests/stubs/status/unauthorized.json").await;
-        get(&srv.uri()).await.assert_status_unauthorized();
+        get(&srv.uri()).await.expect_status_unauthorized();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_unauthorized_should_panic() {
+    async fn result_expect_status_unauthorized_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_unauthorized();
+        get(&srv.uri()).await.expect_status_unauthorized();
     }
 }
 
@@ -218,29 +218,29 @@ mod forbidden {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_forbidden() {
+    async fn should_expect_status_forbidden() {
         let srv = Stubr::start("tests/stubs/status/forbidden.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_forbidden();
+        get(&srv.uri()).await.unwrap().expect_status_forbidden();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_forbidden_should_panic() {
+    async fn expect_status_forbidden_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_forbidden();
+        get(&srv.uri()).await.unwrap().expect_status_forbidden();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_forbidden() {
+    async fn result_should_expect_status_forbidden() {
         let srv = Stubr::start("tests/stubs/status/forbidden.json").await;
-        get(&srv.uri()).await.assert_status_forbidden();
+        get(&srv.uri()).await.expect_status_forbidden();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_forbidden_should_panic() {
+    async fn result_expect_status_forbidden_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_forbidden();
+        get(&srv.uri()).await.expect_status_forbidden();
     }
 }
 
@@ -248,29 +248,29 @@ mod not_found {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_not_found() {
+    async fn should_expect_status_not_found() {
         let srv = Stubr::start("tests/stubs/status/not_found.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_not_found();
+        get(&srv.uri()).await.unwrap().expect_status_not_found();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_not_found_should_panic() {
+    async fn expect_status_not_found_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_not_found();
+        get(&srv.uri()).await.unwrap().expect_status_not_found();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_not_found() {
+    async fn result_should_expect_status_not_found() {
         let srv = Stubr::start("tests/stubs/status/not_found.json").await;
-        get(&srv.uri()).await.assert_status_not_found();
+        get(&srv.uri()).await.expect_status_not_found();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_not_found_should_panic() {
+    async fn result_expect_status_not_found_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_not_found();
+        get(&srv.uri()).await.expect_status_not_found();
     }
 }
 
@@ -278,29 +278,29 @@ mod conflict {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_conflict() {
+    async fn should_expect_status_conflict() {
         let srv = Stubr::start("tests/stubs/status/conflict.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_conflict();
+        get(&srv.uri()).await.unwrap().expect_status_conflict();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_conflict_should_panic() {
+    async fn expect_status_conflict_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_conflict();
+        get(&srv.uri()).await.unwrap().expect_status_conflict();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_conflict() {
+    async fn result_should_expect_status_conflict() {
         let srv = Stubr::start("tests/stubs/status/conflict.json").await;
-        get(&srv.uri()).await.assert_status_conflict();
+        get(&srv.uri()).await.expect_status_conflict();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_conflict_should_panic() {
+    async fn result_expect_status_conflict_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_conflict();
+        get(&srv.uri()).await.expect_status_conflict();
     }
 }
 
@@ -308,29 +308,29 @@ mod gone {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_gone() {
+    async fn should_expect_status_gone() {
         let srv = Stubr::start("tests/stubs/status/gone.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_gone();
+        get(&srv.uri()).await.unwrap().expect_status_gone();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_gone_should_panic() {
+    async fn expect_status_gone_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_gone();
+        get(&srv.uri()).await.unwrap().expect_status_gone();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_gone() {
+    async fn result_should_expect_status_gone() {
         let srv = Stubr::start("tests/stubs/status/gone.json").await;
-        get(&srv.uri()).await.assert_status_gone();
+        get(&srv.uri()).await.expect_status_gone();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_gone_should_panic() {
+    async fn result_expect_status_gone_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_gone();
+        get(&srv.uri()).await.expect_status_gone();
     }
 }
 
@@ -338,28 +338,28 @@ mod server_error {
     use super::*;
 
     #[async_std::test]
-    async fn should_assert_status_server_error() {
+    async fn should_expect_status_server_error() {
         let srv = Stubr::start("tests/stubs/status/server-error.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_server_error();
+        get(&srv.uri()).await.unwrap().expect_status_server_error();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn assert_status_server_error_should_panic() {
+    async fn expect_status_server_error_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.unwrap().assert_status_server_error();
+        get(&srv.uri()).await.unwrap().expect_status_server_error();
     }
 
     #[async_std::test]
-    async fn result_should_assert_status_server_error() {
+    async fn result_should_expect_status_server_error() {
         let srv = Stubr::start("tests/stubs/status/server-error.json").await;
-        get(&srv.uri()).await.assert_status_server_error();
+        get(&srv.uri()).await.expect_status_server_error();
     }
 
     #[should_panic]
     #[async_std::test]
-    async fn result_assert_status_server_error_should_panic() {
+    async fn result_expect_status_server_error_should_panic() {
         let srv = Stubr::start("tests/stubs/status/ok.json").await;
-        get(&srv.uri()).await.assert_status_server_error();
+        get(&srv.uri()).await.expect_status_server_error();
     }
 }
