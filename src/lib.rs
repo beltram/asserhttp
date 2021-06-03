@@ -45,6 +45,8 @@ mod assert_surf;
 #[cfg(feature = "isahc")]
 mod assert_isahc;
 
+mod asserter;
+
 /// For assertions on http response
 pub trait Asserhttp<T>: AsserhttpStatus<T> {}
 

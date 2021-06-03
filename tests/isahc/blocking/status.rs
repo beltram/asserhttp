@@ -13,7 +13,7 @@ mod eq {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '100' but was '200'")]
     fn expect_status_eq_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/eq.json");
         get(&srv.uri()).unwrap().expect_status_eq(100);
@@ -26,7 +26,7 @@ mod eq {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '100' but was '200'")]
     fn result_expect_status_eq_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/eq.json");
         get(&srv.uri()).expect_status_eq(100);
@@ -43,7 +43,7 @@ mod ok {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '200' but was '201'")]
     fn expect_status_ok_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/created.json");
         get(&srv.uri()).unwrap().expect_status_ok();
@@ -56,7 +56,7 @@ mod ok {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '200' but was '201'")]
     fn result_expect_status_ok_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/created.json");
         get(&srv.uri()).expect_status_ok();
@@ -73,7 +73,7 @@ mod created {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '201' but was '200'")]
     fn assert_created_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_created();
@@ -86,7 +86,7 @@ mod created {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '201' but was '200'")]
     fn result_assert_created_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_created();
@@ -103,7 +103,7 @@ mod accepted {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '202' but was '200'")]
     fn assert_accepted_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_accepted();
@@ -116,7 +116,7 @@ mod accepted {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '202' but was '200'")]
     fn result_assert_accepted_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_accepted();
@@ -133,7 +133,7 @@ mod no_content {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '204' but was '200'")]
     fn assert_no_content_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_no_content();
@@ -146,7 +146,7 @@ mod no_content {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '204' but was '200'")]
     fn result_assert_no_content_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_no_content();
@@ -163,7 +163,7 @@ mod bad_request {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '400' but was '200'")]
     fn assert_bad_request_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_bad_request();
@@ -176,7 +176,7 @@ mod bad_request {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '400' but was '200'")]
     fn result_assert_bad_request_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_bad_request();
@@ -193,7 +193,7 @@ mod unauthorized {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '401' but was '200'")]
     fn assert_unauthorized_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_unauthorized();
@@ -206,7 +206,7 @@ mod unauthorized {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '401' but was '200'")]
     fn result_assert_unauthorized_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_unauthorized();
@@ -223,7 +223,7 @@ mod forbidden {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '403' but was '200'")]
     fn assert_forbidden_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_forbidden();
@@ -236,7 +236,7 @@ mod forbidden {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '403' but was '200'")]
     fn result_assert_forbidden_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_forbidden();
@@ -253,7 +253,7 @@ mod not_found {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '404' but was '200'")]
     fn assert_not_found_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_not_found();
@@ -266,7 +266,7 @@ mod not_found {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '404' but was '200'")]
     fn result_assert_not_found_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_not_found();
@@ -283,7 +283,7 @@ mod conflict {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '409' but was '200'")]
     fn assert_conflict_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_conflict();
@@ -296,7 +296,7 @@ mod conflict {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '409' but was '200'")]
     fn result_assert_conflict_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_conflict();
@@ -313,7 +313,7 @@ mod gone {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '410' but was '200'")]
     fn assert_gone_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_gone();
@@ -326,7 +326,7 @@ mod gone {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '410' but was '200'")]
     fn result_assert_gone_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_gone();
@@ -343,7 +343,7 @@ mod server_error {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '500' but was '200'")]
     fn assert_server_error_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).unwrap().expect_status_server_error();
@@ -356,7 +356,7 @@ mod server_error {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "expected status to be '500' but was '200'")]
     fn result_assert_server_error_should_panic() {
         let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
         get(&srv.uri()).expect_status_server_error();

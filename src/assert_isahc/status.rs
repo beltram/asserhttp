@@ -5,18 +5,20 @@ use isahc::{
     Response as IsahcResponse,
 };
 
+use crate::asserter::status::assert_status;
+
 use super::AsserhttpStatus;
 
 impl AsserhttpStatus<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
     fn expect_status_eq(&mut self, status: u16) -> &mut Self {
-        assert_eq!(self.status().as_u16(), status);
+        assert_status(self.status().as_u16(), status);
         self
     }
 }
 
 impl AsserhttpStatus<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBody> {
     fn expect_status_eq(&mut self, status: u16) -> &mut Self {
-        assert_eq!(self.status().as_u16(), status);
+        assert_status(self.status().as_u16(), status);
         self
     }
 }

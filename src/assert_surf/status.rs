@@ -1,10 +1,12 @@
 use surf::{Error as SurfError, Response as SurfResponse};
 
+use crate::asserter::status::assert_status;
+
 use super::AsserhttpStatus;
 
 impl AsserhttpStatus<SurfResponse> for SurfResponse {
     fn expect_status_eq(&mut self, status: u16) -> &mut Self {
-        assert_eq!(u16::from(self.status()), status);
+        assert_status(u16::from(self.status()), status);
         self
     }
 }
