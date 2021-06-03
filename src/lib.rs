@@ -18,7 +18,7 @@
 //!     surf::get("http://localhost/api/any").await.expect_status_ed(200);
 //!     surf::get("http://localhost/api/any").await.expect_status_ok();
 //!     surf::get("http://localhost/api/any").await.expect_status_bad_request();
-//!     surf::get("http://localhost/api/any").await.expect_status_server_error();
+//!     surf::get("http://localhost/api/any").await.expect_status_internal_server_error();
 //!     // and many more !
 //! }
 //! ```
@@ -35,7 +35,7 @@
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_ed(200);
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_ok();
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_bad_request();
-//!     isahc::get_async("http://localhost/api/any").await.expect_status_server_error();
+//!     isahc::get_async("http://localhost/api/any").await.expect_status_internal_server_error();
 //!     // and many more !
 //! }
 //! ```
@@ -52,7 +52,6 @@ pub trait Asserhttp<T>: AsserhttpStatus<T> {}
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
-
     /// Expects response status to be equal
     /// * `status` - expected status
     ///
@@ -74,6 +73,113 @@ pub trait AsserhttpStatus<T> {
     /// }
     /// ```
     fn expect_status_eq(&mut self, status: u16) -> &mut T;
+
+    /// Expects response status to be in range
+    /// * `lower` - lower inclusive bound
+    /// * `upper` - upper exclusive bound
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_status_in_range(200, 400);
+    ///     isahc::get("http://localhost").expect_status_in_range(200, 400);
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_in_range(200, 400);
+    ///     isahc::get_async("http://localhost").await.expect_status_in_range(200, 400);
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_status_in_range(200, 400);
+    ///     surf::get("http://localhost").await.expect_status_in_range(200, 400);
+    /// }
+    /// ```
+    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut T;
+
+    /// Expects response status to be in 2xx range
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_status_success();
+    ///     isahc::get("http://localhost").expect_status_success();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_success();
+    ///     isahc::get_async("http://localhost").await.expect_status_success();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_status_success();
+    ///     surf::get("http://localhost").await.expect_status_success();
+    /// }
+    /// ```
+    fn expect_status_success(&mut self) -> &mut T { self.expect_status_in_range(200, 300) }
+
+    /// Expects response status to be in 3xx range
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_status_redirection();
+    ///     isahc::get("http://localhost").expect_status_redirection();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_redirection();
+    ///     isahc::get_async("http://localhost").await.expect_status_redirection();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_status_redirection();
+    ///     surf::get("http://localhost").await.expect_status_redirection();
+    /// }
+    /// ```
+    fn expect_status_redirection(&mut self) -> &mut T { self.expect_status_in_range(300, 400) }
+
+    /// Expects response status to be in 4xx range
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_status_client_error();
+    ///     isahc::get("http://localhost").expect_status_client_error();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_client_error();
+    ///     isahc::get_async("http://localhost").await.expect_status_client_error();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_status_client_error();
+    ///     surf::get("http://localhost").await.expect_status_client_error();
+    /// }
+    /// ```
+    fn expect_status_client_error(&mut self) -> &mut T { self.expect_status_in_range(400, 500) }
+
+    /// Expects response status to be in 5xx range
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_status_server_error();
+    ///     isahc::get("http://localhost").expect_status_server_error();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_server_error();
+    ///     isahc::get_async("http://localhost").await.expect_status_server_error();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_status_server_error();
+    ///     surf::get("http://localhost").await.expect_status_server_error();
+    /// }
+    /// ```
+    fn expect_status_server_error(&mut self) -> &mut T { self.expect_status_in_range(500, 600) }
 
     /// Expects response status to be `OK 200`
     ///
@@ -316,14 +422,14 @@ pub trait AsserhttpStatus<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     isahc::get("http://localhost").unwrap().expect_status_server_error();
-    ///     isahc::get("http://localhost").expect_status_server_error();
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_server_error();
-    ///     isahc::get_async("http://localhost").await.expect_status_server_error();
+    ///     isahc::get("http://localhost").unwrap().expect_status_internal_server_error();
+    ///     isahc::get("http://localhost").expect_status_internal_server_error();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_internal_server_error();
+    ///     isahc::get_async("http://localhost").await.expect_status_internal_server_error();
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_status_server_error();
-    ///     surf::get("http://localhost").await.expect_status_server_error();
+    ///     surf::get("http://localhost").await.unwrap().expect_status_internal_server_error();
+    ///     surf::get("http://localhost").await.expect_status_internal_server_error();
     /// }
     /// ```
-    fn expect_status_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
+    fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
 }
