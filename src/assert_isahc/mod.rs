@@ -5,19 +5,14 @@ use isahc::{
     Response as IsahcResponse,
 };
 
-use super::{
-    Asserhttp,
-    AsserhttpStatus,
-    TryAsserhttp,
-    TryAsserhttpStatus,
-};
+use super::{Asserhttp, AsserhttpStatus};
 
 mod status;
 
-impl Asserhttp for IsahcResponse<IsahcBody> {}
+impl Asserhttp<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {}
 
-impl Asserhttp for IsahcResponse<IsahcAsyncBody> {}
+impl Asserhttp<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBody> {}
 
-impl TryAsserhttp<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {}
+impl Asserhttp<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {}
 
-impl TryAsserhttp<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {}
+impl Asserhttp<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {}

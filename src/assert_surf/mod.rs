@@ -1,14 +1,9 @@
 use surf::{Error as SurfError, Response as SurfResponse};
 
-use super::{
-    Asserhttp,
-    AsserhttpStatus,
-    TryAsserhttp,
-    TryAsserhttpStatus,
-};
+use super::{Asserhttp, AsserhttpStatus};
 
 mod status;
 
-impl Asserhttp for SurfResponse {}
+impl Asserhttp<SurfResponse> for SurfResponse {}
 
-impl TryAsserhttp<SurfResponse> for Result<SurfResponse, SurfError> {}
+impl Asserhttp<SurfResponse> for Result<SurfResponse, SurfError> {}
