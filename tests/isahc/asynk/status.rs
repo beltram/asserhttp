@@ -153,6 +153,36 @@ mod no_content {
     }
 }
 
+mod partial_content {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_status_partial_content() {
+        let srv = Stubr::start("tests/stubs/status/partial-content.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_status_partial_content();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected status to be '206' but was '200'")]
+    async fn expect_status_partial_content_should_panic() {
+        let srv = Stubr::start("tests/stubs/status/ok.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_status_partial_content();
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_status_partial_content() {
+        let srv = Stubr::start("tests/stubs/status/partial-content.json").await;
+        get_async(&srv.uri()).await.expect_status_partial_content();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected status to be '206' but was '200'")]
+    async fn result_expect_status_partial_content_should_panic() {
+        let srv = Stubr::start("tests/stubs/status/ok.json").await;
+        get_async(&srv.uri()).await.expect_status_partial_content();
+    }
+}
+
 mod bad_request {
     use super::*;
 

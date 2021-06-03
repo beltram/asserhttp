@@ -159,6 +159,27 @@ pub trait AsserhttpStatus<T> {
     /// ```
     fn expect_status_no_content(&mut self) -> &mut T { self.expect_status_eq(204) }
 
+    /// Expects response status to be `Partial Content 206`
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_status_partial_content();
+    ///     isahc::get("http://localhost").expect_status_partial_content();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_partial_content();
+    ///     isahc::get_async("http://localhost").await.expect_status_partial_content();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_status_partial_content();
+    ///     surf::get("http://localhost").await.expect_status_partial_content();
+    /// }
+    /// ```
+    fn expect_status_partial_content(&mut self) -> &mut T { self.expect_status_eq(206) }
+
     /// Expects response status to be `Bad Request 400`
     ///
     /// # Example

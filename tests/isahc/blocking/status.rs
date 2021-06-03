@@ -153,6 +153,36 @@ mod no_content {
     }
 }
 
+mod partial_content {
+    use super::*;
+
+    #[test]
+    fn should_assert_partial_content() {
+        let srv = Stubr::start_blocking("tests/stubs/status/partial-content.json");
+        get(&srv.uri()).unwrap().expect_status_partial_content();
+    }
+
+    #[test]
+    #[should_panic(expected = "expected status to be '206' but was '200'")]
+    fn assert_partial_content_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).unwrap().expect_status_partial_content();
+    }
+
+    #[test]
+    fn result_should_assert_partial_content() {
+        let srv = Stubr::start_blocking("tests/stubs/status/partial-content.json");
+        get(&srv.uri()).expect_status_partial_content();
+    }
+
+    #[test]
+    #[should_panic(expected = "expected status to be '206' but was '200'")]
+    fn result_assert_partial_content_should_panic() {
+        let srv = Stubr::start_blocking("tests/stubs/status/ok.json");
+        get(&srv.uri()).expect_status_partial_content();
+    }
+}
+
 mod bad_request {
     use super::*;
 
