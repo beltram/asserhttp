@@ -5,9 +5,10 @@ use isahc::{
     Response as IsahcResponse,
 };
 
-use super::{Asserhttp, AsserhttpStatus};
+use super::Asserhttp;
 
 mod status;
+mod header;
 
 impl Asserhttp<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {}
 

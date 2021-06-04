@@ -2,7 +2,7 @@ use isahc::{AsyncBody as IsahcAsyncBody, AsyncBody, Body as IsahcBody, Body, Err
 
 use crate::asserter::status::{assert_status, assert_status_range};
 
-use super::AsserhttpStatus;
+use super::super::AsserhttpStatus;
 
 impl AsserhttpStatus<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
     fn expect_status_eq(&mut self, status: u16) -> &mut Self {

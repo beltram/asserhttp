@@ -1,0 +1,78 @@
+use isahc::get;
+use stubr::Stubr;
+
+use asserhttp::*;
+
+mod eq {
+    use super::*;
+
+    #[test]
+    fn should_expect_header() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).unwrap().expect_header("x-a", "a");
+    }
+
+    #[test]
+    fn should_expect_many_header() {
+        let srv = Stubr::start_blocking("tests/stubs/header/many.json");
+        get(&srv.uri()).unwrap()
+            .expect_header("x-a", "a")
+            .expect_header("x-b", "b");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected one header named 'x-b' but none found")]
+    fn expect_header_should_panic_when_wrong_key() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).unwrap().expect_header("x-b", "a");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'x-a' to be equal to 'b' but was 'a'")]
+    fn expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).unwrap().expect_header("x-a", "b");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.")]
+    fn expect_header_should_panic_when_multi_valued() {
+        let srv = Stubr::start_blocking("tests/stubs/header/multi.json");
+        get(&srv.uri()).unwrap().expect_header("x-m", "a");
+    }
+
+    #[test]
+    fn result_should_expect_header() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).expect_header("x-a", "a");
+    }
+
+    #[test]
+    fn result_should_expect_many_header() {
+        let srv = Stubr::start_blocking("tests/stubs/header/many.json");
+        get(&srv.uri())
+            .expect_header("x-a", "a")
+            .expect_header("x-b", "b");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected one header named 'x-b' but none found")]
+    fn result_expect_header_should_panic_when_wrong_key() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).expect_header("x-b", "a");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'x-a' to be equal to 'b' but was 'a'")]
+    fn result_expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).expect_header("x-a", "b");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.")]
+    fn result_expect_header_should_panic_when_multi_valued() {
+        let srv = Stubr::start_blocking("tests/stubs/header/multi.json");
+        get(&srv.uri()).expect_header("x-m", "a");
+    }
+}

@@ -2,7 +2,7 @@ use surf::{Error as SurfError, Response as SurfResponse, Response};
 
 use crate::asserter::status::{assert_status, assert_status_range};
 
-use super::AsserhttpStatus;
+use super::super::AsserhttpStatus;
 
 impl AsserhttpStatus<SurfResponse> for SurfResponse {
     fn expect_status_eq(&mut self, status: u16) -> &mut Self {

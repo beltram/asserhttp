@@ -48,7 +48,7 @@ mod assert_isahc;
 mod asserter;
 
 /// For assertions on http response
-pub trait Asserhttp<T>: AsserhttpStatus<T> {}
+pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> {}
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
@@ -432,4 +432,30 @@ pub trait AsserhttpStatus<T> {
     /// }
     /// ```
     fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
+}
+
+/// For assertions on http response headers
+pub trait AsserhttpHeader<T> {
+    /// Expects response header to be equal
+    /// * `key` - expected header key
+    /// * `value` - expected header value
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_header("content-type", "application/json");
+    ///     isahc::get("http://localhost").expect_header("content-type", "application/json");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_header("content-type", "application/json");
+    ///     isahc::get_async("http://localhost").await.expect_header("content-type", "application/json");
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_header("content-type", "application/json");
+    ///     surf::get("http://localhost").await.expect_header("content-type", "application/json");
+    /// }
+    /// ```
+    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut T;
 }
