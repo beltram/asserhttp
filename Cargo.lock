@@ -83,7 +83,7 @@ checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
 name = "asserhttp"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "async-std",
  "isahc 1.4.0",
