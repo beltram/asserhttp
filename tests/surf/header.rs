@@ -76,3 +76,63 @@ mod eq {
         get(&srv.uri()).await.expect_header("x-m", "a");
     }
 }
+
+mod json {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_content_type_json() {
+        let srv = Stubr::start("tests/stubs/header/json.json").await;
+        get(&srv.uri()).await.unwrap().expect_content_type_json();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'application/json' but was 'application/xml'")]
+    async fn expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start("tests/stubs/header/xml.json").await;
+        get(&srv.uri()).await.unwrap().expect_content_type_json();
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_content_type_json() {
+        let srv = Stubr::start("tests/stubs/header/json.json").await;
+        get(&srv.uri()).await.expect_content_type_json();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'application/json' but was 'application/xml'")]
+    async fn result_expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start("tests/stubs/header/xml.json").await;
+        get(&srv.uri()).await.expect_content_type_json();
+    }
+}
+
+mod text {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_content_type_text() {
+        let srv = Stubr::start("tests/stubs/header/text.json").await;
+        get(&srv.uri()).await.unwrap().expect_content_type_text();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'")]
+    async fn expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start("tests/stubs/header/xml.json").await;
+        get(&srv.uri()).await.unwrap().expect_content_type_text();
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_content_type_text() {
+        let srv = Stubr::start("tests/stubs/header/text.json").await;
+        get(&srv.uri()).await.expect_content_type_text();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'")]
+    async fn result_expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start("tests/stubs/header/xml.json").await;
+        get(&srv.uri()).await.expect_content_type_text();
+    }
+}

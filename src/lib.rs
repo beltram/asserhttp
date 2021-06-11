@@ -436,6 +436,10 @@ pub trait AsserhttpStatus<T> {
 
 /// For assertions on http response headers
 pub trait AsserhttpHeader<T> {
+    const CONTENT_TYPE: &'static str = "content-type";
+    const APPLICATION_JSON: &'static str = "application/json";
+    const TEXT_PLAIN: &'static str = "text/plain";
+
     /// Expects response header to be equal
     /// * `key` - expected header key
     /// * `value` - expected header value
@@ -458,4 +462,50 @@ pub trait AsserhttpHeader<T> {
     /// }
     /// ```
     fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut T;
+
+    /// Expects response header `Content-Type: application/json`
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_content_type_json();
+    ///     isahc::get("http://localhost").expect_content_type_json();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_content_type_json();
+    ///     isahc::get_async("http://localhost").await.expect_content_type_json();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_content_type_json();
+    ///     surf::get("http://localhost").await.expect_content_type_json();
+    /// }
+    /// ```
+    fn expect_content_type_json(&mut self) -> &mut T {
+        self.expect_header(Self::CONTENT_TYPE, Self::APPLICATION_JSON)
+    }
+
+    /// Expects response header `Content-Type: text/plain`
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_content_type_text();
+    ///     isahc::get("http://localhost").expect_content_type_text();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_content_type_text();
+    ///     isahc::get_async("http://localhost").await.expect_content_type_text();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_content_type_text();
+    ///     surf::get("http://localhost").await.expect_content_type_text();
+    /// }
+    /// ```
+    fn expect_content_type_text(&mut self) -> &mut T {
+        self.expect_header(Self::CONTENT_TYPE, Self::TEXT_PLAIN)
+    }
 }

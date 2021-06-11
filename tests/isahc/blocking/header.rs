@@ -76,3 +76,63 @@ mod eq {
         get(&srv.uri()).expect_header("x-m", "a");
     }
 }
+
+mod json {
+    use super::*;
+
+    #[test]
+    fn should_expect_content_type_json() {
+        let srv = Stubr::start_blocking("tests/stubs/header/json.json");
+        get(&srv.uri()).unwrap().expect_content_type_json();
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'application/json' but was 'application/xml'")]
+    fn expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start_blocking("tests/stubs/header/xml.json");
+        get(&srv.uri()).unwrap().expect_content_type_json();
+    }
+
+    #[test]
+    fn result_should_expect_content_type_json() {
+        let srv = Stubr::start_blocking("tests/stubs/header/json.json");
+        get(&srv.uri()).expect_content_type_json();
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'application/json' but was 'application/xml'")]
+    fn result_expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start_blocking("tests/stubs/header/xml.json");
+        get(&srv.uri()).expect_content_type_json();
+    }
+}
+
+mod text {
+    use super::*;
+
+    #[test]
+    fn should_expect_content_type_text() {
+        let srv = Stubr::start_blocking("tests/stubs/header/text.json");
+        get(&srv.uri()).unwrap().expect_content_type_text();
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'")]
+    fn expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start_blocking("tests/stubs/header/xml.json");
+        get(&srv.uri()).unwrap().expect_content_type_text();
+    }
+
+    #[test]
+    fn result_should_expect_content_type_text() {
+        let srv = Stubr::start_blocking("tests/stubs/header/text.json");
+        get(&srv.uri()).expect_content_type_text();
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'")]
+    fn result_expect_header_should_panic_when_wrong_value() {
+        let srv = Stubr::start_blocking("tests/stubs/header/xml.json");
+        get(&srv.uri()).expect_content_type_text();
+    }
+}
