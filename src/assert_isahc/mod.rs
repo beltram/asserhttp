@@ -9,6 +9,7 @@ use super::Asserhttp;
 
 mod status;
 mod header;
+mod body;
 
 impl Asserhttp<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {}
 

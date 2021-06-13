@@ -4,6 +4,7 @@ use super::Asserhttp;
 
 mod status;
 mod header;
+mod body;
 
 impl Asserhttp<SurfResponse> for SurfResponse {}
 

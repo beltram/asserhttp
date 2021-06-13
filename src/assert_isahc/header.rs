@@ -13,7 +13,7 @@ use super::super::{
 };
 
 impl AsserhttpHeader<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
-    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut IsahcResponse<IsahcBody> {
+    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut Self {
         let key = key.into();
         assert_header_key(header_keys(self.headers()), key);
         assert_header_value(header_values(key, self.headers()), key, value.into());
@@ -22,7 +22,7 @@ impl AsserhttpHeader<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
 }
 
 impl AsserhttpHeader<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBody> {
-    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut IsahcResponse<AsyncBody> {
+    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut Self {
         let key = key.into();
         assert_header_key(header_keys(self.headers()), key);
         assert_header_value(header_values(key, self.headers()), key, value.into());

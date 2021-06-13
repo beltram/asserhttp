@@ -13,11 +13,15 @@ categories = ["development-tools::testing", "api-bindings"]
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
 [dependencies]
+anyhow = "1.0.41"
+async-std = "1.9.0"
+serde = "1.0.126"
 surf = { version = "2.2.0", optional = true }
-isahc = { version = "1.4.0", optional = true }
+isahc = { version = "1.4.0", features = ["json"], optional = true }
 
 [dev-dependencies]
 stubr = "0.4.4"
+serde_json = "1.0.64"
 
 [dev-dependencies.async-std]
 version = "1.9.0"

@@ -40,6 +40,10 @@
 //! }
 //! ```
 //!
+use std::fmt::Debug;
+
+use serde::de::DeserializeOwned;
+
 #[cfg(feature = "surf")]
 mod assert_surf;
 #[cfg(feature = "isahc")]
@@ -48,7 +52,7 @@ mod assert_isahc;
 mod asserter;
 
 /// For assertions on http response
-pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> {}
+pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
@@ -508,4 +512,30 @@ pub trait AsserhttpHeader<T> {
     fn expect_content_type_text(&mut self) -> &mut T {
         self.expect_header(Self::CONTENT_TYPE, Self::TEXT_PLAIN)
     }
+}
+
+/// For assertions on http response body
+pub trait AsserhttpBody<T> {
+    /// Expects response body to be json and equal
+    /// * `body` - expected json body
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    /// use serde_json::json;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_json(json!({"a": "b"}));
+    ///     isahc::get("http://localhost").expect_body_json(json!({"a": "b"}));
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_json(json!({"a": "b"}));
+    ///     isahc::get_async("http://localhost").await.expect_body_json(json!({"a": "b"}));
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_json(json!({"a": "b"}));
+    ///     surf::get("http://localhost").await.expect_body_json(json!({"a": "b"}));
+    /// }
+    /// ```
+    fn expect_body_json<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + PartialEq + Debug + Unpin;
 }
