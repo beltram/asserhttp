@@ -516,6 +516,7 @@ pub trait AsserhttpHeader<T> {
 
 /// For assertions on http response body
 pub trait AsserhttpBody<T> {
+
     /// Expects response body to be json and equal
     /// * `body` - expected json body
     ///
@@ -538,4 +539,27 @@ pub trait AsserhttpBody<T> {
     /// }
     /// ```
     fn expect_body_json<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + PartialEq + Debug + Unpin;
+
+    /// Expects response body to be text and equal
+    /// * `body` - expected text body
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_text(String::from("abcd"));
+    ///     isahc::get("http://localhost").unwrap().expect_body_text("abcd");
+    ///     isahc::get("http://localhost").expect_body_text("abcd");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text("abcd");
+    ///     isahc::get_async("http://localhost").await.expect_body_text("abcd");
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_text("abcd");
+    ///     surf::get("http://localhost").await.expect_body_text("abcd");
+    /// }
+    /// ```
+    fn expect_body_text<B>(&mut self, body: B) -> &mut T where B: Into<String>;
 }
