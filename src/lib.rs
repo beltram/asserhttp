@@ -44,7 +44,7 @@ use std::fmt::Debug;
 
 use serde::de::DeserializeOwned;
 
-use asserter::body::assert_json_body_eq;
+use asserter::body::{assert_json_body_eq, assert_text_body};
 
 #[cfg(feature = "surf")]
 mod assert_surf;
@@ -575,6 +575,29 @@ pub trait AsserhttpBody<T> {
         self.expect_body_json(|actual: B| assert_json_body_eq(actual, body))
     }
 
+    /// Allows verifying text body in a closure
+    /// * `asserter` - closure to verify text body
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_text(|b: String| assert_eq!(b, String::from("abcd")));
+    ///     isahc::get("http://localhost").unwrap().expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///     isahc::get("http://localhost").expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///     isahc::get_async("http://localhost").await.expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///     surf::get("http://localhost").await.expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    /// }
+    /// ```
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String);
+
     /// Expects response body to be text and equal
     /// * `body` - expected text body
     ///
@@ -586,15 +609,17 @@ pub trait AsserhttpBody<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     isahc::get("http://localhost").unwrap().expect_body_text(String::from("abcd"));
-    ///     isahc::get("http://localhost").unwrap().expect_body_text("abcd");
-    ///     isahc::get("http://localhost").expect_body_text("abcd");
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text("abcd");
-    ///     isahc::get_async("http://localhost").await.expect_body_text("abcd");
+    ///     isahc::get("http://localhost").unwrap().expect_body_text_eq(String::from("abcd"));
+    ///     isahc::get("http://localhost").unwrap().expect_body_text_eq("abcd");
+    ///     isahc::get("http://localhost").expect_body_text_eq("abcd");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text_eq("abcd");
+    ///     isahc::get_async("http://localhost").await.expect_body_text_eq("abcd");
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_body_text("abcd");
-    ///     surf::get("http://localhost").await.expect_body_text("abcd");
+    ///     surf::get("http://localhost").await.unwrap().expect_body_text_eq("abcd");
+    ///     surf::get("http://localhost").await.expect_body_text_eq("abcd");
     /// }
     /// ```
-    fn expect_body_text<B>(&mut self, body: B) -> &mut T where B: Into<String>;
+    fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T where B: Into<String> {
+        self.expect_body_text(|actual| assert_text_body(actual, body.into()))
+    }
 }

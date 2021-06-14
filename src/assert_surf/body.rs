@@ -4,10 +4,7 @@ use async_std::task::block_on;
 use serde::de::DeserializeOwned;
 use surf::{Error as SurfError, Response as SurfResponse};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::assert_text_body,
-};
+use super::super::AsserhttpBody;
 
 impl AsserhttpBody<SurfResponse> for SurfResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
@@ -19,9 +16,12 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
         self
     }
 
-    fn expect_body_text<B>(&mut self, body: B) -> &mut Self where B: Into<String> {
-        let actual = block_on(self.body_string()).map_err(anyhow::Error::msg);
-        assert_text_body(actual, body.into());
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut Self where F: FnOnce(String) {
+        if let Ok(actual) = block_on(self.body_string()).map_err(anyhow::Error::msg) {
+            if !actual.is_empty() {
+                asserter(actual)
+            } else { panic!("expected a text body but no response body was present") }
+        } else { panic!("expected a text body but no response body was present") }
         self
     }
 }
@@ -33,7 +33,7 @@ impl AsserhttpBody<SurfResponse> for Result<SurfResponse, SurfError> {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
 
-    fn expect_body_text<B>(&mut self, body: B) -> &mut SurfResponse where B: Into<String> {
-        self.as_mut().unwrap().expect_body_text(body)
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut SurfResponse where F: FnOnce(String) {
+        self.as_mut().unwrap().expect_body_text(asserter)
     }
 }

@@ -110,40 +110,70 @@ mod text {
     #[async_std::test]
     async fn should_expect_body_text() {
         let srv = Stubr::start("tests/stubs/body/text/value.json").await;
-        get_async(&srv.uri()).await.unwrap().expect_body_text("abcd");
+        get_async(&srv.uri()).await.unwrap().expect_body_text(|b| assert_eq!(b, String::from("abcd")));
+    }
+
+    #[should_panic]
+    #[async_std::test]
+    async fn expect_body_text_should_fail_when_closure_fails() {
+        let srv = Stubr::start("tests/stubs/body/text/value.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_body_text(|b| assert_eq!(b, String::from("dcba")));
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_body_text() {
+        let srv = Stubr::start("tests/stubs/body/text/value.json").await;
+        get_async(&srv.uri()).await.expect_body_text(|b| assert_eq!(b, String::from("abcd")));
+    }
+
+    #[should_panic]
+    #[async_std::test]
+    async fn result_expect_body_text_should_fail_when_closure_fails() {
+        let srv = Stubr::start("tests/stubs/body/text/value.json").await;
+        get_async(&srv.uri()).await.expect_body_text(|b| assert_eq!(b, String::from("dcba")));
+    }
+}
+
+mod text_eq {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_body_text_eq() {
+        let srv = Stubr::start("tests/stubs/body/text/value.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_body_text_eq("abcd");
     }
 
     #[async_std::test]
     #[should_panic(expected = "expected text body 'abcd' to be equal to 'dcab' but was not")]
     async fn expect_body_text_should_fail_when_not_equal() {
         let srv = Stubr::start("tests/stubs/body/text/value.json").await;
-        get_async(&srv.uri()).await.unwrap().expect_body_text("dcab");
+        get_async(&srv.uri()).await.unwrap().expect_body_text_eq("dcab");
     }
 
     #[async_std::test]
-    #[should_panic(expected = "expected text body 'abcd' but no response body was present")]
+    #[should_panic(expected = "expected a text body but no response body was present")]
     async fn expect_body_text_should_fail_when_missing() {
         let srv = Stubr::start("tests/stubs/body/text/missing.json").await;
-        get_async(&srv.uri()).await.unwrap().expect_body_text("abcd");
+        get_async(&srv.uri()).await.unwrap().expect_body_text_eq("abcd");
     }
 
     #[async_std::test]
-    async fn result_should_expect_body_text() {
+    async fn result_should_expect_body_text_eq() {
         let srv = Stubr::start("tests/stubs/body/text/value.json").await;
-        get_async(&srv.uri()).await.expect_body_text("abcd");
+        get_async(&srv.uri()).await.expect_body_text_eq("abcd");
     }
 
     #[async_std::test]
     #[should_panic(expected = "expected text body 'abcd' to be equal to 'dcab' but was not")]
     async fn result_expect_body_text_should_fail_when_not_equal() {
         let srv = Stubr::start("tests/stubs/body/text/value.json").await;
-        get_async(&srv.uri()).await.expect_body_text("dcab");
+        get_async(&srv.uri()).await.expect_body_text_eq("dcab");
     }
 
     #[async_std::test]
-    #[should_panic(expected = "expected text body 'abcd' but no response body was present")]
+    #[should_panic(expected = "expected a text body but no response body was present")]
     async fn result_expect_body_text_should_fail_when_missing() {
         let srv = Stubr::start("tests/stubs/body/text/missing.json").await;
-        get_async(&srv.uri()).await.expect_body_text("abcd");
+        get_async(&srv.uri()).await.expect_body_text_eq("abcd");
     }
 }
