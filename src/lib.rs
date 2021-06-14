@@ -44,6 +44,8 @@ use std::fmt::Debug;
 
 use serde::de::DeserializeOwned;
 
+use asserter::body::assert_json_body_eq;
+
 #[cfg(feature = "surf")]
 mod assert_surf;
 #[cfg(feature = "isahc")]
@@ -516,6 +518,37 @@ pub trait AsserhttpHeader<T> {
 
 /// For assertions on http response body
 pub trait AsserhttpBody<T> {
+    /// Allows verifying json body in a closure
+    /// * `asserter` - closure to verify json body
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// # use serde::Deserialize;
+    /// use asserhttp::*;
+    /// use serde_json::{json, Value};
+    ///
+    /// #[derive(Deserialize, Debug, Eq, PartialEq)]
+    /// struct MyStruct { a: String }
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     isahc::get("http://localhost").expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     isahc::get_async("http://localhost").await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     surf::get("http://localhost").await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///
+    ///     // or use your structs
+    ///     isahc::get("http://localhost").expect_body_json(|b: MyStruct| assert_eq!(b, MyStruct { a: String::from("b") }));
+    /// }
+    /// ```
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
+        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+              F: FnOnce(B);
 
     /// Expects response body to be json and equal
     /// * `body` - expected json body
@@ -529,16 +562,18 @@ pub trait AsserhttpBody<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     isahc::get("http://localhost").unwrap().expect_body_json(json!({"a": "b"}));
-    ///     isahc::get("http://localhost").expect_body_json(json!({"a": "b"}));
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_json(json!({"a": "b"}));
-    ///     isahc::get_async("http://localhost").await.expect_body_json(json!({"a": "b"}));
+    ///     isahc::get("http://localhost").unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     isahc::get("http://localhost").expect_body_json_eq(json!({"a": "b"}));
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     isahc::get_async("http://localhost").await.expect_body_json_eq(json!({"a": "b"}));
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_body_json(json!({"a": "b"}));
-    ///     surf::get("http://localhost").await.expect_body_json(json!({"a": "b"}));
+    ///     surf::get("http://localhost").await.unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     surf::get("http://localhost").await.expect_body_json_eq(json!({"a": "b"}));
     /// }
     /// ```
-    fn expect_body_json<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + PartialEq + Debug + Unpin;
+    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + PartialEq + Debug + Unpin {
+        self.expect_body_json(|actual: B| assert_json_body_eq(actual, body))
+    }
 
     /// Expects response body to be text and equal
     /// * `body` - expected text body
