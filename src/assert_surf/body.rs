@@ -1,10 +1,13 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, panic::panic_any};
 
 use async_std::task::block_on;
 use serde::de::DeserializeOwned;
 use surf::{Error as SurfError, Response as SurfResponse};
 
-use super::super::AsserhttpBody;
+use super::super::{
+    AsserhttpBody,
+    asserter::body::{EMPTY_BODY_BYTES_MSG, EMPTY_BODY_JSON_MSG, EMPTY_BODY_TEXT_MSG},
+};
 
 impl AsserhttpBody<SurfResponse> for SurfResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
@@ -12,7 +15,7 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
               F: FnOnce(B) {
         if let Ok(actual) = block_on(self.body_json::<B>()).map_err(anyhow::Error::msg) {
             asserter(actual)
-        } else { panic!("expected a json body but no response body was present") }
+        } else { panic_any(EMPTY_BODY_JSON_MSG) }
         self
     }
 
@@ -20,8 +23,8 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
         if let Ok(actual) = block_on(self.body_string()).map_err(anyhow::Error::msg) {
             if !actual.is_empty() {
                 asserter(actual)
-            } else { panic!("expected a text body but no response body was present") }
-        } else { panic!("expected a text body but no response body was present") }
+            } else { panic_any(EMPTY_BODY_TEXT_MSG) }
+        } else { panic_any(EMPTY_BODY_TEXT_MSG) }
         self
     }
 
@@ -29,8 +32,8 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
         if let Ok(actual) = block_on(self.body_bytes()).map_err(anyhow::Error::msg) {
             if !actual.is_empty() {
                 asserter(actual.as_slice())
-            } else { panic!("expected a response body but no response body was present") }
-        } else { panic!("expected a response body but no response body was present") }
+            } else { panic_any(EMPTY_BODY_BYTES_MSG) }
+        } else { panic_any(EMPTY_BODY_BYTES_MSG) }
         self
     }
 }

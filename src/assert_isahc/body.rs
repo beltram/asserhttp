@@ -1,10 +1,13 @@
-use std::fmt::Debug;
+use std::{fmt::Debug, panic::panic_any};
 
 use async_std::task::block_on;
 use isahc::{AsyncBody as IsahcAsyncBody, AsyncReadResponseExt, Body as IsahcBody, Error as IsahcError, ReadResponseExt, Response as IsahcResponse};
 use serde::de::DeserializeOwned;
 
-use super::super::AsserhttpBody;
+use super::super::{
+    AsserhttpBody,
+    asserter::body::{EMPTY_BODY_BYTES_MSG, EMPTY_BODY_JSON_MSG, EMPTY_BODY_TEXT_MSG},
+};
 
 impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
@@ -12,7 +15,7 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
               F: FnOnce(B) {
         if let Ok(actual) = self.json::<B>().map_err(anyhow::Error::msg) {
             asserter(actual)
-        } else { panic!("expected a json body but no response body was present") }
+        } else { panic_any(EMPTY_BODY_JSON_MSG) }
         self
     }
 
@@ -20,8 +23,8 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
         if let Ok(actual) = self.text().map_err(anyhow::Error::msg) {
             if !actual.is_empty() {
                 asserter(actual)
-            } else { panic!("expected a text body but no response body was present") }
-        } else { panic!("expected a text body but no response body was present") }
+            } else { panic_any(EMPTY_BODY_TEXT_MSG) }
+        } else { panic_any(EMPTY_BODY_TEXT_MSG) }
         self
     }
 
@@ -30,7 +33,7 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
         self.copy_to(&mut actual).unwrap();
         if !actual.is_empty() {
             asserter(actual.as_slice())
-        } else { panic!("expected a response body but no response body was present") }
+        } else { panic_any(EMPTY_BODY_BYTES_MSG) }
         self
     }
 }
@@ -41,7 +44,7 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBo
               F: FnOnce(B) {
         if let Ok(actual) = block_on(self.json::<B>()).map_err(anyhow::Error::msg) {
             asserter(actual)
-        } else { panic!("expected a json body but no response body was present") }
+        } else { panic_any(EMPTY_BODY_JSON_MSG) }
         self
     }
 
@@ -49,8 +52,8 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBo
         if let Ok(actual) = block_on(self.text()).map_err(anyhow::Error::msg) {
             if !actual.is_empty() {
                 asserter(actual)
-            } else { panic!("expected a text body but no response body was present") }
-        } else { panic!("expected a text body but no response body was present") }
+            } else { panic_any(EMPTY_BODY_TEXT_MSG) }
+        } else { panic_any(EMPTY_BODY_TEXT_MSG) }
         self
     }
 
@@ -59,7 +62,7 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBo
         block_on(self.copy_to(&mut actual)).unwrap();
         if !actual.is_empty() {
             asserter(actual.as_slice())
-        } else { panic!("expected a response body but no response body was present") }
+        } else { panic_any(EMPTY_BODY_BYTES_MSG) }
         self
     }
 }
