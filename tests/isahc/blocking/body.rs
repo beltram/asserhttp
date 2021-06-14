@@ -108,27 +108,27 @@ mod text {
     use super::*;
 
     #[test]
-     fn should_expect_body_text() {
+    fn should_expect_body_text() {
         let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
         get(&srv.uri()).unwrap().expect_body_text(|b| assert_eq!(b, String::from("abcd")));
     }
 
     #[test]
     #[should_panic]
-     fn expect_body_text_should_fail_when_closure_fails() {
+    fn expect_body_text_should_fail_when_closure_fails() {
         let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
         get(&srv.uri()).unwrap().expect_body_text(|b| assert_eq!(b, String::from("dcba")));
     }
 
     #[test]
-     fn result_should_expect_body_text() {
+    fn result_should_expect_body_text() {
         let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
         get(&srv.uri()).expect_body_text(|b| assert_eq!(b, String::from("abcd")));
     }
 
     #[test]
     #[should_panic]
-     fn result_expect_body_text_should_fail_when_closure_fails() {
+    fn result_expect_body_text_should_fail_when_closure_fails() {
         let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
         get(&srv.uri()).expect_body_text(|b| assert_eq!(b, String::from("dcba")));
     }
@@ -175,5 +175,35 @@ mod text_eq {
     fn result_expect_body_text_should_fail_when_missing() {
         let srv = Stubr::start_blocking("tests/stubs/body/text/missing.json");
         get(&srv.uri()).expect_body_text_eq("abcd");
+    }
+}
+
+mod bytes {
+    use super::*;
+
+    #[test]
+    fn should_expect_body_bytes() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    }
+
+    #[test]
+    #[should_panic]
+    fn expect_body_bytes_should_fail_when_closure_fails() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).unwrap().expect_body_bytes(|b| assert_eq!(b, b"dcba"));
+    }
+
+    #[test]
+    fn result_should_expect_body_bytes() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    }
+
+    #[test]
+    #[should_panic]
+    fn result_expect_body_bytes_should_fail_when_closure_fails() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).expect_body_bytes(|b| assert_eq!(b, b"dcba"));
     }
 }

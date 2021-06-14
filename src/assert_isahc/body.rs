@@ -24,6 +24,15 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
         } else { panic!("expected a text body but no response body was present") }
         self
     }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut Self where F: FnOnce(&[u8]) {
+        let mut actual = vec![];
+        self.copy_to(&mut actual).unwrap();
+        if !actual.is_empty() {
+            asserter(actual.as_slice())
+        } else { panic!("expected a text body but no response body was present") }
+        self
+    }
 }
 
 impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBody> {
@@ -44,6 +53,15 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBo
         } else { panic!("expected a text body but no response body was present") }
         self
     }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut Self where F: FnOnce(&[u8]) {
+        let mut actual = vec![];
+        block_on(self.copy_to(&mut actual)).unwrap();
+        if !actual.is_empty() {
+            asserter(actual.as_slice())
+        } else { panic!("expected a text body but no response body was present") }
+        self
+    }
 }
 
 impl AsserhttpBody<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {
@@ -56,6 +74,10 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcBody> where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
     }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcBody> where F: FnOnce(&[u8]) {
+        self.as_mut().unwrap().expect_body_bytes(asserter)
+    }
 }
 
 impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {
@@ -67,5 +89,9 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<Isahc
 
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcAsyncBody> where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
+    }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcAsyncBody> where F: FnOnce(&[u8]) {
+        self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 }

@@ -24,6 +24,15 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
         } else { panic!("expected a text body but no response body was present") }
         self
     }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut Self where F: FnOnce(&[u8]) {
+        if let Ok(actual) = block_on(self.body_bytes()).map_err(anyhow::Error::msg) {
+            if !actual.is_empty() {
+                asserter(actual.as_slice())
+            } else { panic!("expected a response body but no response body was present") }
+        } else { panic!("expected a response body but no response body was present") }
+        self
+    }
 }
 
 impl AsserhttpBody<SurfResponse> for Result<SurfResponse, SurfError> {
@@ -35,5 +44,9 @@ impl AsserhttpBody<SurfResponse> for Result<SurfResponse, SurfError> {
 
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut SurfResponse where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
+    }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut SurfResponse where F: FnOnce(&[u8]) {
+        self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 }

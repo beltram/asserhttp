@@ -586,14 +586,14 @@ pub trait AsserhttpBody<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     isahc::get("http://localhost").unwrap().expect_body_text(|b: String| assert_eq!(b, String::from("abcd")));
-    ///     isahc::get("http://localhost").unwrap().expect_body_text(|b: String| assert_eq!(b, "abcd"));
-    ///     isahc::get("http://localhost").expect_body_text(|b: String| assert_eq!(b, "abcd"));
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text(|b: String| assert_eq!(b, "abcd"));
-    ///     isahc::get_async("http://localhost").await.expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///     isahc::get("http://localhost").unwrap().expect_body_text(|b| assert_eq!(b, String::from("abcd")));
+    ///     isahc::get("http://localhost").unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     isahc::get("http://localhost").expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     isahc::get_async("http://localhost").await.expect_body_text(|b| assert_eq!(b, "abcd"));
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_body_text(|b: String| assert_eq!(b, "abcd"));
-    ///     surf::get("http://localhost").await.expect_body_text(|b: String| assert_eq!(b, "abcd"));
+    ///     surf::get("http://localhost").await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     surf::get("http://localhost").await.expect_body_text(|b| assert_eq!(b, "abcd"));
     /// }
     /// ```
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String);
@@ -622,4 +622,31 @@ pub trait AsserhttpBody<T> {
     fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T where B: Into<String> {
         self.expect_body_text(|actual| assert_text_body(actual, body.into()))
     }
+
+    /// Allows verifying response body bytes in a closure
+    /// * `asserter` - closure to verify response body as bytes
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, &[97, 98, 99, 100]));
+    ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, &vec![97, 98, 99, 100]));
+    ///
+    ///     // on any client
+    ///     isahc::get("http://localhost").unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     isahc::get_async("http://localhost").await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     surf::get("http://localhost").await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    /// }
+    /// ```
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]);
 }

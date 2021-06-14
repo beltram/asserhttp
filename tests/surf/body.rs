@@ -177,3 +177,33 @@ mod text_eq {
         get(&srv.uri()).await.expect_body_text_eq("abcd");
     }
 }
+
+mod bytes {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_body_bytes() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    }
+
+    #[should_panic]
+    #[async_std::test]
+    async fn expect_body_bytes_should_fail_when_closure_fails() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"dcba"));
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_body_bytes() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    }
+
+    #[should_panic]
+    #[async_std::test]
+    async fn result_expect_body_bytes_should_fail_when_closure_fails() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.expect_body_bytes(|b| assert_eq!(b, b"dcba"));
+    }
+}
