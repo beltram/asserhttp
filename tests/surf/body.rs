@@ -207,3 +207,47 @@ mod bytes {
         get(&srv.uri()).await.expect_body_bytes(|b| assert_eq!(b, b"dcba"));
     }
 }
+
+mod bytes_eq {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_body_bytes_eq() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_bytes_eq(b"abcd");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected body '[97, 98, 99, 100]' to be equal to '[100, 99, 98, 97]' but was not")]
+    async fn expect_body_bytes_should_fail_not_equal() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_bytes_eq(b"dcba");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected a response body but no response body was present")]
+    async fn expect_body_bytes_should_fail_when_missing() {
+        let srv = Stubr::start("tests/stubs/body/bytes/missing.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_bytes_eq(b"abcd");
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_body_bytes_eq() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.expect_body_bytes_eq(b"abcd");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected body '[97, 98, 99, 100]' to be equal to '[100, 99, 98, 97]' but was not")]
+    async fn result_expect_body_bytes_should_fail_not_equal() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.expect_body_bytes_eq(b"dcba");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected a response body but no response body was present")]
+    async fn result_expect_body_bytes_should_fail_when_missing() {
+        let srv = Stubr::start("tests/stubs/body/bytes/missing.json").await;
+        get(&srv.uri()).await.expect_body_bytes_eq(b"abcd");
+    }
+}

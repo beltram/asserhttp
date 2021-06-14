@@ -30,7 +30,7 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
         self.copy_to(&mut actual).unwrap();
         if !actual.is_empty() {
             asserter(actual.as_slice())
-        } else { panic!("expected a text body but no response body was present") }
+        } else { panic!("expected a response body but no response body was present") }
         self
     }
 }
@@ -59,7 +59,7 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBo
         block_on(self.copy_to(&mut actual)).unwrap();
         if !actual.is_empty() {
             asserter(actual.as_slice())
-        } else { panic!("expected a text body but no response body was present") }
+        } else { panic!("expected a response body but no response body was present") }
         self
     }
 }

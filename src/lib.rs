@@ -44,7 +44,7 @@ use std::fmt::Debug;
 
 use serde::de::DeserializeOwned;
 
-use asserter::body::{assert_json_body_eq, assert_text_body};
+use asserter::body::{assert_bytes_body, assert_json_body_eq, assert_text_body};
 
 #[cfg(feature = "surf")]
 mod assert_surf;
@@ -649,4 +649,33 @@ pub trait AsserhttpBody<T> {
     /// }
     /// ```
     fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]);
+
+    /// Expects response body to be equal by comparing bytes
+    /// * `body` - expected bytes response body
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").expect_body_bytes_eq(b"abcd");
+    ///     isahc::get("http://localhost").expect_body_bytes_eq(&[97, 98, 99, 100]);
+    ///     isahc::get("http://localhost").expect_body_bytes_eq(&vec![97, 98, 99, 100]);
+    ///
+    ///     // on any client
+    ///     isahc::get("http://localhost").unwrap().expect_body_bytes_eq(b"abcd");
+    ///     isahc::get("http://localhost").expect_body_bytes_eq(b"abcd");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_bytes_eq(b"abcd");
+    ///     isahc::get_async("http://localhost").await.expect_body_bytes_eq(b"abcd");
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_bytes_eq(b"abcd");
+    ///     surf::get("http://localhost").await.expect_body_bytes_eq(b"abcd");
+    /// }
+    /// ```
+    fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
+        self.expect_body_bytes(|actual| assert_bytes_body(actual, body))
+    }
 }

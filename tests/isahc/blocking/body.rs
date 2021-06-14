@@ -207,3 +207,47 @@ mod bytes {
         get(&srv.uri()).expect_body_bytes(|b| assert_eq!(b, b"dcba"));
     }
 }
+
+mod bytes_eq {
+    use super::*;
+
+    #[test]
+    fn should_expect_body_bytes_eq() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).unwrap().expect_body_bytes_eq(b"abcd");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected body '[97, 98, 99, 100]' to be equal to '[100, 99, 98, 97]' but was not")]
+    fn expect_body_bytes_should_fail_not_equal() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).unwrap().expect_body_bytes_eq(b"dcba");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected a response body but no response body was present")]
+    fn expect_body_bytes_should_fail_when_missing() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/missing.json");
+        get(&srv.uri()).unwrap().expect_body_bytes_eq(b"abcd");
+    }
+
+    #[test]
+    fn result_should_expect_body_bytes_eq() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).expect_body_bytes_eq(b"abcd");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected body '[97, 98, 99, 100]' to be equal to '[100, 99, 98, 97]' but was not")]
+    fn result_expect_body_bytes_should_fail_not_equal() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/value.json");
+        get(&srv.uri()).expect_body_bytes_eq(b"dcba");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected a response body but no response body was present")]
+    fn result_expect_body_bytes_should_fail_when_missing() {
+        let srv = Stubr::start_blocking("tests/stubs/body/bytes/missing.json");
+        get(&srv.uri()).expect_body_bytes_eq(b"abcd");
+    }
+}
