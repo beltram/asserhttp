@@ -82,6 +82,7 @@ dependencies = [
  "anyhow",
  "async-std",
  "isahc 1.4.0",
+ "regex",
  "serde",
  "serde_json",
  "stubr",

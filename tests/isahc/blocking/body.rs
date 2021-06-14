@@ -178,6 +178,50 @@ mod text_eq {
     }
 }
 
+mod regex {
+    use super::*;
+
+    #[test]
+    fn should_expect_body_text_matches() {
+        let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
+        get(&srv.uri()).unwrap().expect_body_text_matches("[a-d]+");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected text body 'abcd' to match regex '[e-h]+' but did not")]
+    fn expect_body_text_matches_should_fail_when_does_not_match_regex() {
+        let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
+        get(&srv.uri()).unwrap().expect_body_text_matches("[e-h]+");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected a text body but no response body was present")]
+    fn expect_body_text_should_fail_when_missing() {
+        let srv = Stubr::start_blocking("tests/stubs/body/text/missing.json");
+        get(&srv.uri()).unwrap().expect_body_text_matches("[a-d]+");
+    }
+
+    #[test]
+    fn result_should_expect_body_text_matches() {
+        let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
+        get(&srv.uri()).expect_body_text_matches("[a-d]+");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected text body 'abcd' to match regex '[e-h]+' but did not")]
+    fn result_expect_body_text_matches_should_fail_when_does_not_match_regex() {
+        let srv = Stubr::start_blocking("tests/stubs/body/text/value.json");
+        get(&srv.uri()).expect_body_text_matches("[e-h]+");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected a text body but no response body was present")]
+    fn result_expect_body_text_should_fail_when_missing() {
+        let srv = Stubr::start_blocking("tests/stubs/body/text/missing.json");
+        get(&srv.uri()).expect_body_text_matches("[a-d]+");
+    }
+}
+
 mod bytes {
     use super::*;
 

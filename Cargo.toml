@@ -16,6 +16,7 @@ include = ["/src/*", "/tests/*", "/Cargo.toml"]
 anyhow = "1.0.41"
 async-std = "1.9.0"
 serde = "1.0.126"
+regex = "1.4.6"
 surf = { version = "2.2.0", optional = true }
 isahc = { version = "1.4.0", features = ["json"], optional = true }
 

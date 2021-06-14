@@ -1,5 +1,6 @@
 use std::fmt::Debug;
 
+use regex::Regex;
 use serde::de::DeserializeOwned;
 
 pub const EMPTY_BODY_JSON_MSG: &str = "expected a json body but no response body was present";
@@ -12,6 +13,10 @@ pub fn assert_json_body_eq<B>(actual: B, expected: B) where B: DeserializeOwned 
 
 pub fn assert_text_body(actual: String, expected: String) {
     assert_eq!(actual, expected, "expected text body '{}' to be equal to '{}' but was not", actual, expected);
+}
+
+pub fn assert_body_regex(actual: String, regex: Regex) {
+    assert!(regex.is_match(actual.as_str()), "expected text body '{}' to match regex '{}' but did not", actual, regex);
 }
 
 pub fn assert_bytes_body(actual: &[u8], expected: &[u8]) {

@@ -41,10 +41,12 @@
 //! ```
 //!
 use std::fmt::Debug;
+use std::str::FromStr;
 
+use regex::Regex;
 use serde::de::DeserializeOwned;
 
-use asserter::body::{assert_bytes_body, assert_json_body_eq, assert_text_body};
+use asserter::body::{assert_body_regex, assert_bytes_body, assert_json_body_eq, assert_text_body};
 
 #[cfg(feature = "surf")]
 mod assert_surf;
@@ -621,6 +623,33 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T where B: Into<String> {
         self.expect_body_text(|actual| assert_text_body(actual, body.into()))
+    }
+
+    /// Expects response body to be text and to match provided regex
+    /// * `regex` - must match text response body
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_text_matches(String::from("[a-z]+"));
+    ///     isahc::get("http://localhost").unwrap().expect_body_text_matches("[a-z]+");
+    ///     isahc::get("http://localhost").expect_body_text_matches("[a-z]+");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_text_matches("[a-z]+");
+    ///     isahc::get_async("http://localhost").await.expect_body_text_matches("[a-z]+");
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_text_matches("[a-z]+");
+    ///     surf::get("http://localhost").await.expect_body_text_matches("[a-z]+");
+    /// }
+    /// ```
+    fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T where R: Into<String> {
+        let regex = Regex::from_str(regex.into().as_str())
+            .expect("'{}' is not a valid regex");
+        self.expect_body_text(|actual| assert_body_regex(actual, regex))
     }
 
     /// Allows verifying response body bytes in a closure
