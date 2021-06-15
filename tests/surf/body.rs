@@ -73,7 +73,7 @@ mod json_eq {
     #[async_std::test]
     #[should_panic(expected = "expected a json body but no response body was present")]
     async fn expect_body_json_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/json/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/json/absent.json").await;
         get(&srv.uri()).await.unwrap().expect_body_json_eq(json!({"a": "b"}));
     }
 
@@ -99,7 +99,7 @@ mod json_eq {
     #[async_std::test]
     #[should_panic(expected = "expected a json body but no response body was present")]
     async fn result_expect_body_json_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/json/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/json/absent.json").await;
         get(&srv.uri()).await.expect_body_json_eq(json!({"a": "b"}));
     }
 }
@@ -153,7 +153,7 @@ mod text_eq {
     #[async_std::test]
     #[should_panic(expected = "expected a text body but no response body was present")]
     async fn expect_body_text_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/text/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/text/absent.json").await;
         get(&srv.uri()).await.unwrap().expect_body_text_eq("abcd");
     }
 
@@ -173,7 +173,7 @@ mod text_eq {
     #[async_std::test]
     #[should_panic(expected = "expected a text body but no response body was present")]
     async fn result_expect_body_text_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/text/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/text/absent.json").await;
         get(&srv.uri()).await.expect_body_text_eq("abcd");
     }
 }
@@ -197,7 +197,7 @@ mod regex {
     #[async_std::test]
     #[should_panic(expected = "expected a text body but no response body was present")]
     async fn expect_body_text_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/text/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/text/absent.json").await;
         get(&srv.uri()).await.unwrap().expect_body_text_matches("[a-d]+");
     }
 
@@ -217,7 +217,7 @@ mod regex {
     #[async_std::test]
     #[should_panic(expected = "expected a text body but no response body was present")]
     async fn result_expect_body_text_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/text/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/text/absent.json").await;
         get(&srv.uri()).await.expect_body_text_matches("[a-d]+");
     }
 }
@@ -271,7 +271,7 @@ mod bytes_eq {
     #[async_std::test]
     #[should_panic(expected = "expected a response body but no response body was present")]
     async fn expect_body_bytes_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/bytes/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/bytes/absent.json").await;
         get(&srv.uri()).await.unwrap().expect_body_bytes_eq(b"abcd");
     }
 
@@ -291,7 +291,67 @@ mod bytes_eq {
     #[async_std::test]
     #[should_panic(expected = "expected a response body but no response body was present")]
     async fn result_expect_body_bytes_should_fail_when_missing() {
-        let srv = Stubr::start("tests/stubs/body/bytes/missing.json").await;
+        let srv = Stubr::start("tests/stubs/body/bytes/absent.json").await;
         get(&srv.uri()).await.expect_body_bytes_eq(b"abcd");
+    }
+}
+
+mod present {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_body_present() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_present();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected a response body but no response body was present")]
+    async fn expect_body_present_should_fail_when_absent() {
+        let srv = Stubr::start("tests/stubs/body/bytes/absent.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_present();
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_body_present() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.expect_body_present();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected a response body but no response body was present")]
+    async fn result_expect_body_present_should_fail_when_absent() {
+        let srv = Stubr::start("tests/stubs/body/bytes/absent.json").await;
+        get(&srv.uri()).await.expect_body_present();
+    }
+}
+
+mod absent {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_body_absent() {
+        let srv = Stubr::start("tests/stubs/body/bytes/absent.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_absent();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected no response body but a response body was present")]
+    async fn expect_body_absent_should_fail_when_present() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.unwrap().expect_body_absent();
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_body_absent() {
+        let srv = Stubr::start("tests/stubs/body/bytes/absent.json").await;
+        get(&srv.uri()).await.expect_body_absent();
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected no response body but a response body was present")]
+    async fn result_expect_body_absent_should_fail_when_present() {
+        let srv = Stubr::start("tests/stubs/body/bytes/value.json").await;
+        get(&srv.uri()).await.expect_body_absent();
     }
 }

@@ -751,4 +751,46 @@ pub trait AsserhttpBody<T> {
     fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
         self.expect_body_bytes(|actual| assert_bytes_body(actual, body))
     }
+
+    /// Expects a response body to be present and not empty
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_present();
+    ///     isahc::get("http://localhost").expect_body_present();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_present();
+    ///     isahc::get_async("http://localhost").await.expect_body_present();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_present();
+    ///     surf::get("http://localhost").await.expect_body_present();
+    /// }
+    /// ```
+    fn expect_body_present(&mut self) -> &mut T;
+
+    /// Expects a response body to be absent or empty
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_body_absent();
+    ///     isahc::get("http://localhost").expect_body_absent();
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_body_absent();
+    ///     isahc::get_async("http://localhost").await.expect_body_absent();
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_body_absent();
+    ///     surf::get("http://localhost").await.expect_body_absent();
+    /// }
+    /// ```
+    fn expect_body_absent(&mut self) -> &mut T;
 }
