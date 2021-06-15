@@ -471,6 +471,50 @@ pub trait AsserhttpHeader<T> {
     /// ```
     fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut T;
 
+    /// Expects response header to be present
+    /// * `key` - expected present header key
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_header_present("content-type");
+    ///     isahc::get("http://localhost").expect_header_present("content-type");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_header_present("content-type");
+    ///     isahc::get_async("http://localhost").await.expect_header_present("content-type");
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_header_present("content-type");
+    ///     surf::get("http://localhost").await.expect_header_present("content-type");
+    /// }
+    /// ```
+    fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut T;
+
+    /// Expects response header to be absent
+    /// * `key` - expected absent header key
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_header_absent("content-type");
+    ///     isahc::get("http://localhost").expect_header_absent("content-type");
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_header_absent("content-type");
+    ///     isahc::get_async("http://localhost").await.expect_header_absent("content-type");
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_header_absent("content-type");
+    ///     surf::get("http://localhost").await.expect_header_absent("content-type");
+    /// }
+    /// ```
+    fn expect_header_absent<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut T;
+
     /// Expects response header `Content-Type: application/json`
     ///
     /// # Example

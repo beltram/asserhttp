@@ -91,6 +91,92 @@ mod eq {
     }
 }
 
+mod present {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_header_present() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_header_present("x-a");
+    }
+
+    #[async_std::test]
+    async fn should_expect_header_present_ignoring_case() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_header_present("X-A");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected one header named 'x-b' but none found")]
+    async fn expect_header_present_should_fail_when_absent() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_header_present("x-b");
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_header_present() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.expect_header_present("x-a");
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_header_present_ignoring_case() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.expect_header_present("X-A");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected one header named 'x-b' but none found")]
+    async fn result_expect_header_present_should_fail_when_absent() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.expect_header_present("x-b");
+    }
+}
+
+mod absent {
+    use super::*;
+
+    #[async_std::test]
+    async fn should_expect_header_absent() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_header_absent("x-b");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected no header named 'x-a' but one found")]
+    async fn expect_header_absent_should_fail_when_absent() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_header_absent("x-a");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected no header named 'x-a' but one found")]
+    async fn expect_header_absent_should_ignore_case() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.unwrap().expect_header_absent("X-A");
+    }
+
+    #[async_std::test]
+    async fn result_should_expect_header_absent() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.expect_header_absent("x-b");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected no header named 'x-a' but one found")]
+    async fn result_expect_header_absent_should_fail_when_absent() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.expect_header_absent("x-a");
+    }
+
+    #[async_std::test]
+    #[should_panic(expected = "expected no header named 'x-a' but one found")]
+    async fn result_expect_header_absent_should_ignore_case() {
+        let srv = Stubr::start("tests/stubs/header/one.json").await;
+        get_async(&srv.uri()).await.expect_header_absent("X-A");
+    }
+}
+
 mod json {
     use super::*;
 
