@@ -13,6 +13,19 @@ mod eq {
     }
 
     #[test]
+    fn should_expect_header_ignoring_case() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).unwrap().expect_header("X-A", "a");
+    }
+
+    #[test]
+    #[should_panic(expected = "expected header 'x-a' to be equal to 'A' but was 'a'")]
+    fn expect_header_value_should_be_case_sensitive() {
+        let srv = Stubr::start_blocking("tests/stubs/header/one.json");
+        get(&srv.uri()).unwrap().expect_header("x-a", "A");
+    }
+
+    #[test]
     fn should_expect_many_header() {
         let srv = Stubr::start_blocking("tests/stubs/header/many.json");
         get(&srv.uri()).unwrap()
