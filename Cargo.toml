@@ -21,7 +21,7 @@ surf = { version = "2.2.0", optional = true }
 isahc = { version = "1.4.0", features = ["json"], optional = true }
 
 [dev-dependencies]
-stubr = "0.4.4"
+stubr = "0.4.5"
 serde_json = "1.0.64"
 
 [dev-dependencies.async-std]
