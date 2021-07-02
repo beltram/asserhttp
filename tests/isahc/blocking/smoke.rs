@@ -1,42 +1,41 @@
 use isahc::get;
-use stubr::Stubr;
 
 use asserhttp::*;
 
 #[test]
+#[stubr::mock("ping.json")]
 fn simple_should_work() {
-    let srv = Stubr::start_blocking("tests/stubs/ping.json");
-    get(&srv.uri()).unwrap().expect_status_eq(200);
+    get(stubr.uri()).unwrap().expect_status_eq(200);
 }
 
-#[test]
 #[should_panic]
+#[stubr::mock("ping.json")]
+#[test]
 fn simple_should_panic() {
-    let srv = Stubr::start_blocking("tests/stubs/ping.json");
-    get(&srv.uri()).unwrap().expect_status_eq(100);
+    get(stubr.uri()).unwrap().expect_status_eq(100);
 }
 
 #[test]
+#[stubr::mock("ping.json")]
 fn simple_should_chain() {
-    let srv = Stubr::start_blocking("tests/stubs/ping.json");
-    get(&srv.uri()).unwrap().expect_status_eq(200).expect_status_eq(200);
+    get(stubr.uri()).unwrap().expect_status_eq(200).expect_status_eq(200);
 }
 
 #[test]
+#[stubr::mock("ping.json")]
 fn result_should_work() {
-    let srv = Stubr::start_blocking("tests/stubs/ping.json");
-    get(&srv.uri()).expect_status_eq(200);
+    get(stubr.uri()).expect_status_eq(200);
 }
 
-#[test]
 #[should_panic]
+#[stubr::mock("ping.json")]
+#[test]
 fn result_should_panic() {
-    let srv = Stubr::start_blocking("tests/stubs/ping.json");
-    get(&srv.uri()).expect_status_eq(100);
+    get(stubr.uri()).expect_status_eq(100);
 }
 
 #[test]
+#[stubr::mock("ping.json")]
 fn result_should_chain() {
-    let srv = Stubr::start_blocking("tests/stubs/ping.json");
-    get(&srv.uri()).expect_status_eq(200).expect_status_eq(200);
+    get(stubr.uri()).expect_status_eq(200).expect_status_eq(200);
 }
