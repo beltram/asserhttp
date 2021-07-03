@@ -89,6 +89,57 @@ mod eq {
     }
 }
 
+mod multi {
+    use super::*;
+
+    #[test]
+    #[stubr::mock("header/multi.json")]
+    fn expect_headers_should_expect_multi_headers() {
+        get(stubr.uri()).unwrap().expect_headers("x-m", ["a", "b"]);
+    }
+
+    #[should_panic(expected = "expected one header named 'x-b' but none found")]
+    #[stubr::mock("header/multi.json")]
+    #[test]
+    fn expect_headers_should_fail_when_key_missing() {
+        get(stubr.uri()).unwrap().expect_headers("x-b", ["a", "b"]);
+    }
+
+    #[should_panic(expected = "expected header 'x-m' to contain values '[\"a\"]' but contained '[\"a\", \"b\"]'")]
+    #[stubr::mock("header/multi.json")]
+    #[test]
+    fn expect_headers_should_fail_when_one_value_missing() {
+        get(stubr.uri()).unwrap().expect_headers("x-m", ["a"]);
+    }
+
+    #[should_panic(expected = "expected header 'x-m' to contain values '[\"a\", \"c\"]' but contained '[\"a\", \"b\"]'")]
+    #[stubr::mock("header/multi.json")]
+    #[test]
+    fn expect_headers_should_fail_when_one_value_not_eq() {
+        get(stubr.uri()).unwrap().expect_headers("x-m", ["a", "c"]);
+    }
+
+    #[should_panic(expected = "expected header 'x-m' to contain values '[\"a\", \"b\", \"c\"]' but contained '[\"a\", \"b\"]'")]
+    #[stubr::mock("header/multi.json")]
+    #[test]
+    fn expect_headers_should_fail_when_one_expected_value_missing() {
+        get(stubr.uri()).unwrap().expect_headers("x-m", ["a", "b", "c"]);
+    }
+
+    #[should_panic(expected = "no value expected for header 'x-m'. Use 'expect_header_present' instead")]
+    #[stubr::mock("header/multi.json")]
+    #[test]
+    fn expect_headers_should_fail_when_no_value_expected() {
+        get(stubr.uri()).unwrap().expect_headers("x-m", []);
+    }
+
+    #[test]
+    #[stubr::mock("header/multi.json")]
+    fn result_expect_headers_should_expect_multi_headers() {
+        get(stubr.uri()).expect_headers("x-m", ["a", "b"]);
+    }
+}
+
 mod present {
     use super::*;
 

@@ -471,6 +471,29 @@ pub trait AsserhttpHeader<T> {
     /// ```
     fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut T;
 
+    /// Expects response multi valued headers to be equal
+    /// * `key` - expected header key
+    /// * `value` - expected header values
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use isahc;
+    /// # use surf;
+    /// use asserhttp::*;
+    ///
+    /// #[async_std::main]
+    /// async fn main() {
+    ///     isahc::get("http://localhost").unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     isahc::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     isahc::get_async("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///
+    ///     surf::get("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     surf::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    /// }
+    /// ```
+    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut T;
+
     /// Expects response header to be present
     /// * `key` - expected present header key
     ///

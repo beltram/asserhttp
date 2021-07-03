@@ -1,15 +1,8 @@
-use isahc::{
-    AsyncBody as IsahcAsyncBody,
-    Body as IsahcBody,
-    Error as IsahcError,
-    http::header::HeaderMap as IsahcHeaderMap,
-    http::header::HeaderName as IsahcHeaderName,
-    Response as IsahcResponse,
-};
+use isahc::{AsyncBody as IsahcAsyncBody, Body as IsahcBody, Error as IsahcError, http::header::HeaderMap as IsahcHeaderMap, http::header::HeaderName as IsahcHeaderName, Response as IsahcResponse};
 
 use super::super::{
     AsserhttpHeader,
-    asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value},
+    asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value, assert_header_values},
 };
 
 impl AsserhttpHeader<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
@@ -17,6 +10,13 @@ impl AsserhttpHeader<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
         let key = key.into();
         assert_header_key(header_keys(self.headers()), key);
         assert_header_value(header_values(key, self.headers()), key, value.into());
+        self
+    }
+
+    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut Self {
+        let key = key.into();
+        assert_header_key(header_keys(self.headers()), key);
+        assert_header_values(header_values(key, self.headers()), key, value.into());
         self
     }
 
@@ -39,6 +39,13 @@ impl AsserhttpHeader<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsync
         self
     }
 
+    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut Self {
+        let key = key.into();
+        assert_header_key(header_keys(self.headers()), key);
+        assert_header_values(header_values(key, self.headers()), key, value.into());
+        self
+    }
+
     fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.into());
         self
@@ -55,6 +62,10 @@ impl AsserhttpHeader<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBod
         self.as_mut().unwrap().expect_header(key, value)
     }
 
+    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut IsahcResponse<IsahcBody> {
+        self.as_mut().unwrap().expect_headers(key, value)
+    }
+
     fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut IsahcResponse<IsahcBody> {
         self.as_mut().unwrap().expect_header_present(key)
     }
@@ -67,6 +78,10 @@ impl AsserhttpHeader<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBod
 impl AsserhttpHeader<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {
     fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut IsahcResponse<IsahcAsyncBody> {
         self.as_mut().unwrap().expect_header(key, value)
+    }
+
+    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut IsahcResponse<IsahcAsyncBody> {
+        self.as_mut().unwrap().expect_headers(key, value)
     }
 
     fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut IsahcResponse<IsahcAsyncBody> {
