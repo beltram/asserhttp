@@ -40,8 +40,7 @@
 //! }
 //! ```
 //!
-use std::fmt::Debug;
-use std::str::FromStr;
+use std::{fmt::Debug, str::FromStr};
 
 use regex::Regex;
 use serde::de::DeserializeOwned;
@@ -52,6 +51,8 @@ use asserter::body::{assert_body_regex, assert_bytes_body, assert_json_body_eq, 
 mod assert_surf;
 #[cfg(feature = "isahc")]
 mod assert_isahc;
+#[cfg(feature = "reqwest")]
+mod assert_reqwest;
 
 mod asserter;
 
@@ -67,10 +68,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_eq(200);
+    ///     reqwest::blocking::get("http://localhost").expect_status_eq(200);
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_eq(200);
+    ///     reqwest::get("http://localhost").await.expect_status_eq(200);
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_eq(200);
     ///     isahc::get("http://localhost").expect_status_eq(200);
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_eq(200);
@@ -90,10 +97,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_in_range(200, 400);
+    ///     reqwest::blocking::get("http://localhost").expect_status_in_range(200, 400);
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_in_range(200, 400);
+    ///     reqwest::get("http://localhost").await.expect_status_in_range(200, 400);
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_in_range(200, 400);
     ///     isahc::get("http://localhost").expect_status_in_range(200, 400);
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_in_range(200, 400);
@@ -111,10 +124,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_success();
+    ///     reqwest::blocking::get("http://localhost").expect_status_success();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_success();
+    ///     reqwest::get("http://localhost").await.expect_status_success();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_success();
     ///     isahc::get("http://localhost").expect_status_success();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_success();
@@ -132,10 +151,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_redirection();
+    ///     reqwest::blocking::get("http://localhost").expect_status_redirection();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_redirection();
+    ///     reqwest::get("http://localhost").await.expect_status_redirection();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_redirection();
     ///     isahc::get("http://localhost").expect_status_redirection();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_redirection();
@@ -153,10 +178,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_client_error();
+    ///     reqwest::blocking::get("http://localhost").expect_status_client_error();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_client_error();
+    ///     reqwest::get("http://localhost").await.expect_status_client_error();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_client_error();
     ///     isahc::get("http://localhost").expect_status_client_error();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_client_error();
@@ -174,10 +205,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_server_error();
+    ///     reqwest::blocking::get("http://localhost").expect_status_server_error();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_server_error();
+    ///     reqwest::get("http://localhost").await.expect_status_server_error();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_server_error();
     ///     isahc::get("http://localhost").expect_status_server_error();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_server_error();
@@ -195,10 +232,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_ok();
+    ///     reqwest::blocking::get("http://localhost").expect_status_ok();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_ok();
+    ///     reqwest::get("http://localhost").await.expect_status_ok();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_ok();
     ///     isahc::get("http://localhost").expect_status_ok();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_ok();
@@ -216,10 +259,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_created();
+    ///     reqwest::blocking::get("http://localhost").expect_status_created();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_created();
+    ///     reqwest::get("http://localhost").await.expect_status_created();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_created();
     ///     isahc::get("http://localhost").expect_status_created();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_created();
@@ -237,10 +286,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_accepted();
+    ///     reqwest::blocking::get("http://localhost").expect_status_accepted();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_accepted();
+    ///     reqwest::get("http://localhost").await.expect_status_accepted();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_accepted();
     ///     isahc::get("http://localhost").expect_status_accepted();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_accepted();
@@ -258,10 +313,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_no_content();
+    ///     reqwest::blocking::get("http://localhost").expect_status_no_content();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_no_content();
+    ///     reqwest::get("http://localhost").await.expect_status_no_content();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_no_content();
     ///     isahc::get("http://localhost").expect_status_no_content();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_no_content();
@@ -279,10 +340,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_partial_content();
+    ///     reqwest::blocking::get("http://localhost").expect_status_partial_content();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_partial_content();
+    ///     reqwest::get("http://localhost").await.expect_status_partial_content();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_partial_content();
     ///     isahc::get("http://localhost").expect_status_partial_content();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_partial_content();
@@ -300,10 +367,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_bad_request();
+    ///     reqwest::blocking::get("http://localhost").expect_status_bad_request();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_bad_request();
+    ///     reqwest::get("http://localhost").await.expect_status_bad_request();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_bad_request();
     ///     isahc::get("http://localhost").expect_status_bad_request();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_bad_request();
@@ -321,10 +394,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_unauthorized();
+    ///     reqwest::blocking::get("http://localhost").expect_status_unauthorized();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_unauthorized();
+    ///     reqwest::get("http://localhost").await.expect_status_unauthorized();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_unauthorized();
     ///     isahc::get("http://localhost").expect_status_unauthorized();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_unauthorized();
@@ -342,10 +421,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_forbidden();
+    ///     reqwest::blocking::get("http://localhost").expect_status_forbidden();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_forbidden();
+    ///     reqwest::get("http://localhost").await.expect_status_forbidden();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_forbidden();
     ///     isahc::get("http://localhost").expect_status_forbidden();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_forbidden();
@@ -363,10 +448,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_not_found();
+    ///     reqwest::blocking::get("http://localhost").expect_status_not_found();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_not_found();
+    ///     reqwest::get("http://localhost").await.expect_status_not_found();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_not_found();
     ///     isahc::get("http://localhost").expect_status_not_found();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_not_found();
@@ -384,10 +475,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_conflict();
+    ///     reqwest::blocking::get("http://localhost").expect_status_conflict();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_conflict();
+    ///     reqwest::get("http://localhost").await.expect_status_conflict();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_conflict();
     ///     isahc::get("http://localhost").expect_status_conflict();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_conflict();
@@ -405,10 +502,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_gone();
+    ///     reqwest::blocking::get("http://localhost").expect_status_gone();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_gone();
+    ///     reqwest::get("http://localhost").await.expect_status_gone();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_gone();
     ///     isahc::get("http://localhost").expect_status_gone();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_gone();
@@ -426,10 +529,16 @@ pub trait AsserhttpStatus<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_internal_server_error();
+    ///     reqwest::blocking::get("http://localhost").expect_status_internal_server_error();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_internal_server_error();
+    ///     reqwest::get("http://localhost").await.expect_status_internal_server_error();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_status_internal_server_error();
     ///     isahc::get("http://localhost").expect_status_internal_server_error();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_internal_server_error();
@@ -456,10 +565,16 @@ pub trait AsserhttpHeader<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header("content-type", "application/json");
+    ///     reqwest::blocking::get("http://localhost").expect_header("content-type", "application/json");
+    ///     reqwest::get("http://localhost").await.unwrap().expect_header("content-type", "application/json");
+    ///     reqwest::get("http://localhost").await.expect_header("content-type", "application/json");
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_header("content-type", "application/json");
     ///     isahc::get("http://localhost").expect_header("content-type", "application/json");
     ///     isahc::get_async("http://localhost").await.unwrap().expect_header("content-type", "application/json");
@@ -479,10 +594,16 @@ pub trait AsserhttpHeader<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     reqwest::blocking::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     reqwest::get("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     reqwest::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     isahc::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     isahc::get_async("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
@@ -501,10 +622,16 @@ pub trait AsserhttpHeader<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header_present("content-type");
+    ///     reqwest::blocking::get("http://localhost").expect_header_present("content-type");
+    ///     reqwest::get("http://localhost").await.unwrap().expect_header_present("content-type");
+    ///     reqwest::get("http://localhost").await.expect_header_present("content-type");
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_header_present("content-type");
     ///     isahc::get("http://localhost").expect_header_present("content-type");
     ///     isahc::get_async("http://localhost").await.unwrap().expect_header_present("content-type");
@@ -523,10 +650,16 @@ pub trait AsserhttpHeader<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header_absent("content-type");
+    ///     reqwest::blocking::get("http://localhost").expect_header_absent("content-type");
+    ///     reqwest::get("http://localhost").await.unwrap().expect_header_absent("content-type");
+    ///     reqwest::get("http://localhost").await.expect_header_absent("content-type");
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_header_absent("content-type");
     ///     isahc::get("http://localhost").expect_header_absent("content-type");
     ///     isahc::get_async("http://localhost").await.unwrap().expect_header_absent("content-type");
@@ -544,10 +677,16 @@ pub trait AsserhttpHeader<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_content_type_json();
+    ///     reqwest::blocking::get("http://localhost").expect_content_type_json();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_content_type_json();
+    ///     reqwest::get("http://localhost").await.expect_content_type_json();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_content_type_json();
     ///     isahc::get("http://localhost").expect_content_type_json();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_content_type_json();
@@ -567,10 +706,16 @@ pub trait AsserhttpHeader<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_content_type_text();
+    ///     reqwest::blocking::get("http://localhost").expect_content_type_text();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_content_type_text();
+    ///     reqwest::get("http://localhost").await.expect_content_type_text();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_content_type_text();
     ///     isahc::get("http://localhost").expect_content_type_text();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_content_type_text();
@@ -594,6 +739,7 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// # use serde::Deserialize;
     /// use asserhttp::*;
     /// use serde_json::{json, Value};
@@ -603,6 +749,11 @@ pub trait AsserhttpBody<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     reqwest::blocking::get("http://localhost").expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     reqwest::get("http://localhost").await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     isahc::get("http://localhost").expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     isahc::get_async("http://localhost").await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
@@ -626,11 +777,17 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     /// use serde_json::json;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     reqwest::blocking::get("http://localhost").expect_body_json_eq(json!({"a": "b"}));
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     reqwest::get("http://localhost").await.expect_body_json_eq(json!({"a": "b"}));
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_json_eq(json!({"a": "b"}));
     ///     isahc::get("http://localhost").expect_body_json_eq(json!({"a": "b"}));
     ///     isahc::get_async("http://localhost").await.unwrap().expect_body_json_eq(json!({"a": "b"}));
@@ -651,10 +808,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     reqwest::blocking::get("http://localhost").expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     reqwest::get("http://localhost").await.expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_text(|b| assert_eq!(b, String::from("abcd")));
     ///     isahc::get("http://localhost").unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     isahc::get("http://localhost").expect_body_text(|b| assert_eq!(b, "abcd"));
@@ -674,10 +837,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_text_eq("abcd");
+    ///     reqwest::blocking::get("http://localhost").expect_body_text_eq("abcd");
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_text_eq("abcd");
+    ///     reqwest::get("http://localhost").await.expect_body_text_eq("abcd");
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_text_eq(String::from("abcd"));
     ///     isahc::get("http://localhost").unwrap().expect_body_text_eq("abcd");
     ///     isahc::get("http://localhost").expect_body_text_eq("abcd");
@@ -699,10 +868,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_text_matches("[a-z]+");
+    ///     reqwest::blocking::get("http://localhost").expect_body_text_matches("[a-z]+");
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_text_matches("[a-z]+");
+    ///     reqwest::get("http://localhost").await.expect_body_text_matches("[a-z]+");
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_text_matches(String::from("[a-z]+"));
     ///     isahc::get("http://localhost").unwrap().expect_body_text_matches("[a-z]+");
     ///     isahc::get("http://localhost").expect_body_text_matches("[a-z]+");
@@ -726,10 +901,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     reqwest::blocking::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     reqwest::get("http://localhost").await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///
     ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, &[97, 98, 99, 100]));
     ///     isahc::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, &vec![97, 98, 99, 100]));
@@ -753,10 +934,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_bytes_eq(b"abcd");
+    ///     reqwest::blocking::get("http://localhost").expect_body_bytes_eq(b"abcd");
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_bytes_eq(b"abcd");
+    ///     reqwest::get("http://localhost").await.expect_body_bytes_eq(b"abcd");
+    ///
     ///     isahc::get("http://localhost").expect_body_bytes_eq(b"abcd");
     ///     isahc::get("http://localhost").expect_body_bytes_eq(&[97, 98, 99, 100]);
     ///     isahc::get("http://localhost").expect_body_bytes_eq(&vec![97, 98, 99, 100]);
@@ -781,10 +968,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_present();
+    ///     reqwest::blocking::get("http://localhost").expect_body_present();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_present();
+    ///     reqwest::get("http://localhost").await.expect_body_present();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_present();
     ///     isahc::get("http://localhost").expect_body_present();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_body_present();
@@ -802,10 +995,16 @@ pub trait AsserhttpBody<T> {
     /// ```no_run
     /// # use isahc;
     /// # use surf;
+    /// # use reqwest;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
     /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_body_absent();
+    ///     reqwest::blocking::get("http://localhost").expect_body_absent();
+    ///     reqwest::get("http://localhost").await.unwrap().expect_body_absent();
+    ///     reqwest::get("http://localhost").await.expect_body_absent();
+    ///
     ///     isahc::get("http://localhost").unwrap().expect_body_absent();
     ///     isahc::get("http://localhost").expect_body_absent();
     ///     isahc::get_async("http://localhost").await.unwrap().expect_body_absent();
