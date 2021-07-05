@@ -8,7 +8,7 @@ homepage = "https://github.com/beltram/asserhttp"
 repository = "https://github.com/beltram/asserhttp"
 license = "Apache-2.0"
 keywords = ["test", "http", "client", "testing"]
-categories = ["development-tools::testing", "api-bindings"]
+categories = ["development-tools::testing", "api-bindings", "web-programming::http-client"]
 
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
