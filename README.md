@@ -1,7 +1,7 @@
 <h1 align="center">asserhttp</h1>
 <div align="center">
  <strong>
-   Fluent http assertions
+   Fluent http response assertions
  </strong>
 </div>
 <br />
