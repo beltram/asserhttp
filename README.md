@@ -39,4 +39,29 @@
 <br/>
 
 A standard trait for doing fluent assertions over many http client response. Currently, supports 
-[surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
+[reqwest](https://github.com/seanmonstar/reqwest), [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).  
+
+## Getting started
+
+Add it to your `Cargo.toml`
+
+```toml
+asserhttp = { version = "0.1.0", features = ["reqwest"] }
+#                             or features = ["surf"]
+#                             or features = ["isahc"]
+```
+
+Then use it in your tests, for example on [reqwest](https://github.com/seanmonstar/reqwest)
+
+```rust
+use reqwest;
+use asserhttp::*;
+
+#[tokio::test]
+async fn my_test() {
+    reqwest::get("http://localhost").await
+        .expect_status_ok()
+        .expect_content_type_json()
+        .expect_body_json_eq(json!({"name": "jdoe"}));
+}
+```

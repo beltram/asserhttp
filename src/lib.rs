@@ -1,24 +1,30 @@
 //!
 //! Allows fluent assertions for various http client responses.
-//! Supports [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
+//! Supports [reqwest](https://github.com/seanmonstar/reqwest), [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
 //!
 //! It works for blocking or async client methods and for responses wrapped in `Result`.
 //!
 //! # Example
 //!
-//! ## surf
+//! ## reqwest
 //!
 //! ```no_run
+//! use reqwest;
 //! use asserhttp::*;
 //!
-//! #[async_std::test]
+//! #[tokio::test]
 //! async fn sample_test() {
-//!     surf::get("http://localhost/api/any").await.unwrap().expect_status_ok();
+//!     reqwest::get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     surf::get("http://localhost/api/any").await.expect_status_ed(200);
-//!     surf::get("http://localhost/api/any").await.expect_status_ok();
-//!     surf::get("http://localhost/api/any").await.expect_status_bad_request();
-//!     surf::get("http://localhost/api/any").await.expect_status_internal_server_error();
+//!     reqwest::get("http://localhost/api/any").await.expect_status_eq(200);
+//!     reqwest::get("http://localhost/api/any").await.expect_status_ok();
+//!     reqwest::get("http://localhost/api/any").await.expect_status_bad_request();
+//!     reqwest::get("http://localhost/api/any").await.expect_status_internal_server_error();
+//!     // chain expectations
+//!     reqwest::get("http://localhost/api/any").await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"name": "jdoe"}));
 //!     // and many more !
 //! }
 //! ```
@@ -26,16 +32,45 @@
 //! ## surf
 //!
 //! ```no_run
+//! use surf;
+//! use asserhttp::*;
+//!
+//! #[async_std::test]
+//! async fn sample_test() {
+//!     surf::get("http://localhost/api/any").await.unwrap().expect_status_ok();
+//!     // no need to call `.unwrap()` directly
+//!     surf::get("http://localhost/api/any").await.expect_status_eq(200);
+//!     surf::get("http://localhost/api/any").await.expect_status_ok();
+//!     surf::get("http://localhost/api/any").await.expect_status_bad_request();
+//!     surf::get("http://localhost/api/any").await.expect_status_internal_server_error();
+//!     // chain expectations
+//!     surf::get("http://localhost/api/any").await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"name": "jdoe"}));
+//!     // and many more !
+//! }
+//! ```
+//!
+//! ## isahc
+//!
+//! ```no_run
+//! use isahc;
 //! use asserhttp::*;
 //!
 //! #[async_std::test]
 //! async fn sample_test() {
 //!     isahc::get_async("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     isahc::get_async("http://localhost/api/any").await.expect_status_ed(200);
+//!     isahc::get_async("http://localhost/api/any").await.expect_status_eq(200);
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_ok();
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_bad_request();
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_internal_server_error();
+//!     // chain expectations
+//!     isahc::get_async("http://localhost/api/any").await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"name": "jdoe"}));
 //!     // and many more !
 //! }
 //! ```
