@@ -39,7 +39,8 @@
 <br/>
 
 A standard trait for doing fluent assertions over many http client response. Currently, supports 
-[reqwest](https://github.com/seanmonstar/reqwest), [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).  
+[reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
+[surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).  
 
 ## Getting started
 
@@ -47,6 +48,7 @@ Add it to your `Cargo.toml`
 
 ```toml
 asserhttp = { version = "0.1.0", features = ["reqwest"] }
+#                             or features = ["hyper"]
 #                             or features = ["surf"]
 #                             or features = ["isahc"]
 ```
