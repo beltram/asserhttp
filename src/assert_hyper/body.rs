@@ -3,10 +3,10 @@ use std::{fmt::Debug, panic::panic_any};
 use async_std::task::block_on;
 use hyper::{
     Body as HyperBody,
+    body::HttpBody,
     Response as HyperResponse,
     Result as HyperResult,
 };
-use hyper::body::HttpBody;
 use serde::de::DeserializeOwned;
 
 use super::super::{

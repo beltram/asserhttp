@@ -40,6 +40,7 @@
 
 A standard trait for doing fluent assertions over many http client response. Currently, supports 
 [reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
+[awc](https://docs.rs/awc/2.0.3/awc/) (Actix Web Client),
 [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).  
 
 ## Getting started
@@ -49,6 +50,7 @@ Add it to your `Cargo.toml`
 ```toml
 asserhttp = { version = "0.1.0", features = ["reqwest"] }
 #                             or features = ["hyper"]
+#                             or features = ["actix"]
 #                             or features = ["surf"]
 #                             or features = ["isahc"]
 ```
