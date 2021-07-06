@@ -7,7 +7,7 @@ description = "Fluent http response assertions"
 homepage = "https://github.com/beltram/asserhttp"
 repository = "https://github.com/beltram/asserhttp"
 license = "Apache-2.0"
-keywords = ["test", "http", "client", "testing"]
+keywords = ["web", "test", "http", "client", "testing", "actix", "reqwest", "hyper", "surf"]
 categories = ["development-tools::testing", "api-bindings", "web-programming::http-client"]
 
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
