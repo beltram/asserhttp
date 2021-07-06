@@ -1,10 +1,62 @@
 //!
 //! Allows fluent assertions for various http client responses.
 //! Supports [reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
-//! [awc](https://docs.rs/awc/2.0.3/awc/) (Actix Web Client),
+//! [awc](https://docs.rs/awc) (Actix Web Client),
 //! [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
 //!
 //! It works for blocking or async client methods and for responses wrapped in `Result`.
+//!
+//! # API
+//!
+//! Here's the list of all the provided asserters.
+//!
+//! ```no_run
+//! # use isahc;
+//! # use serde::Deserialize;
+//! # use serde_json::{json, Value};
+//! use asserhttp::*;
+//!
+//! #[test]
+//! fn my_test() {
+//! #    isahc::get("http://localhost/api/any")
+//!     // status
+//!     .expect_status_eq(200)
+//!     .expect_status_in_range(200, 400)
+//!     .expect_status_success()
+//!     .expect_status_redirection()
+//!     .expect_status_client_error()
+//!     .expect_status_server_error()
+//!     .expect_status_ok()
+//!     .expect_status_created()
+//!     .expect_status_accepted()
+//!     .expect_status_no_content()
+//!     .expect_status_partial_content()
+//!     .expect_status_bad_request()
+//!     .expect_status_unauthorized()
+//!     .expect_status_forbidden()
+//!     .expect_status_not_found()
+//!     .expect_status_conflict()
+//!     .expect_status_gone()
+//!     .expect_status_internal_server_error()
+//!     // header
+//!     .expect_header("content-type", "application/pdf")
+//!     .expect_headers("cache-control", ["no-cache", "no-store"])
+//!     .expect_header_present("x-my-header")
+//!     .expect_header_absent("x-my-header")
+//!     .expect_content_type_json()
+//!     .expect_content_type_text()
+//!     // body
+//!     .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})))
+//!     .expect_body_json_eq(json!({"name": "jdoe"}))
+//!     .expect_body_text(|b| assert_eq!(b, "abcd"))
+//!     .expect_body_text_eq("abcd")
+//!     .expect_body_text_matches("[a-z]+")
+//!     .expect_body_bytes(|b| assert_eq!(b, b"abcd"))
+//!     .expect_body_bytes_eq(b"abcd")
+//!     .expect_body_present()
+//!     .expect_body_absent();
+//! }
+//! ```
 //!
 //! # Example
 //!
