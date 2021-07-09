@@ -2575,9 +2575,9 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "stubr"
-version = "0.4.5"
+version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e2b9df7dfd698792e07a0e00c2681c5228aa91ba8564da388dc51ffedf2dc760"
+checksum = "beb3d5b576cef6d2c08393a1b53e43c09bfb451dac95e39d76aa3405d91e0613"
 dependencies = [
  "anyhow",
  "async-std",
@@ -2605,9 +2605,9 @@ dependencies = [
 
 [[package]]
 name = "stubr-attributes"
-version = "0.4.5"
+version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "507601fea809cc36e0484b81640b4d4951fa5c8b14cf77422c26a4b8cf6a2248"
+checksum = "c5c95b74be9ab49907a7a8bbb1f37a214f49485fb5d176cc9d4f6567553e2302"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -3211,9 +3211,9 @@ dependencies = [
 
 [[package]]
 name = "wiremock"
-version = "0.5.3"
+version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3deed3c6d9aba42c805725854efc01823f59a00cd3af7763c433962227a843c8"
+checksum = "3aa40f263823d9e69901f5b08ea3244bc193648fb87016022ac265a81cfb81e3"
 dependencies = [
  "async-trait",
  "deadpool",
