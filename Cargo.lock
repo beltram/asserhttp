@@ -2575,9 +2575,9 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "stubr"
-version = "0.4.7"
+version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d2185ba635c02db8e9b929cac465427010f84552319abe0720431d585fbf9469"
+checksum = "499c66566fb86c325c9a87e8575256992eedc99845a3d56b26d872103fc4599f"
 dependencies = [
  "anyhow",
  "async-std",
@@ -2605,9 +2605,9 @@ dependencies = [
 
 [[package]]
 name = "stubr-attributes"
-version = "0.4.7"
+version = "0.4.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04c8264aa80bae51e540be1bca631cfe9c3fca8e72d8dc32e932dbf38dae5026"
+checksum = "3cdce810bf1970229f3473efbce436dc32774b0e97876436098270e50775647a"
 dependencies = [
  "proc-macro2",
  "quote",
