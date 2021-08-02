@@ -15,7 +15,7 @@ include = ["/src/*", "/tests/*", "/Cargo.toml"]
 [dependencies]
 anyhow = "1.0.42"
 async-std = "1.9.0"
-serde = "1.0.126"
+serde = "1.0.127"
 serde_json = "1.0.66"
 regex = "1.4.6"
 surf = { version = "2.2.0", optional = true }
