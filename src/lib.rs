@@ -60,6 +60,42 @@
 //!
 //! # Example
 //!
+//! ## [actix-web](https://actix.rs/docs/testing/)
+//!
+//! For unit testing
+//!
+//! ```no_run
+//! use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
+//! use asserhttp::*;
+//!
+//! #[actix_rt::test]
+//! async fn sample_test() {
+//!     async fn handler(_: HttpRequest) -> HttpResponse { HttpResponse::Ok().body(json!({"a": "b"})) }
+//!     handler(TestRequest::get().to_http_request()).await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"a": "b"}));
+//!     // and many more !
+//! }
+//! ```
+//!
+//! For integration tests
+//!
+//! ```no_run
+//! use actix_web::{App, HttpResponse, test::{call_service, init_service, TestRequest}, web};
+//! use asserhttp::*;
+//!
+//! #[actix_rt::test]
+//! async fn sample_test() {
+//!     let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+//!     call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"a": "b"}));
+//!     // and many more !
+//! }
+//! ```
+//!
 //! ## reqwest
 //!
 //! ```no_run
@@ -195,6 +231,8 @@ mod assert_reqwest;
 mod assert_hyper;
 #[cfg(feature = "actix")]
 mod assert_awc;
+#[cfg(feature = "actix")]
+mod assert_actix;
 
 mod asserter;
 

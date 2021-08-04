@@ -17,7 +17,6 @@ mod eq {
         get(stubr.uri()).await.unwrap().expect_header("X-A", "a");
     }
 
-
     #[should_panic(expected = "expected header 'x-a' to be equal to 'A' but was 'a'")]
     #[stubr::mock("header/one.json")]
     #[tokio::test]
