@@ -1,7 +1,7 @@
 //!
 //! Allows fluent assertions for various http client responses.
-//! Supports [reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
-//! [awc](https://docs.rs/awc) (Actix Web Client),
+//! Supports [actix-web](https://actix.rs/docs/testing/), [reqwest](https://github.com/seanmonstar/reqwest),
+//! [hyper](https://github.com/hyperium/hyper), [awc](https://docs.rs/awc) (Actix Web Client),
 //! [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
 //!
 //! It works for blocking or async client methods and for responses wrapped in `Result`.
