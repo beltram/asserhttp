@@ -31,7 +31,7 @@ asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "acti
 stubr = "0.4.9"
 serde_json = "1.0.66"
 async-std = { version = "1.9.0", features = ["attributes"] }
-tokio = { version = "1.9.0", features = ["macros"] }
+tokio = { version = "1.10.0", features = ["macros"] }
 actix-rt = "1.1.1"
 
 [features]
