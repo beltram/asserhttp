@@ -356,7 +356,7 @@ dependencies = [
  "async-std",
  "awc",
  "hyper",
- "isahc 1.4.1",
+ "isahc 1.5.0",
  "regex",
  "reqwest",
  "serde",
@@ -1585,9 +1585,9 @@ dependencies = [
 
 [[package]]
 name = "isahc"
-version = "1.4.1"
+version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0b183576592898e9e007d41b7cf2bc8bb3f8b5d2733b9291e42618d50040e7ba"
+checksum = "431445cb4ba85a80cb1438a9ae8042dadb78ae4046ecee89ad027b614aa0ddb7"
 dependencies = [
  "async-channel",
  "crossbeam-utils",
