@@ -21,7 +21,7 @@ regex = "1.4.6"
 surf = { version = "2.3.1", optional = true }
 isahc = { version = "1.5.0", features = ["json"], optional = true }
 reqwest = { version = "0.11.4", features = ["json", "blocking"], optional = true }
-hyper = { version = "0.14.11", features = ["client"], optional = true }
+hyper = { version = "0.14.12", features = ["client"], optional = true }
 awc = { version = "2.0.3", optional = true }
 actix-http = { version = "2.2.1", optional = true }
 actix-web = { version = "3.3.2", optional = true }
