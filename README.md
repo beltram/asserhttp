@@ -48,7 +48,7 @@ A standard trait for doing fluent assertions over many http client response. Cur
 Add it to your `Cargo.toml`
 
 ```toml
-asserhttp = { version = "0.2.1", features = ["reqwest"] }
+asserhttp = { version = "0.2.2", features = ["reqwest"] }
 #                             or features = ["hyper"]
 #                             or features = ["actix"]
 #                             or features = ["surf"]
