@@ -5,6 +5,7 @@ use serde::de::DeserializeOwned;
 
 pub const EMPTY_BODY_JSON_MSG: &str = "expected a json body but no response body was present";
 pub const EMPTY_BODY_TEXT_MSG: &str = "expected a text body but no response body was present";
+pub const INVALID_UTF8_BODY_TEXT_MSG: &str = "expected a text body but contained non utf-8 characters";
 pub const EMPTY_BODY_BYTES_MSG: &str = "expected a response body but no response body was present";
 pub const EXPECTED_BODY_PRESENT_MSG: &str = "expected a response body but no response body was present";
 pub const EXPECTED_BODY_ABSENT_MSG: &str = "expected no response body but a response body was present";

@@ -14,6 +14,7 @@ use super::super::{
         EMPTY_BODY_BYTES_MSG,
         EMPTY_BODY_JSON_MSG,
         EMPTY_BODY_TEXT_MSG,
+        INVALID_UTF8_BODY_TEXT_MSG,
         EXPECTED_BODY_ABSENT_MSG,
         EXPECTED_BODY_PRESENT_MSG,
     },
@@ -37,7 +38,7 @@ impl AsserhttpBody<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
                 if !actual.is_empty() {
                     asserter(actual)
                 } else { panic_any(EMPTY_BODY_TEXT_MSG) }
-            } else { panic_any(EMPTY_BODY_TEXT_MSG) }
+            } else { panic_any(INVALID_UTF8_BODY_TEXT_MSG) }
         } else { panic_any(EMPTY_BODY_TEXT_MSG) }
         self
     }
@@ -108,7 +109,7 @@ impl AsserhttpBody<ActixServiceResponse<ActixBody>> for ActixServiceResponse<Act
                 if !actual.is_empty() {
                     asserter(actual)
                 } else { panic_any(EMPTY_BODY_TEXT_MSG) }
-            } else { panic_any(EMPTY_BODY_TEXT_MSG) }
+            } else { panic_any(INVALID_UTF8_BODY_TEXT_MSG) }
         } else { panic_any(EMPTY_BODY_TEXT_MSG) }
         self
     }
