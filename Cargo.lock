@@ -363,7 +363,7 @@ dependencies = [
  "serde_json",
  "stubr",
  "surf",
- "tokio 1.13.1",
+ "tokio 1.14.0",
 ]
 
 [[package]]
@@ -947,7 +947,7 @@ dependencies = [
  "crossbeam-queue",
  "num_cpus",
  "serde",
- "tokio 1.13.1",
+ "tokio 1.14.0",
 ]
 
 [[package]]
@@ -1326,7 +1326,7 @@ dependencies = [
  "http",
  "indexmap",
  "slab",
- "tokio 1.13.1",
+ "tokio 1.14.0",
  "tokio-util 0.6.7",
  "tracing",
 ]
@@ -1496,7 +1496,7 @@ dependencies = [
  "itoa",
  "pin-project-lite 0.2.6",
  "socket2 0.4.0",
- "tokio 1.13.1",
+ "tokio 1.14.0",
  "tower-service",
  "tracing",
  "want",
@@ -1511,7 +1511,7 @@ dependencies = [
  "bytes 1.0.1",
  "hyper",
  "native-tls",
- "tokio 1.13.1",
+ "tokio 1.14.0",
  "tokio-native-tls",
 ]
 
@@ -2420,7 +2420,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_urlencoded",
- "tokio 1.13.1",
+ "tokio 1.14.0",
  "tokio-native-tls",
  "url",
  "wasm-bindgen",
@@ -2960,9 +2960,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.13.1"
+version = "1.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "52963f91310c08d91cb7bff5786dfc8b79642ab839e188187e92105dbfb9d2c8"
+checksum = "70e992e41e0d2fb9f755b37446f20900f64446ef54874f40a60c78f021ac6144"
 dependencies = [
  "autocfg",
  "bytes 1.0.1",
@@ -2977,9 +2977,9 @@ dependencies = [
 
 [[package]]
 name = "tokio-macros"
-version = "1.2.0"
+version = "1.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c49e3df43841dafb86046472506755d8501c5615673955f6aa17181125d13c37"
+checksum = "c9efc1aba077437943f7515666aa2b882dfabfbfdf89c819ea75a8d6e9eaba5e"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -2993,7 +2993,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f7d995660bd2b7f8c1568414c1126076c13fbb725c40112dc0120b78eb9b717b"
 dependencies = [
  "native-tls",
- "tokio 1.13.1",
+ "tokio 1.14.0",
 ]
 
 [[package]]
@@ -3021,7 +3021,7 @@ dependencies = [
  "futures-sink",
  "log",
  "pin-project-lite 0.2.6",
- "tokio 1.13.1",
+ "tokio 1.14.0",
 ]
 
 [[package]]
@@ -3411,7 +3411,7 @@ dependencies = [
  "regex",
  "serde",
  "serde_json",
- "tokio 1.13.1",
+ "tokio 1.14.0",
 ]
 
 [[package]]
