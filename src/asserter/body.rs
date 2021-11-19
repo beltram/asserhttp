@@ -11,7 +11,7 @@ pub const EXPECTED_BODY_PRESENT_MSG: &str = "expected a response body but no res
 pub const EXPECTED_BODY_ABSENT_MSG: &str = "expected no response body but a response body was present";
 
 pub fn assert_json_body_eq<B>(actual: B, expected: B) where B: DeserializeOwned + PartialEq + Debug + Unpin {
-    assert_eq!(actual, expected, "expected json body {:?} to be equal to {:?} but was not", actual, expected);
+    assert_eq!(actual, expected, "expected json body '{:?}' to be equal to '{:?}' but was not", actual, expected);
 }
 
 pub fn assert_text_body(actual: String, expected: String) {

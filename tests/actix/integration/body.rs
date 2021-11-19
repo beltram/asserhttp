@@ -48,7 +48,7 @@ mod json_eq {
             .expect_body_json_eq(Body { a: String::from("b") });
     }
 
-    #[should_panic(expected = "expected json body Object({\"a\": String(\"b\")}) to be equal to Object({\"a\": String(\"c\")}) but was not")]
+    #[should_panic(expected = "expected json body 'Object({\"a\": String(\"b\")})' to be equal to 'Object({\"a\": String(\"c\")})' but was not")]
     #[actix_rt::test]
     async fn expect_body_json_should_fail_when_not_equal() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
