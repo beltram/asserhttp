@@ -1,7 +1,7 @@
 use std::{fmt::Debug, panic::panic_any};
 
 use async_std::task::block_on;
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 use surf::{Error as SurfError, Response as SurfResponse};
 
 use super::super::{
@@ -17,7 +17,7 @@ use super::super::{
 
 impl AsserhttpBody<SurfResponse> for SurfResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         if let Ok(actual) = block_on(self.body_json::<B>()).map_err(anyhow::Error::msg) {
             asserter(actual)
@@ -60,7 +60,7 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
 
 impl AsserhttpBody<SurfResponse> for Result<SurfResponse, SurfError> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut SurfResponse
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }

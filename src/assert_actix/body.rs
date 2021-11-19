@@ -6,7 +6,7 @@ use actix_http::{
     Response as ActixResponse,
 };
 use actix_web::dev::ServiceResponse as ActixServiceResponse;
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 
 use super::super::{
     AsserhttpBody,
@@ -22,7 +22,7 @@ use super::super::{
 
 impl AsserhttpBody<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         if let ActixResponseBody::Body(ActixBody::Bytes(actual)) = self.body() {
             serde_json::from_slice(actual.as_ref()).ok()
@@ -69,7 +69,7 @@ impl AsserhttpBody<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
 
 impl AsserhttpBody<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBody>, ActixError> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut ActixResponse<ActixBody>
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
@@ -93,7 +93,7 @@ impl AsserhttpBody<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBody>
 
 impl AsserhttpBody<ActixServiceResponse<ActixBody>> for ActixServiceResponse<ActixBody> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         if let ActixResponseBody::Body(ActixBody::Bytes(actual)) = self.response().body() {
             serde_json::from_slice(actual.as_ref()).ok()

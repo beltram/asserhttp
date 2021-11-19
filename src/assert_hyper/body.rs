@@ -7,7 +7,7 @@ use hyper::{
     Response as HyperResponse,
     Result as HyperResult,
 };
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 
 use super::super::{
     AsserhttpBody,
@@ -23,7 +23,7 @@ use super::super::{
 
 impl AsserhttpBody<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         let mut actual: Vec<u8> = vec![];
         while let Some(Ok(chunk)) = block_on(self.body_mut().data()) {
@@ -80,7 +80,7 @@ impl AsserhttpBody<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
 
 impl AsserhttpBody<HyperResponse<HyperBody>> for HyperResult<HyperResponse<HyperBody>> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut HyperResponse<HyperBody>
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }

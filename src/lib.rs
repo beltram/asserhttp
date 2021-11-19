@@ -217,7 +217,7 @@
 use std::{fmt::Debug, str::FromStr};
 
 use regex::Regex;
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 
 use asserter::body::{assert_body_regex, assert_bytes_body, assert_json_body_eq, assert_text_body};
 
@@ -1187,11 +1187,11 @@ pub trait AsserhttpBody<T> {
     /// # use hyper;
     /// # use actix_rt::System;
     /// # use awc;
-    /// # use serde::Deserialize;
+    /// # use serde::{Serialize, Deserialize};
     /// use asserhttp::*;
     /// use serde_json::{json, Value};
     ///
-    /// #[derive(Deserialize, Debug, Eq, PartialEq)]
+    /// #[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
     /// struct MyStruct { a: String }
     ///
     /// #[async_std::main]
@@ -1222,7 +1222,7 @@ pub trait AsserhttpBody<T> {
     /// }
     /// ```
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B);
 
     /// Expects response body to be json and equal
@@ -1263,7 +1263,7 @@ pub trait AsserhttpBody<T> {
     ///     });
     /// }
     /// ```
-    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + PartialEq + Debug + Unpin {
+    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin {
         self.expect_body_json(|actual: B| assert_json_body_eq(actual, body))
     }
 

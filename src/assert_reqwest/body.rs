@@ -2,7 +2,7 @@ use std::{fmt::Debug, panic::panic_any};
 
 use async_std::task::block_on;
 use reqwest::{blocking::Response as ReqwestResponse, Error as ReqwestError, Response as AsyncReqwestResponse};
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 
 use super::super::{
     AsserhttpBody,
@@ -18,7 +18,7 @@ use super::super::{
 
 impl AsserhttpBody<ReqwestResponse> for ReqwestResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         let mut actual: Vec<u8> = vec![];
         self.copy_to(&mut actual).unwrap();
@@ -65,7 +65,7 @@ impl AsserhttpBody<ReqwestResponse> for ReqwestResponse {
 
 impl AsserhttpBody<AsyncReqwestResponse> for AsyncReqwestResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         let mut actual: Vec<u8> = vec![];
         while let Ok(Some(chunk)) = block_on(self.chunk()) {
@@ -122,7 +122,7 @@ impl AsserhttpBody<AsyncReqwestResponse> for AsyncReqwestResponse {
 
 impl AsserhttpBody<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut ReqwestResponse
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
@@ -146,7 +146,7 @@ impl AsserhttpBody<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> {
 
 impl AsserhttpBody<AsyncReqwestResponse> for Result<AsyncReqwestResponse, ReqwestError> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut AsyncReqwestResponse
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }

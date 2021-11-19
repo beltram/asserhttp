@@ -3,7 +3,7 @@ use std::{fmt::Debug, panic::panic_any};
 use actix_http::{encoding::Decoder, Payload};
 use async_std::task::block_on;
 use awc::error::SendRequestError as AwcError;
-use serde::de::DeserializeOwned;
+use serde::{Serialize, de::DeserializeOwned};
 
 use super::super::{
     AsserhttpBody,
@@ -20,7 +20,7 @@ pub type AwcResponse = awc::ClientResponse<Decoder<Payload>>;
 
 impl AsserhttpBody<AwcResponse> for AwcResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         block_on(self.body()).ok()
             .and_then(|b| serde_json::from_slice::<B>(&b).ok())
@@ -61,7 +61,7 @@ impl AsserhttpBody<AwcResponse> for AwcResponse {
 
 impl AsserhttpBody<AwcResponse> for Result<AwcResponse, AwcError> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut AwcResponse
-        where B: DeserializeOwned + PartialEq + Debug + Unpin,
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }

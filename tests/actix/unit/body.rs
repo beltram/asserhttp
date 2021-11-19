@@ -62,7 +62,7 @@ mod json_eq {
         value(TestRequest::get().to_http_request()).await.expect_body_json_eq(Body { a: String::from("b") });
     }
 
-    #[should_panic(expected = "expected json body 'Object({\"a\": String(\"b\")})' to be equal to 'Object({\"a\": String(\"c\")})' but was not")]
+    #[should_panic(expected = "expected json body '{\"a\":\"b\"}' to be equal to '{\"a\":\"c\"}' but was not")]
     #[actix_rt::test]
     async fn expect_body_json_should_fail_when_not_equal() {
         async fn value(_: HttpRequest) -> HttpResponse { HttpResponse::Ok().body(json!({"a": "b"})) }
@@ -88,7 +88,7 @@ mod json_eq {
         value(TestRequest::get().to_http_request()).await.expect_body_json_eq(Body { a: String::from("b") });
     }
 
-    #[should_panic(expected = "expected json body 'Object({\"a\": String(\"b\")})' to be equal to 'Object({\"a\": String(\"c\")})' but was not")]
+    #[should_panic(expected = "expected json body '{\"a\":\"b\"}' to be equal to '{\"a\":\"c\"}' but was not")]
     #[actix_rt::test]
     async fn result_expect_body_json_should_fail_when_not_equal() {
         fn value(_: HttpRequest) -> HttpResponse { HttpResponse::Ok().body(json!({"a": "b"})) }

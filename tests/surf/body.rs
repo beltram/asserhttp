@@ -62,7 +62,7 @@ mod json_eq {
         get(stubr.uri()).await.unwrap().expect_body_json_eq(Body { a: String::from("b") });
     }
 
-    #[should_panic(expected = "expected json body 'Object({\"a\": String(\"b\")})' to be equal to 'Object({\"a\": String(\"c\")})' but was not")]
+    #[should_panic(expected = "expected json body '{\"a\":\"b\"}' to be equal to '{\"a\":\"c\"}' but was not")]
     #[stubr::mock("body/json/value.json")]
     #[async_std::test]
     async fn expect_body_json_should_fail_when_not_equal() {
@@ -88,7 +88,7 @@ mod json_eq {
         get(stubr.uri()).await.expect_body_json_eq(Body { a: String::from("b") });
     }
 
-    #[should_panic(expected = "expected json body 'Object({\"a\": String(\"b\")})' to be equal to 'Object({\"a\": String(\"c\")})' but was not")]
+    #[should_panic(expected = "expected json body '{\"a\":\"b\"}' to be equal to '{\"a\":\"c\"}' but was not")]
     #[stubr::mock("body/json/value.json")]
     #[async_std::test]
     async fn result_expect_body_json_should_fail_when_not_equal() {
