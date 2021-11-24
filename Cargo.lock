@@ -1333,9 +1333,9 @@ dependencies = [
 
 [[package]]
 name = "handlebars"
-version = "3.5.3"
+version = "4.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cdb0867bbc5a3da37a753e78021d5fcf8a4db00e18dd2dd90fd36e24190e162d"
+checksum = "8ad84da8f63da982543fc85fcabaee2ad1fdd809d99d64a48887e2e942ddfe46"
 dependencies = [
  "log",
  "pest",
@@ -2751,9 +2751,9 @@ checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
 name = "stubr"
-version = "0.4.10"
+version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d3c8d3d710197a17c0517be8090a28b16e63e29cfcc92db28db33f45960f1cb"
+checksum = "c5dfe1d7c60d4ef567a06e801a8978f5b3240682dd5491e050aa0b9a0191ab65"
 dependencies = [
  "anyhow",
  "async-std",
@@ -2782,10 +2782,11 @@ dependencies = [
 
 [[package]]
 name = "stubr-attributes"
-version = "0.4.10"
+version = "0.4.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d59e8d582bee51df9ee5c5ab079f655ff357cb71f4ed95e3c35703da11902537"
+checksum = "8154bb754b7767e233aba34ba61610601f84a2d976f04f1f713982c21ae2a2ba"
 dependencies = [
+ "itertools",
  "proc-macro2",
  "quote",
  "syn",
