@@ -216,8 +216,9 @@
 //!
 use std::{fmt::Debug, str::FromStr};
 
+pub use http_types::StatusCode as Status;
 use regex::Regex;
-use serde::{Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Serialize};
 
 use asserter::body::{assert_body_regex, assert_bytes_body, assert_json_body_eq, assert_text_body};
 
@@ -239,6 +240,18 @@ mod asserter;
 /// For assertions on http response
 pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
 
+pub struct AnyStatus(u16);
+
+impl From<u16> for AnyStatus {
+    fn from(value: u16) -> Self { Self(value) }
+}
+
+impl From<Status> for AnyStatus {
+    fn from(value: Status) -> Self {
+        Self(u16::from_str(&value.to_string()).unwrap())
+    }
+}
+
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
     /// Expects response status to be equal
@@ -257,28 +270,42 @@ pub trait AsserhttpStatus<T> {
     /// #[async_std::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_eq(200);
+    ///     reqwest::blocking::get("http://localhost").unwrap().expect_status_eq(Status::Ok);
     ///     reqwest::blocking::get("http://localhost").expect_status_eq(200);
+    ///     reqwest::blocking::get("http://localhost").expect_status_eq(Status::Ok);
     ///     reqwest::get("http://localhost").await.unwrap().expect_status_eq(200);
+    ///     reqwest::get("http://localhost").await.unwrap().expect_status_eq(Status::Ok);
     ///     reqwest::get("http://localhost").await.expect_status_eq(200);
+    ///     reqwest::get("http://localhost").await.expect_status_eq(Status::Ok);
     ///
     ///     isahc::get("http://localhost").unwrap().expect_status_eq(200);
+    ///     isahc::get("http://localhost").unwrap().expect_status_eq(Status::Ok);
     ///     isahc::get("http://localhost").expect_status_eq(200);
+    ///     isahc::get("http://localhost").expect_status_eq(Status::Ok);
     ///     isahc::get_async("http://localhost").await.unwrap().expect_status_eq(200);
+    ///     isahc::get_async("http://localhost").await.unwrap().expect_status_eq(Status::Ok);
     ///     isahc::get_async("http://localhost").await.expect_status_eq(200);
+    ///     isahc::get_async("http://localhost").await.expect_status_eq(Status::Ok);
     ///
     ///     surf::get("http://localhost").await.unwrap().expect_status_eq(200);
+    ///     surf::get("http://localhost").await.unwrap().expect_status_eq(Status::Ok);
     ///     surf::get("http://localhost").await.expect_status_eq(200);
+    ///     surf::get("http://localhost").await.expect_status_eq(Status::Ok);
     ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_eq(200);
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_eq(Status::Ok);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(200);
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(Status::Ok);
     ///
     ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(200);
+    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(Status::Ok);
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_eq(200);
+    ///         awc::Client::default().get("http://localhost").send().await.expect_status_eq(Status::Ok);
     ///     });
     /// }
     /// ```
-    fn expect_status_eq(&mut self, status: u16) -> &mut T;
+    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut T;
 
     /// Expects response status to be in range
     /// * `lower` - lower inclusive bound

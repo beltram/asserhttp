@@ -1,4 +1,4 @@
-use actix_http::{body::Body as ActixBody, Response as ActixResponse, Error as ActixError};
+use actix_http::{body::Body as ActixBody, Error as ActixError, Response as ActixResponse};
 use actix_web::dev::ServiceResponse as ActixServiceResponse;
 
 use super::super::{

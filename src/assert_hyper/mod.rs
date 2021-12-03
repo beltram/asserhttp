@@ -1,7 +1,7 @@
 use hyper::{
+    Body as HyperBody,
     Response as HyperResponse,
     Result as HyperResult,
-    Body as HyperBody,
 };
 
 use super::Asserhttp;

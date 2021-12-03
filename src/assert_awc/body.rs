@@ -3,7 +3,7 @@ use std::{fmt::Debug, panic::panic_any};
 use actix_http::{encoding::Decoder, Payload};
 use async_std::task::block_on;
 use awc::error::SendRequestError as AwcError;
-use serde::{Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Serialize};
 
 use super::super::{
     AsserhttpBody,

@@ -1,5 +1,5 @@
-use serde_json::{json, Value};
 use hyper::Client;
+use serde_json::{json, Value};
 
 use asserhttp::*;
 

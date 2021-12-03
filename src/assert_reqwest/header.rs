@@ -1,8 +1,8 @@
 use reqwest::{
     blocking::Response as ReqwestResponse,
     Error as ReqwestError,
-    Response as AsyncReqwestResponse,
     header::HeaderMap as ReqwestHeaderMap,
+    Response as AsyncReqwestResponse,
 };
 
 use super::super::{

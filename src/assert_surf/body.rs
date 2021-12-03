@@ -1,7 +1,7 @@
 use std::{fmt::Debug, panic::panic_any};
 
 use async_std::task::block_on;
-use serde::{Serialize, de::DeserializeOwned};
+use serde::{de::DeserializeOwned, Serialize};
 use surf::{Error as SurfError, Response as SurfResponse};
 
 use super::super::{

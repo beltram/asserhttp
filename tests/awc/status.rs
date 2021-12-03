@@ -15,6 +15,14 @@ mod eq {
         });
     }
 
+    #[test]
+    #[stubr::mock("status/eq.json")]
+    fn should_expect_status_eq_enum() {
+        System::new("test").block_on(async move {
+            Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(Status::Ok);
+        });
+    }
+
     #[should_panic(expected = "expected status to be '100' but was '200'")]
     #[stubr::mock("status/eq.json")]
     #[test]

@@ -11,6 +11,12 @@ mod eq {
         ok(TestRequest::get().to_http_request()).await.expect_status_eq(200);
     }
 
+    #[actix_rt::test]
+    async fn should_expect_status_eq_enum() {
+        async fn ok(_: HttpRequest) -> HttpResponse { HttpResponse::Ok().finish() }
+        ok(TestRequest::get().to_http_request()).await.expect_status_eq(Status::Ok);
+    }
+
     #[should_panic(expected = "expected status to be '100' but was '200'")]
     #[actix_rt::test]
     async fn expect_status_eq_should_panic() {

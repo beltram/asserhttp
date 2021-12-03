@@ -11,6 +11,12 @@ mod eq {
         Client::new().get(stubr.uri().parse().unwrap()).await.unwrap().expect_status_eq(200);
     }
 
+    #[tokio::test]
+    #[stubr::mock("status/eq.json")]
+    async fn should_expect_status_eq_enum() {
+        Client::new().get(stubr.uri().parse().unwrap()).await.unwrap().expect_status_eq(Status::Ok);
+    }
+
     #[should_panic(expected = "expected status to be '100' but was '200'")]
     #[stubr::mock("status/eq.json")]
     #[tokio::test]

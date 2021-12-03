@@ -355,6 +355,7 @@ dependencies = [
  "asserhttp",
  "async-std",
  "awc",
+ "http-types",
  "hyper",
  "isahc 1.6.0",
  "regex",

@@ -11,6 +11,12 @@ mod eq {
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_status_eq(200);
     }
 
+    #[actix_rt::test]
+    async fn should_expect_status_eq_enum() {
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok() }));
+        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_status_eq(Status::Ok);
+    }
+
     #[should_panic(expected = "expected status to be '100' but was '200'")]
     #[actix_rt::test]
     async fn expect_status_eq_should_panic() {
