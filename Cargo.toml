@@ -22,7 +22,7 @@ http-types = "2.12.0"
 surf = { version = "2.3.2", optional = true }
 isahc = { version = "1.6.0", features = ["json"], optional = true }
 reqwest = { version = "0.11.7", features = ["json", "blocking"], optional = true }
-hyper = { version = "0.14.15", features = ["client"], optional = true }
+hyper = { version = "0.14.16", features = ["client"], optional = true }
 awc = { version = "2.0.3", optional = true }
 actix-http = { version = "2.2.1", optional = true }
 actix-web = { version = "3.3.2", optional = true }
