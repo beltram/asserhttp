@@ -1,4 +1,4 @@
-use std::{convert::TryInto, fmt::{Debug, Display}};
+use std::fmt::{Debug, Display};
 
 pub fn assert_header_key<'a, T, I>(actual_keys: T, expected: I)
     where T: Iterator<Item=I>,
