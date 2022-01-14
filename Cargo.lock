@@ -358,7 +358,7 @@ dependencies = [
  "http-types",
  "hyper",
  "isahc 1.6.0",
- "pin-project 0.4.29",
+ "pin-project 1.0.7",
  "regex",
  "reqwest",
  "serde",
