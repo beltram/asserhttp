@@ -1,8 +1,8 @@
 //!
 //! Allows fluent assertions for various http client responses.
-//! Supports [actix-web](https://actix.rs/docs/testing/), [reqwest](https://github.com/seanmonstar/reqwest),
-//! [hyper](https://github.com/hyperium/hyper), [awc](https://docs.rs/awc) (Actix Web Client),
-//! [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
+//! Supports [actix-web](https://actix.rs/docs/testing/), [rocket](https://github.com/SergioBenitez/Rocket),
+//! [reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
+//! [awc](https://docs.rs/awc) (Actix Web Client), [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
 //!
 //! It works for blocking or async client methods and for responses wrapped in `Result`.
 //!
@@ -66,6 +66,7 @@
 //!
 //! ```no_run
 //! use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
+//! use serde_json::json;
 //! use asserhttp::*;
 //!
 //! #[actix_rt::test]
@@ -83,6 +84,7 @@
 //!
 //! ```no_run
 //! use actix_web::{App, HttpResponse, test::{call_service, init_service, TestRequest}, web};
+//! use serde_json::json;
 //! use asserhttp::*;
 //!
 //! #[actix_rt::test]
@@ -96,11 +98,31 @@
 //! }
 //! ```
 //!
+//! ## rocket
+//!
+//! ```no_run
+//! use rocket::{get, http::Status, local::asynchronous::Client, routes};
+//! use serde_json::{json, Value};
+//! use asserhttp::*;
+//!
+//! #[rocket::async_test]
+//! async fn sample_test() {
+//!     #[get("/")]
+//!     fn endpoint() -> Value { json!({"a": "b"}) }
+//!     let client = Client::tracked(rocket::build().mount("/", routes![endpoint])).await.unwrap();
+//!     client.get("/").dispatch().await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"a": "b"}));
+//! }
+//! ```
+//!
 //! ## reqwest
 //!
 //! ```no_run
 //! use reqwest;
 //! use asserhttp::*;
+//! use serde_json::json;
 //!
 //! #[tokio::test]
 //! async fn sample_test() {
@@ -124,6 +146,7 @@
 //! ```no_run
 //! use hyper::Client;
 //! use asserhttp::*;
+//! use serde_json::json;
 //!
 //! #[tokio::test]
 //! async fn sample_test() {
@@ -148,6 +171,7 @@
 //! use actix_rt::System;
 //! use awc::Client;
 //! use asserhttp::*;
+//! use serde_json::json;
 //!
 //! #[test]
 //! fn sample_test() {
@@ -173,6 +197,7 @@
 //! ```no_run
 //! use surf;
 //! use asserhttp::*;
+//! use serde_json::json;
 //!
 //! #[async_std::test]
 //! async fn sample_test() {
@@ -196,6 +221,7 @@
 //! ```no_run
 //! use isahc;
 //! use asserhttp::*;
+//! use serde_json::json;
 //!
 //! #[async_std::test]
 //! async fn sample_test() {
@@ -234,6 +260,8 @@ mod assert_hyper;
 mod assert_awc;
 #[cfg(feature = "actix")]
 mod assert_actix;
+#[cfg(feature = "rocket")]
+mod assert_rocket;
 
 mod asserter;
 
@@ -250,6 +278,11 @@ impl From<Status> for AnyStatus {
     fn from(value: Status) -> Self {
         Self(u16::from_str(&value.to_string()).unwrap())
     }
+}
+
+#[cfg(feature = "rocket")]
+impl From<rocket::http::Status> for AnyStatus {
+    fn from(value: rocket::http::Status) -> Self { Self(value.code) }
 }
 
 /// For assertions on http response status

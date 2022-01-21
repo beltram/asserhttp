@@ -4,4 +4,5 @@ pub mod isahc;
 pub mod hyper;
 pub mod awc;
 pub mod actix;
+pub mod rocket;
 pub mod common;

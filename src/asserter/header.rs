@@ -2,7 +2,7 @@ use std::fmt::{Debug, Display};
 
 pub fn assert_header_key<'a, T, I>(actual_keys: T, expected: I)
     where T: Iterator<Item=I>,
-          I: Into<&'a str> + PartialEq + Display {
+          I: Into<String> + PartialEq + Display {
     let expected = expected.into().to_lowercase();
     let mut actual_keys = actual_keys.map(|k| k.into().to_lowercase());
     assert!(actual_keys.any(|k| k == expected),
@@ -36,7 +36,7 @@ pub fn assert_header_values<'a, T, I>(actual_values: T, key: I, expected: Vec<&'
 
 pub fn assert_header_key_absent<'a, T, I>(actual_keys: T, expected: I)
     where T: Iterator<Item=I>,
-          I: Into<&'a str> + PartialEq + Display {
+          I: Into<String> + PartialEq + Display {
     let expected = expected.into().to_lowercase();
     let mut actual_keys = actual_keys.map(|k| k.into().to_lowercase());
     assert!(!actual_keys.any(|k| k == expected),
