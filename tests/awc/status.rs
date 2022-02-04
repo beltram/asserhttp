@@ -10,7 +10,7 @@ mod eq {
     #[test]
     #[stubr::mock("status/eq.json")]
     fn should_expect_status_eq() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(200);
         });
     }
@@ -18,7 +18,7 @@ mod eq {
     #[test]
     #[stubr::mock("status/eq.json")]
     fn should_expect_status_eq_enum() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(Status::Ok);
         });
     }
@@ -27,7 +27,7 @@ mod eq {
     #[stubr::mock("status/eq.json")]
     #[test]
     fn expect_status_eq_should_panic() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(100);
         });
     }
@@ -35,7 +35,7 @@ mod eq {
     #[test]
     #[stubr::mock("status/eq.json")]
     fn result_should_expect_status_eq() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_eq(200);
         });
     }
@@ -44,7 +44,7 @@ mod eq {
     #[stubr::mock("status/eq.json")]
     #[test]
     fn result_expect_status_eq_should_panic() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_eq(100);
         });
     }
@@ -56,7 +56,7 @@ mod ok {
     #[test]
     #[stubr::mock("status/ok.json")]
     fn should_expect_status_ok() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_ok();
         });
     }
@@ -66,7 +66,7 @@ mod ok {
     #[stubr::mock("status/created.json")]
     #[test]
     fn expect_status_ok_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_ok();
         });
     }
@@ -74,7 +74,7 @@ mod ok {
     #[test]
     #[stubr::mock("status/ok.json")]
     fn result_should_expect_status_ok() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_ok();
         });
     }
@@ -83,7 +83,7 @@ mod ok {
     #[stubr::mock("status/created.json")]
     #[test]
     fn result_expect_status_ok_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_ok();
         });
     }
@@ -95,7 +95,7 @@ mod created {
     #[test]
     #[stubr::mock("status/created.json")]
     fn should_expect_status_created() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_created();
         });
     }
@@ -104,7 +104,7 @@ mod created {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_created_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_created();
         });
     }
@@ -112,7 +112,7 @@ mod created {
     #[test]
     #[stubr::mock("status/created.json")]
     fn result_should_expect_status_created() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_created();
         });
     }
@@ -121,7 +121,7 @@ mod created {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_created_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_created();
         });
     }
@@ -133,7 +133,7 @@ mod accepted {
     #[test]
     #[stubr::mock("status/accepted.json")]
     fn should_expect_status_accepted() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_accepted();
         });
     }
@@ -142,7 +142,7 @@ mod accepted {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_accepted_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_accepted();
         });
     }
@@ -150,7 +150,7 @@ mod accepted {
     #[test]
     #[stubr::mock("status/accepted.json")]
     fn result_should_expect_status_accepted() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_accepted();
         });
     }
@@ -159,7 +159,7 @@ mod accepted {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_accepted_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_accepted();
         });
     }
@@ -171,7 +171,7 @@ mod no_content {
     #[test]
     #[stubr::mock("status/no-content.json")]
     fn should_expect_status_no_content() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_no_content();
         });
     }
@@ -180,7 +180,7 @@ mod no_content {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_no_content_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_no_content();
         });
     }
@@ -188,7 +188,7 @@ mod no_content {
     #[test]
     #[stubr::mock("status/no-content.json")]
     fn result_should_expect_status_no_content() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_no_content();
         });
     }
@@ -197,7 +197,7 @@ mod no_content {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_no_content_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_no_content();
         });
     }
@@ -209,7 +209,7 @@ mod partial_content {
     #[test]
     #[stubr::mock("status/partial-content.json")]
     fn should_expect_status_partial_content() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_partial_content();
         });
     }
@@ -218,7 +218,7 @@ mod partial_content {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_partial_content_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_partial_content();
         });
     }
@@ -226,7 +226,7 @@ mod partial_content {
     #[test]
     #[stubr::mock("status/partial-content.json")]
     fn result_should_expect_status_partial_content() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_partial_content();
         });
     }
@@ -235,7 +235,7 @@ mod partial_content {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_partial_content_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_partial_content();
         });
     }
@@ -247,7 +247,7 @@ mod bad_request {
     #[test]
     #[stubr::mock("status/bad-request.json")]
     fn should_expect_status_bad_request() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_bad_request();
         });
     }
@@ -256,7 +256,7 @@ mod bad_request {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_bad_request_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_bad_request();
         });
     }
@@ -264,7 +264,7 @@ mod bad_request {
     #[test]
     #[stubr::mock("status/bad-request.json")]
     fn result_should_expect_status_bad_request() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_bad_request();
         });
     }
@@ -273,7 +273,7 @@ mod bad_request {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_bad_request_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_bad_request();
         });
     }
@@ -285,7 +285,7 @@ mod unauthorized {
     #[test]
     #[stubr::mock("status/unauthorized.json")]
     fn should_expect_status_unauthorized() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_unauthorized();
         });
     }
@@ -294,7 +294,7 @@ mod unauthorized {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_unauthorized_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_unauthorized();
         });
     }
@@ -302,7 +302,7 @@ mod unauthorized {
     #[test]
     #[stubr::mock("status/unauthorized.json")]
     fn result_should_expect_status_unauthorized() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_unauthorized();
         });
     }
@@ -311,7 +311,7 @@ mod unauthorized {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_unauthorized_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_unauthorized();
         });
     }
@@ -323,7 +323,7 @@ mod forbidden {
     #[test]
     #[stubr::mock("status/forbidden.json")]
     fn should_expect_status_forbidden() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_forbidden();
         });
     }
@@ -332,7 +332,7 @@ mod forbidden {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_forbidden_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_forbidden();
         });
     }
@@ -340,7 +340,7 @@ mod forbidden {
     #[test]
     #[stubr::mock("status/forbidden.json")]
     fn result_should_expect_status_forbidden() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_forbidden();
         });
     }
@@ -349,7 +349,7 @@ mod forbidden {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_forbidden_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_forbidden();
         });
     }
@@ -361,7 +361,7 @@ mod not_found {
     #[test]
     #[stubr::mock("status/not_found.json")]
     fn should_expect_status_not_found() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_not_found();
         });
     }
@@ -370,7 +370,7 @@ mod not_found {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_not_found_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_not_found();
         });
     }
@@ -378,7 +378,7 @@ mod not_found {
     #[test]
     #[stubr::mock("status/not_found.json")]
     fn result_should_expect_status_not_found() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_not_found();
         });
     }
@@ -387,7 +387,7 @@ mod not_found {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_not_found_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_not_found();
         });
     }
@@ -399,7 +399,7 @@ mod conflict {
     #[test]
     #[stubr::mock("status/conflict.json")]
     fn should_expect_status_conflict() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_conflict();
         });
     }
@@ -408,7 +408,7 @@ mod conflict {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_conflict_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_conflict();
         });
     }
@@ -416,7 +416,7 @@ mod conflict {
     #[test]
     #[stubr::mock("status/conflict.json")]
     fn result_should_expect_status_conflict() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_conflict();
         });
     }
@@ -425,7 +425,7 @@ mod conflict {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_conflict_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_conflict();
         });
     }
@@ -437,7 +437,7 @@ mod gone {
     #[test]
     #[stubr::mock("status/gone.json")]
     fn should_expect_status_gone() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_gone();
         });
     }
@@ -446,7 +446,7 @@ mod gone {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_gone_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_gone();
         });
     }
@@ -454,7 +454,7 @@ mod gone {
     #[test]
     #[stubr::mock("status/gone.json")]
     fn result_should_expect_status_gone() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_gone();
         });
     }
@@ -463,7 +463,7 @@ mod gone {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_gone_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_gone();
         });
     }
@@ -475,7 +475,7 @@ mod internal_server_error {
     #[test]
     #[stubr::mock("status/server-error.json")]
     fn should_expect_status_internal_server_error() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_internal_server_error();
         });
     }
@@ -484,7 +484,7 @@ mod internal_server_error {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_internal_server_error_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_internal_server_error();
         });
     }
@@ -492,7 +492,7 @@ mod internal_server_error {
     #[test]
     #[stubr::mock("status/server-error.json")]
     fn result_should_expect_status_internal_server_error() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_internal_server_error();
         });
     }
@@ -501,7 +501,7 @@ mod internal_server_error {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_internal_server_error_should_panic() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_internal_server_error();
         });
     }
@@ -513,7 +513,7 @@ mod range {
     #[test]
     #[stubr::mock("status/created.json")]
     fn should_expect_status_in_inclusive_lower_range() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_in_range(201, 300);
         });
     }
@@ -521,7 +521,7 @@ mod range {
     #[test]
     #[stubr::mock("status/created.json")]
     fn should_expect_status_in_exclusive_upper_range() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_in_range(200, 202);
         });
     }
@@ -530,7 +530,7 @@ mod range {
     #[stubr::mock("status/created.json")]
     #[test]
     fn expect_status_in_range_should_panic_when_lower() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_in_range(202, 300);
         });
     }
@@ -539,7 +539,7 @@ mod range {
     #[stubr::mock("status/created.json")]
     #[test]
     fn expect_status_in_range_should_panic_when_upper() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_in_range(200, 201);
         });
     }
@@ -547,7 +547,7 @@ mod range {
     #[test]
     #[stubr::mock("status/created.json")]
     fn result_should_expect_status_in_inclusive_lower_range() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_in_range(201, 300);
         });
     }
@@ -555,7 +555,7 @@ mod range {
     #[test]
     #[stubr::mock("status/created.json")]
     fn result_should_expect_status_in_exclusive_upper_range() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_in_range(200, 202);
         });
     }
@@ -564,7 +564,7 @@ mod range {
     #[stubr::mock("status/created.json")]
     #[test]
     fn result_expect_status_in_range_should_panic_when_lower() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_in_range(202, 300);
         });
     }
@@ -573,7 +573,7 @@ mod range {
     #[stubr::mock("status/created.json")]
     #[test]
     fn result_expect_status_in_range_should_panic_when_upper() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_in_range(200, 201);
         });
     }
@@ -585,7 +585,7 @@ mod success {
     #[test]
     #[stubr::mock("status/ok.json")]
     fn should_expect_status_success() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_success();
         });
     }
@@ -594,7 +594,7 @@ mod success {
     #[stubr::mock("status/bad-request.json")]
     #[test]
     fn expect_status_success_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_success();
         });
     }
@@ -602,7 +602,7 @@ mod success {
     #[test]
     #[stubr::mock("status/ok.json")]
     fn result_should_expect_status_success() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_success();
         });
     }
@@ -611,7 +611,7 @@ mod success {
     #[stubr::mock("status/bad-request.json")]
     #[test]
     fn result_expect_status_success_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_success();
         });
     }
@@ -623,7 +623,7 @@ mod redirection {
     #[test]
     #[stubr::mock("status/moved-permanently.json")]
     fn should_expect_status_redirection() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_redirection();
         });
     }
@@ -632,7 +632,7 @@ mod redirection {
     #[stubr::mock("status/bad-request.json")]
     #[test]
     fn expect_status_redirection_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_redirection();
         });
     }
@@ -640,7 +640,7 @@ mod redirection {
     #[test]
     #[stubr::mock("status/moved-permanently.json")]
     fn result_should_expect_status_redirection() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_redirection();
         });
     }
@@ -649,7 +649,7 @@ mod redirection {
     #[stubr::mock("status/bad-request.json")]
     #[test]
     fn result_expect_status_redirection_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_redirection();
         });
     }
@@ -661,7 +661,7 @@ mod client_error {
     #[test]
     #[stubr::mock("status/bad-request.json")]
     fn should_expect_status_client_error() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_client_error();
         });
     }
@@ -670,7 +670,7 @@ mod client_error {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_client_error_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_client_error();
         });
     }
@@ -678,7 +678,7 @@ mod client_error {
     #[test]
     #[stubr::mock("status/bad-request.json")]
     fn result_should_expect_status_client_error() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_client_error();
         });
     }
@@ -687,7 +687,7 @@ mod client_error {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_client_error_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_client_error();
         });
     }
@@ -699,7 +699,7 @@ mod server_error {
     #[test]
     #[stubr::mock("status/server-error.json")]
     fn should_expect_status_server_error() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_server_error();
         });
     }
@@ -708,7 +708,7 @@ mod server_error {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn expect_status_server_error_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_status_server_error();
         });
     }
@@ -716,7 +716,7 @@ mod server_error {
     #[test]
     #[stubr::mock("status/server-error.json")]
     fn result_should_expect_status_server_error() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_server_error();
         });
     }
@@ -725,7 +725,7 @@ mod server_error {
     #[stubr::mock("status/ok.json")]
     #[test]
     fn result_expect_status_server_error_should_panic_when_not() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_status_server_error();
         });
     }
