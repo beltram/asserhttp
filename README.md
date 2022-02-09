@@ -11,6 +11,11 @@
     <img src="https://img.shields.io/crates/v/asserhttp.svg?style=flat-square"
     alt="Crates.io version" />
   </a>
+  <!-- Minimum Supported Rust Version -->
+  <a href="rust: 1.56.1+">
+    <img src="https://img.shields.io/badge/rust-1.56.1%2B-green.svg"
+    alt="Crates.io version" />
+  </a>
   <!-- docs.rs docs -->
   <a href="https://docs.rs/asserhttp">
     <img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square"
