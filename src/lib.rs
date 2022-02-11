@@ -175,7 +175,7 @@
 //!
 //! #[test]
 //! fn sample_test() {
-//!     System::new().block_on(async move {
+//!     System::new("test").block_on(async move {
 //!         Client::default().get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!         // no need to call `.unwrap()` directly
 //!         Client::default().get("http://localhost/api/any").await.expect_status_eq(200);
@@ -330,7 +330,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(200);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(Status::Ok);
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(200);
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(Status::Ok);
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_eq(200);
@@ -372,7 +372,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_in_range(200, 400);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_in_range(200, 400);
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_in_range(200, 400);
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_in_range(200, 400);
     ///     });
@@ -410,7 +410,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_success();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_success();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_success();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_success();
     ///     });
@@ -448,7 +448,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_redirection();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_redirection();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_redirection();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_redirection();
     ///     });
@@ -486,7 +486,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_client_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_client_error();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_client_error();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_client_error();
     ///     });
@@ -524,7 +524,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_server_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_server_error();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_server_error();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_server_error();
     ///     });
@@ -562,7 +562,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_ok();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_ok();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_ok();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_ok();
     ///     });
@@ -600,7 +600,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_created();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_created();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_created();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_created();
     ///     });
@@ -638,7 +638,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_accepted();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_accepted();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_accepted();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_accepted();
     ///     });
@@ -676,7 +676,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_no_content();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_no_content();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_no_content();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_no_content();
     ///     });
@@ -714,7 +714,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_partial_content();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_partial_content();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_partial_content();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_partial_content();
     ///     });
@@ -752,7 +752,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_bad_request();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_bad_request();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_bad_request();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_bad_request();
     ///     });
@@ -790,7 +790,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_unauthorized();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_unauthorized();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_unauthorized();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_unauthorized();
     ///     });
@@ -828,7 +828,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_forbidden();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_forbidden();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_forbidden();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_forbidden();
     ///     });
@@ -866,7 +866,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_not_found();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_not_found();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_not_found();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_not_found();
     ///     });
@@ -904,7 +904,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_conflict();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_conflict();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_conflict();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_conflict();
     ///     });
@@ -942,7 +942,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_gone();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_gone();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_gone();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_gone();
     ///     });
@@ -980,7 +980,7 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_internal_server_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_internal_server_error();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_internal_server_error();
     ///         awc::Client::default().get("http://localhost").send().await.expect_status_internal_server_error();
     ///     });
@@ -1027,7 +1027,7 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header("content-type", "application/json");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header("content-type", "application/json");
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_header("content-type", "application/json");
     ///         awc::Client::default().get("http://localhost").send().await.expect_header("content-type", "application/json");
     ///     });
@@ -1067,7 +1067,7 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///         awc::Client::default().get("http://localhost").send().await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     });
@@ -1106,7 +1106,7 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_present("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_present("content-type");
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_present("content-type");
     ///         awc::Client::default().get("http://localhost").send().await.expect_header_present("content-type");
     ///     });
@@ -1145,7 +1145,7 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_absent("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_absent("content-type");
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_absent("content-type");
     ///         awc::Client::default().get("http://localhost").send().await.expect_header_absent("content-type");
     ///     });
@@ -1183,7 +1183,7 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_json();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_json();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_json();
     ///         awc::Client::default().get("http://localhost").send().await.expect_content_type_json();
     ///     });
@@ -1223,7 +1223,7 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_text();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_text();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_text();
     ///         awc::Client::default().get("http://localhost").send().await.expect_content_type_text();
     ///     });
@@ -1272,7 +1272,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     });
@@ -1317,7 +1317,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_json_eq(json!({"a": "b"}));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_json_eq(json!({"a": "b"}));
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_json_eq(json!({"a": "b"}));
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_json_eq(json!({"a": "b"}));
     ///     });
@@ -1359,7 +1359,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text(|b| assert_eq!(b, "abcd"));
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     });
@@ -1399,7 +1399,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text_eq("abcd");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text_eq("abcd");
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text_eq("abcd");
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_text_eq("abcd");
     ///     });
@@ -1441,7 +1441,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text_matches("[a-z]+");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text_matches("[a-z]+");
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text_matches("[a-z]+");
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_text_matches("[a-z]+");
     ///     });
@@ -1489,7 +1489,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     });
@@ -1533,7 +1533,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_bytes_eq(b"abcd");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_bytes_eq(b"abcd");
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_bytes_eq(b"abcd");
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_bytes_eq(b"abcd");
     ///     });
@@ -1573,7 +1573,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_present();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_present();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_present();
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_present();
     ///     });
@@ -1611,7 +1611,7 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_absent();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_absent();
     ///
-    ///     System::new().block_on(async move {
+    ///     System::new("test").block_on(async move {
     ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_absent();
     ///         awc::Client::default().get("http://localhost").send().await.expect_body_absent();
     ///     });

@@ -6,7 +6,7 @@ use asserhttp::*;
 #[test]
 #[stubr::mock("ping.json")]
 fn simple_should_work() {
-    System::new().block_on(async move {
+    System::new("test").block_on(async move {
         Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(200);
     });
 }
@@ -15,7 +15,7 @@ fn simple_should_work() {
 #[stubr::mock("ping.json")]
 #[test]
 fn simple_should_panic() {
-    System::new().block_on(async move {
+    System::new("test").block_on(async move {
         Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(100);
     });
 }
@@ -23,7 +23,7 @@ fn simple_should_panic() {
 #[test]
 #[stubr::mock("ping.json")]
 fn simple_should_chain() {
-    System::new().block_on(async move {
+    System::new("test").block_on(async move {
         Client::default().get(stubr.uri()).send().await.unwrap().expect_status_eq(200).expect_status_eq(200);
     });
 }
@@ -31,7 +31,7 @@ fn simple_should_chain() {
 #[test]
 #[stubr::mock("ping.json")]
 fn result_should_work() {
-    System::new().block_on(async move {
+    System::new("test").block_on(async move {
         Client::default().get(stubr.uri()).send().await.expect_status_eq(200);
     });
 }
@@ -40,7 +40,7 @@ fn result_should_work() {
 #[stubr::mock("ping.json")]
 #[test]
 fn result_should_panic() {
-    System::new().block_on(async move {
+    System::new("test").block_on(async move {
         Client::default().get(stubr.uri()).send().await.expect_status_eq(100);
     });
 }
@@ -48,7 +48,7 @@ fn result_should_panic() {
 #[test]
 #[stubr::mock("ping.json")]
 fn result_should_chain() {
-    System::new().block_on(async move {
+    System::new("test").block_on(async move {
         Client::default().get(stubr.uri()).send().await.expect_status_eq(200).expect_status_eq(200);
     });
 }

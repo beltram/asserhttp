@@ -10,7 +10,7 @@ mod eq {
     #[test]
     #[stubr::mock("header/one.json")]
     fn should_expect_header() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header("x-a", "a");
         });
     }
@@ -18,7 +18,7 @@ mod eq {
     #[test]
     #[stubr::mock("header/one.json")]
     fn should_expect_header_ignoring_case() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header("X-A", "a");
         });
     }
@@ -27,7 +27,7 @@ mod eq {
     #[stubr::mock("header/one.json")]
     #[test]
     fn expect_header_value_should_be_case_sensitive() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header("x-a", "A");
         });
     }
@@ -35,7 +35,7 @@ mod eq {
     #[test]
     #[stubr::mock("header/many.json")]
     fn should_expect_many_header() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap()
                 .expect_header("x-a", "a")
                 .expect_header("x-b", "b");
@@ -46,7 +46,7 @@ mod eq {
     #[stubr::mock("header/one.json")]
     #[test]
     fn expect_header_should_panic_when_wrong_key() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header("x-b", "a");
         });
     }
@@ -55,7 +55,7 @@ mod eq {
     #[stubr::mock("header/one.json")]
     #[test]
     fn expect_header_should_panic_when_wrong_value() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header("x-a", "b");
         });
     }
@@ -64,7 +64,7 @@ mod eq {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn expect_header_should_panic_when_multi_valued() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header("x-m", "a");
         });
     }
@@ -72,7 +72,7 @@ mod eq {
     #[test]
     #[stubr::mock("header/one.json")]
     fn result_should_expect_header() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header("x-a", "a");
         });
     }
@@ -80,7 +80,7 @@ mod eq {
     #[test]
     #[stubr::mock("header/many.json")]
     fn result_should_expect_many_header() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await
                 .expect_header("x-a", "a")
                 .expect_header("x-b", "b");
@@ -91,7 +91,7 @@ mod eq {
     #[stubr::mock("header/one.json")]
     #[test]
     fn result_expect_header_should_panic_when_wrong_key() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header("x-b", "a");
         });
     }
@@ -100,7 +100,7 @@ mod eq {
     #[stubr::mock("header/one.json")]
     #[test]
     fn result_expect_header_should_panic_when_wrong_value() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header("x-a", "b");
         });
     }
@@ -109,7 +109,7 @@ mod eq {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn result_expect_header_should_panic_when_multi_valued() {
-        System::new().block_on(async move {
+        System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header("x-m", "a");
         });
     }
@@ -121,7 +121,7 @@ mod multi {
     #[test]
     #[stubr::mock("header/multi.json")]
     fn expect_headers_should_expect_multi_headers() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_headers("x-m", ["a", "b"]);
         });
     }
@@ -130,7 +130,7 @@ mod multi {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn expect_headers_should_fail_when_key_missing() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_headers("x-b", ["a", "b"]);
         });
     }
@@ -139,7 +139,7 @@ mod multi {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn expect_headers_should_fail_when_one_value_missing() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_headers("x-m", ["a"]);
         });
     }
@@ -148,7 +148,7 @@ mod multi {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn expect_headers_should_fail_when_one_value_not_eq() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_headers("x-m", ["a", "c"]);
         });
     }
@@ -157,7 +157,7 @@ mod multi {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn expect_headers_should_fail_when_one_expected_value_missing() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_headers("x-m", ["a", "b", "c"]);
         });
     }
@@ -166,7 +166,7 @@ mod multi {
     #[stubr::mock("header/multi.json")]
     #[test]
     fn expect_headers_should_fail_when_no_value_expected() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_headers("x-m", []);
         });
     }
@@ -174,7 +174,7 @@ mod multi {
     #[test]
     #[stubr::mock("header/multi.json")]
     fn result_expect_headers_should_expect_multi_headers() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_headers("x-m", ["a", "b"]);
         });
     }
@@ -186,7 +186,7 @@ mod present {
     #[test]
     #[stubr::mock("header/one.json")]
     fn should_expect_header_present() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header_present("x-a");
         });
     }
@@ -194,7 +194,7 @@ mod present {
     #[test]
     #[stubr::mock("header/one.json")]
     fn should_expect_header_present_ignoring_case() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header_present("X-A");
         });
     }
@@ -203,7 +203,7 @@ mod present {
     #[stubr::mock("header/one.json")]
     #[test]
     fn expect_header_present_should_fail_when_absent() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header_present("x-b");
         });
     }
@@ -211,7 +211,7 @@ mod present {
     #[test]
     #[stubr::mock("header/one.json")]
     fn result_should_expect_header_present() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header_present("x-a");
         });
     }
@@ -219,7 +219,7 @@ mod present {
     #[test]
     #[stubr::mock("header/one.json")]
     fn result_should_expect_header_present_ignoring_case() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header_present("X-A");
         });
     }
@@ -228,7 +228,7 @@ mod present {
     #[stubr::mock("header/one.json")]
     #[test]
     fn result_expect_header_present_should_fail_when_absent() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header_present("x-b");
         });
     }
@@ -240,7 +240,7 @@ mod absent {
     #[test]
     #[stubr::mock("header/one.json")]
     fn should_expect_header_absent() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header_absent("x-b");
         });
     }
@@ -249,7 +249,7 @@ mod absent {
     #[stubr::mock("header/one.json")]
     #[test]
     fn expect_header_absent_should_fail_when_absent() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header_absent("x-a");
         });
     }
@@ -258,7 +258,7 @@ mod absent {
     #[stubr::mock("header/one.json")]
     #[test]
     fn expect_header_absent_should_ignore_case() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_header_absent("X-A");
         });
     }
@@ -266,7 +266,7 @@ mod absent {
     #[test]
     #[stubr::mock("header/one.json")]
     fn result_should_expect_header_absent() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header_absent("x-b");
         });
     }
@@ -275,7 +275,7 @@ mod absent {
     #[stubr::mock("header/one.json")]
     #[test]
     fn result_expect_header_absent_should_fail_when_absent() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header_absent("x-a");
         });
     }
@@ -284,7 +284,7 @@ mod absent {
     #[stubr::mock("header/one.json")]
     #[test]
     fn result_expect_header_absent_should_ignore_case() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_header_absent("X-A");
         });
     }
@@ -296,7 +296,7 @@ mod json {
     #[test]
     #[stubr::mock("header/json.json")]
     fn should_expect_content_type_json() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_content_type_json();
         });
     }
@@ -305,7 +305,7 @@ mod json {
     #[stubr::mock("header/xml.json")]
     #[test]
     fn expect_header_should_panic_when_wrong_value() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_content_type_json();
         });
     }
@@ -313,7 +313,7 @@ mod json {
     #[test]
     #[stubr::mock("header/json.json")]
     fn result_should_expect_content_type_json() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_content_type_json();
         });
     }
@@ -322,7 +322,7 @@ mod json {
     #[stubr::mock("header/xml.json")]
     #[test]
     fn result_expect_header_should_panic_when_wrong_value() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_content_type_json();
         });
     }
@@ -334,7 +334,7 @@ mod text {
     #[test]
     #[stubr::mock("header/text.json")]
     fn should_expect_content_type_text() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_content_type_text();
         });
     }
@@ -343,7 +343,7 @@ mod text {
     #[stubr::mock("header/xml.json")]
     #[test]
     fn expect_header_should_panic_when_wrong_value() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_content_type_text();
         });
     }
@@ -351,7 +351,7 @@ mod text {
     #[test]
     #[stubr::mock("header/text.json")]
     fn result_should_expect_content_type_text() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_content_type_text();
         });
     }
@@ -360,7 +360,7 @@ mod text {
     #[stubr::mock("header/xml.json")]
     #[test]
     fn result_expect_header_should_panic_when_wrong_value() {
-        actix_rt::System::new().block_on(async move {
+        actix_rt::System::new("test").block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_content_type_text();
         });
     }
