@@ -8,7 +8,7 @@ use crate::asserter::status::{assert_status, assert_status_range};
 use super::super::{AnyStatus, AsserhttpStatus};
 
 impl <'a> AsserhttpStatus<BlockingRocketResponse<'a>> for BlockingRocketResponse<'a> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut Self {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().code, status.into().0);
         self
     }
@@ -20,7 +20,7 @@ impl <'a> AsserhttpStatus<BlockingRocketResponse<'a>> for BlockingRocketResponse
 }
 
 impl <'a> AsserhttpStatus<AsyncRocketResponse<'a>> for AsyncRocketResponse<'a> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut Self {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().code, status.into().0);
         self
     }

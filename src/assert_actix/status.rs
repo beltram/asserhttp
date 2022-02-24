@@ -6,7 +6,7 @@ use crate::asserter::status::{assert_status, assert_status_range};
 use super::super::{AnyStatus, AsserhttpStatus};
 
 impl AsserhttpStatus<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut Self {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().as_u16(), status.into().0);
         self
     }
@@ -18,7 +18,7 @@ impl AsserhttpStatus<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
 }
 
 impl AsserhttpStatus<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBody>, ActixError> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut ActixResponse<ActixBody> {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut ActixResponse<ActixBody> {
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
@@ -28,7 +28,7 @@ impl AsserhttpStatus<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBod
 }
 
 impl AsserhttpStatus<ActixServiceResponse<ActixBody>> for ActixServiceResponse<ActixBody> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut Self {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().as_u16(), status.into().0);
         self
     }

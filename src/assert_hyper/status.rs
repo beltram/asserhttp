@@ -9,7 +9,7 @@ use crate::asserter::status::{assert_status, assert_status_range};
 use super::super::{AnyStatus, AsserhttpStatus};
 
 impl AsserhttpStatus<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut Self {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().as_u16(), status.into().0);
         self
     }
@@ -21,7 +21,7 @@ impl AsserhttpStatus<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
 }
 
 impl AsserhttpStatus<HyperResponse<HyperBody>> for HyperResult<HyperResponse<HyperBody>> {
-    fn expect_status_eq<S: Into<AnyStatus>>(&mut self, status: S) -> &mut HyperResponse<HyperBody> {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut HyperResponse<HyperBody> {
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
