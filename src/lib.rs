@@ -1033,7 +1033,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut T;
+    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut T;
 
     /// Expects response multi valued headers to be equal
     /// * `key` - expected header key
@@ -1073,7 +1073,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut T;
+    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut T;
 
     /// Expects response header to be present
     /// * `key` - expected present header key
@@ -1112,7 +1112,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut T;
+    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut T;
 
     /// Expects response header to be absent
     /// * `key` - expected absent header key
@@ -1151,7 +1151,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_header_absent<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut T;
+    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut T;
 
     /// Expects response header `Content-Type: application/json`
     ///

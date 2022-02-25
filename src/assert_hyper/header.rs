@@ -10,52 +10,50 @@ use super::super::{
 };
 
 impl AsserhttpHeader<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
-    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut Self {
-        let key = key.into();
-        assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key);
-        let values = self.headers().get(key)
+    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
+        assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
+        let values = self.headers().get(key.as_ref())
             .and_then(|it| it.to_str().ok())
             .map(|v: &str| v.split(',').map(|s| s.trim()))
             .unwrap();
-        assert_header_value(values, key, value.into());
+        assert_header_value(values, key.as_ref(), value.as_ref());
         self
     }
 
-    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut Self {
-        let key = key.into();
-        assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key);
-        let values = self.headers().get(key)
+    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+        assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
+        let values = self.headers().get(key.as_ref())
             .and_then(|it| it.to_str().ok())
             .map(|v: &str| v.split(',').map(|s| s.trim()))
             .unwrap();
-        assert_header_values(values, key, value.into());
+        assert_header_values(values, key.as_ref(), value.into());
         self
     }
 
-    fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut Self {
-        assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.into());
+    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+        assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         self
     }
 
-    fn expect_header_absent<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut Self {
-        assert_header_key_absent(self.headers().iter().map(|(name, _)| name.as_str()), key.into());
+    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+        assert_header_key_absent(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         self
     }
 }
 
 impl AsserhttpHeader<HyperResponse<HyperBody>> for HyperResult<HyperResponse<HyperBody>> {
-    fn expect_header<'a, K: Into<&'a str>, V: Into<&'a str>>(&mut self, key: K, value: V) -> &mut HyperResponse<HyperBody> {
+    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut HyperResponse<HyperBody> {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a, K: Into<&'a str>, V: Into<Vec<&'a str>>>(&mut self, key: K, value: V) -> &mut HyperResponse<HyperBody> {
+    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut HyperResponse<HyperBody> {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut HyperResponse<HyperBody> {
+    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut HyperResponse<HyperBody> {
         self.as_mut().unwrap().expect_header_present(key)
     }
-    fn expect_header_absent<'a, K: Into<&'a str>>(&mut self, key: K) -> &mut HyperResponse<HyperBody> {
+    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut HyperResponse<HyperBody> {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }
