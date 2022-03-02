@@ -1033,7 +1033,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut T;
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut T;
 
     /// Expects response multi valued headers to be equal
     /// * `key` - expected header key
@@ -1112,7 +1112,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut T;
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut T;
 
     /// Expects response header to be absent
     /// * `key` - expected absent header key
@@ -1151,7 +1151,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut T;
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut T;
 
     /// Expects response header `Content-Type: application/json`
     ///

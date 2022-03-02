@@ -9,7 +9,7 @@ use super::super::{
 pub type AwcResponse = awc::ClientResponse<Decoder<Payload>>;
 
 impl AsserhttpHeader<AwcResponse> for AwcResponse {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         let values = self.headers().get(key.as_ref())
             .and_then(|it| it.to_str().ok())
@@ -29,19 +29,19 @@ impl AsserhttpHeader<AwcResponse> for AwcResponse {
         self
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         self
     }
 
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key_absent(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         self
     }
 }
 
 impl AsserhttpHeader<AwcResponse> for Result<AwcResponse, AwcError> {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut AwcResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut AwcResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
@@ -49,10 +49,10 @@ impl AsserhttpHeader<AwcResponse> for Result<AwcResponse, AwcError> {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut AwcResponse {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut AwcResponse {
         self.as_mut().unwrap().expect_header_present(key)
     }
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut AwcResponse {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut AwcResponse {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }

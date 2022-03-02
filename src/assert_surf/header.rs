@@ -6,7 +6,7 @@ use super::super::{
 };
 
 impl AsserhttpHeader<SurfResponse> for SurfResponse {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(self.header_names().map(SurfHeaderName::as_str), key.as_ref());
         let values = self.header(key.as_ref()).unwrap().into_iter()
             .map(SurfHeaderValue::as_str)
@@ -24,19 +24,19 @@ impl AsserhttpHeader<SurfResponse> for SurfResponse {
         self
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key(self.header_names().map(SurfHeaderName::as_str), key.as_ref());
         self
     }
 
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key_absent(self.header_names().map(SurfHeaderName::as_str), key.as_ref());
         self
     }
 }
 
 impl AsserhttpHeader<SurfResponse> for Result<SurfResponse, SurfError> {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut SurfResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut SurfResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
@@ -44,10 +44,10 @@ impl AsserhttpHeader<SurfResponse> for Result<SurfResponse, SurfError> {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut SurfResponse {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut SurfResponse {
         self.as_mut().unwrap().expect_header_present(key)
     }
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut SurfResponse {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut SurfResponse {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }

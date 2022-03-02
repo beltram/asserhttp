@@ -11,7 +11,7 @@ use super::super::{
 };
 
 impl AsserhttpHeader<ReqwestResponse> for ReqwestResponse {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         assert_header_value(header_values(key.as_ref(), self.headers()), key.as_ref(), value.as_ref());
         self
@@ -23,19 +23,19 @@ impl AsserhttpHeader<ReqwestResponse> for ReqwestResponse {
         self
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         self
     }
 
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key_absent(header_keys(self.headers()), key.as_ref());
         self
     }
 }
 
 impl AsserhttpHeader<AsyncReqwestResponse> for AsyncReqwestResponse {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         assert_header_value(header_values(key.as_ref(), self.headers()), key.as_ref(), value.as_ref());
         self
@@ -47,19 +47,19 @@ impl AsserhttpHeader<AsyncReqwestResponse> for AsyncReqwestResponse {
         self
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         self
     }
 
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut Self {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut Self {
         assert_header_key_absent(header_keys(self.headers()), key.as_ref());
         self
     }
 }
 
 impl AsserhttpHeader<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut ReqwestResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut ReqwestResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
@@ -67,17 +67,17 @@ impl AsserhttpHeader<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> 
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut ReqwestResponse {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut ReqwestResponse {
         self.as_mut().unwrap().expect_header_present(key)
     }
 
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut ReqwestResponse {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut ReqwestResponse {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }
 
 impl AsserhttpHeader<AsyncReqwestResponse> for Result<AsyncReqwestResponse, ReqwestError> {
-    fn expect_header<'a>(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut AsyncReqwestResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut AsyncReqwestResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
@@ -85,11 +85,11 @@ impl AsserhttpHeader<AsyncReqwestResponse> for Result<AsyncReqwestResponse, Reqw
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present<'a>(&mut self, key: impl AsRef<str>) -> &mut AsyncReqwestResponse {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut AsyncReqwestResponse {
         self.as_mut().unwrap().expect_header_present(key)
     }
 
-    fn expect_header_absent<'a>(&mut self, key: impl AsRef<str>) -> &mut AsyncReqwestResponse {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut AsyncReqwestResponse {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }
