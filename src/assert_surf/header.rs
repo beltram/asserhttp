@@ -15,7 +15,7 @@ impl AsserhttpHeader<SurfResponse> for SurfResponse {
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(self.header_names().map(SurfHeaderName::as_str), key.as_ref());
         let values = self.header(key.as_ref()).unwrap().into_iter()
             .map(SurfHeaderValue::as_str)
@@ -40,7 +40,7 @@ impl AsserhttpHeader<SurfResponse> for Result<SurfResponse, SurfError> {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut SurfResponse {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut SurfResponse {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 

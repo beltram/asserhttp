@@ -20,7 +20,7 @@ impl AsserhttpHeader<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         let values = self.headers().get(key.as_ref())
             .and_then(|it| it.to_str().ok())
@@ -46,7 +46,7 @@ impl AsserhttpHeader<HyperResponse<HyperBody>> for HyperResult<HyperResponse<Hyp
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut HyperResponse<HyperBody> {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut HyperResponse<HyperBody> {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 

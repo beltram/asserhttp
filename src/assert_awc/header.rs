@@ -19,7 +19,7 @@ impl AsserhttpHeader<AwcResponse> for AwcResponse {
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         let values = self.headers().get(key.as_ref())
             .and_then(|it| it.to_str().ok())
@@ -45,7 +45,7 @@ impl AsserhttpHeader<AwcResponse> for Result<AwcResponse, AwcError> {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut AwcResponse {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut AwcResponse {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 

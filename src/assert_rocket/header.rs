@@ -16,7 +16,7 @@ impl <'b> AsserhttpHeader<BlockingRocketResponse<'b>> for BlockingRocketResponse
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref().to_string());
         assert_header_values(header_values(key.as_ref(), self.headers()), key.as_ref(), value.into());
         self
@@ -40,7 +40,7 @@ impl <'b> AsserhttpHeader<AsyncRocketResponse<'b>> for AsyncRocketResponse<'b> {
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref().to_string());
         assert_header_values(header_values(key.as_ref(), self.headers()), key.as_ref(), value.into());
         self

@@ -1073,7 +1073,7 @@ pub trait AsserhttpHeader<T> {
     ///     });
     /// }
     /// ```
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut T;
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T;
 
     /// Expects response header to be present
     /// * `key` - expected present header key

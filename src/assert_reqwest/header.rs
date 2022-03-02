@@ -17,7 +17,7 @@ impl AsserhttpHeader<ReqwestResponse> for ReqwestResponse {
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         assert_header_values(header_values(key.as_ref(), self.headers()), key.as_ref(), value.into());
         self
@@ -41,7 +41,7 @@ impl AsserhttpHeader<AsyncReqwestResponse> for AsyncReqwestResponse {
         self
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut Self {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         assert_header_values(header_values(key.as_ref(), self.headers()), key.as_ref(), value.into());
         self
@@ -63,7 +63,7 @@ impl AsserhttpHeader<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> 
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut ReqwestResponse {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut ReqwestResponse {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
@@ -81,7 +81,7 @@ impl AsserhttpHeader<AsyncReqwestResponse> for Result<AsyncReqwestResponse, Reqw
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a, V: Into<Vec<&'a str>>>(&mut self, key: impl AsRef<str>, value: V) -> &mut AsyncReqwestResponse {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut AsyncReqwestResponse {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
