@@ -10,8 +10,8 @@ impl AsserhttpStatus<ReqwestResponse> for ReqwestResponse {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }
@@ -22,8 +22,8 @@ impl AsserhttpStatus<AsyncReqwestResponse> for AsyncReqwestResponse {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }
@@ -33,8 +33,8 @@ impl AsserhttpStatus<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> 
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut ReqwestResponse {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut ReqwestResponse {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }
 
@@ -43,7 +43,7 @@ impl AsserhttpStatus<AsyncReqwestResponse> for Result<AsyncReqwestResponse, Reqw
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut AsyncReqwestResponse {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut AsyncReqwestResponse {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }

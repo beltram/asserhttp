@@ -15,8 +15,8 @@ impl AsserhttpStatus<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }
@@ -27,8 +27,8 @@ impl AsserhttpStatus<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsync
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }
@@ -38,8 +38,8 @@ impl AsserhttpStatus<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBod
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut IsahcResponse<IsahcBody> {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut IsahcResponse<IsahcBody> {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }
 
@@ -48,7 +48,7 @@ impl AsserhttpStatus<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<Isa
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut IsahcResponse<IsahcAsyncBody> {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut IsahcResponse<IsahcAsyncBody> {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }

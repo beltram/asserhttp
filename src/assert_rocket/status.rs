@@ -13,8 +13,8 @@ impl <'a> AsserhttpStatus<BlockingRocketResponse<'a>> for BlockingRocketResponse
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().code, lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().code, lower.into().0, upper.into().0);
         self
     }
 }
@@ -25,8 +25,8 @@ impl <'a> AsserhttpStatus<AsyncRocketResponse<'a>> for AsyncRocketResponse<'a> {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().code, lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().code, lower.into().0, upper.into().0);
         self
     }
 }

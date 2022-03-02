@@ -10,8 +10,8 @@ impl AsserhttpStatus<SurfResponse> for SurfResponse {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(u16::from(self.status()), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(u16::from(self.status()), lower.into().0, upper.into().0);
         self
     }
 }
@@ -21,7 +21,7 @@ impl AsserhttpStatus<SurfResponse> for Result<SurfResponse, SurfError> {
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut SurfResponse {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut SurfResponse {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }

@@ -11,8 +11,8 @@ impl AsserhttpStatus<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }
@@ -22,8 +22,8 @@ impl AsserhttpStatus<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBod
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut ActixResponse<ActixBody> {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut ActixResponse<ActixBody> {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }
 
@@ -33,8 +33,8 @@ impl AsserhttpStatus<ActixServiceResponse<ActixBody>> for ActixServiceResponse<A
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }

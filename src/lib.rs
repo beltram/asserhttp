@@ -378,7 +378,7 @@ pub trait AsserhttpStatus<T> {
     ///     });
     /// }
     /// ```
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut T;
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T;
 
     /// Expects response status to be in 2xx range
     ///

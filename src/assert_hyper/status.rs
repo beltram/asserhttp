@@ -14,8 +14,8 @@ impl AsserhttpStatus<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
         self
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut Self {
-        assert_status_range(self.status().as_u16(), lower, upper);
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut Self {
+        assert_status_range(self.status().as_u16(), lower.into().0, upper.into().0);
         self
     }
 }
@@ -25,7 +25,7 @@ impl AsserhttpStatus<HyperResponse<HyperBody>> for HyperResult<HyperResponse<Hyp
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut HyperResponse<HyperBody> {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut HyperResponse<HyperBody> {
+        self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }
