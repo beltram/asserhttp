@@ -13,7 +13,7 @@ mod json {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn should_expect_raw_body_json() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
         });
     }
@@ -21,7 +21,7 @@ mod json {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn should_expect_struct_body_json() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json(|b: Body| assert_eq!(b, Body { a: String::from("b") }));
         });
     }
@@ -30,7 +30,7 @@ mod json {
     #[stubr::mock("body/json/value.json")]
     #[test]
     fn expect_body_json_should_fail_when_closure_fails() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "c"})));
         });
     }
@@ -38,7 +38,7 @@ mod json {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn result_should_expect_raw_body_json() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
         });
     }
@@ -46,7 +46,7 @@ mod json {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn result_should_expect_struct_body_json() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json(|b: Body| assert_eq!(b, Body { a: String::from("b") }));
         });
     }
@@ -55,7 +55,7 @@ mod json {
     #[stubr::mock("body/json/value.json")]
     #[test]
     fn result_expect_body_json_should_fail_when_closure_fails() {
-        System::new("test").block_on(async move {
+        System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "c"})));
         });
     }
@@ -67,7 +67,7 @@ mod json_eq {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn should_expect_raw_body_json() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json_eq(json!({"a": "b"}));
         });
     }
@@ -75,7 +75,7 @@ mod json_eq {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn should_expect_struct_body_json() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json_eq(Body { a: String::from("b") });
         });
     }
@@ -84,7 +84,7 @@ mod json_eq {
     #[stubr::mock("body/json/value.json")]
     #[test]
     fn expect_body_json_should_fail_when_not_equal() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json_eq(json!({"a": "c"}));
         });
     }
@@ -93,7 +93,7 @@ mod json_eq {
     #[stubr::mock("body/json/absent.json")]
     #[test]
     fn expect_body_json_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_json_eq(json!({"a": "b"}));
         });
     }
@@ -101,7 +101,7 @@ mod json_eq {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn result_should_expect_raw_body_json() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json_eq(json!({"a": "b"}));
         });
     }
@@ -109,7 +109,7 @@ mod json_eq {
     #[test]
     #[stubr::mock("body/json/value.json")]
     fn result_should_expect_struct_body_json() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json_eq(Body { a: String::from("b") });
         });
     }
@@ -118,7 +118,7 @@ mod json_eq {
     #[stubr::mock("body/json/value.json")]
     #[test]
     fn result_expect_body_json_should_fail_when_not_equal() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json_eq(json!({"a": "c"}));
         });
     }
@@ -127,7 +127,7 @@ mod json_eq {
     #[stubr::mock("body/json/absent.json")]
     #[test]
     fn result_expect_body_json_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_json_eq(json!({"a": "b"}));
         });
     }
@@ -139,7 +139,7 @@ mod text {
     #[test]
     #[stubr::mock("body/text/value.json")]
     fn should_expect_body_text() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text(|b| assert_eq!(b, String::from("abcd")));
         });
     }
@@ -148,7 +148,7 @@ mod text {
     #[stubr::mock("body/text/value.json")]
     #[test]
     fn expect_body_text_should_fail_when_closure_fails() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text(|b| assert_eq!(b, String::from("dcba")));
         });
     }
@@ -156,7 +156,7 @@ mod text {
     #[test]
     #[stubr::mock("body/text/value.json")]
     fn result_should_expect_body_text() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text(|b| assert_eq!(b, String::from("abcd")));
         });
     }
@@ -165,7 +165,7 @@ mod text {
     #[stubr::mock("body/text/value.json")]
     #[test]
     fn result_expect_body_text_should_fail_when_closure_fails() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text(|b| assert_eq!(b, String::from("dcba")));
         });
     }
@@ -177,7 +177,7 @@ mod text_eq {
     #[test]
     #[stubr::mock("body/text/value.json")]
     fn should_expect_body_text_eq() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text_eq("abcd");
         });
     }
@@ -186,7 +186,7 @@ mod text_eq {
     #[stubr::mock("body/text/value.json")]
     #[test]
     fn expect_body_text_should_fail_when_not_equal() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text_eq("dcab");
         });
     }
@@ -195,7 +195,7 @@ mod text_eq {
     #[stubr::mock("body/text/absent.json")]
     #[test]
     fn expect_body_text_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text_eq("abcd");
         });
     }
@@ -203,7 +203,7 @@ mod text_eq {
     #[test]
     #[stubr::mock("body/text/value.json")]
     fn result_should_expect_body_text_eq() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text_eq("abcd");
         });
     }
@@ -212,7 +212,7 @@ mod text_eq {
     #[stubr::mock("body/text/value.json")]
     #[test]
     fn result_expect_body_text_should_fail_when_not_equal() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text_eq("dcab");
         });
     }
@@ -221,7 +221,7 @@ mod text_eq {
     #[stubr::mock("body/text/absent.json")]
     #[test]
     fn result_expect_body_text_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text_eq("abcd");
         });
     }
@@ -233,7 +233,7 @@ mod regex {
     #[test]
     #[stubr::mock("body/text/value.json")]
     fn should_expect_body_text_matches() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text_matches("[a-d]+");
         });
     }
@@ -242,7 +242,7 @@ mod regex {
     #[stubr::mock("body/text/value.json")]
     #[test]
     fn expect_body_text_matches_should_fail_when_does_not_match_regex() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text_matches("[e-h]+");
         });
     }
@@ -251,7 +251,7 @@ mod regex {
     #[stubr::mock("body/text/absent.json")]
     #[test]
     fn expect_body_text_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_text_matches("[a-d]+");
         });
     }
@@ -259,7 +259,7 @@ mod regex {
     #[test]
     #[stubr::mock("body/text/value.json")]
     fn result_should_expect_body_text_matches() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text_matches("[a-d]+");
         });
     }
@@ -268,7 +268,7 @@ mod regex {
     #[stubr::mock("body/text/value.json")]
     #[test]
     fn result_expect_body_text_matches_should_fail_when_does_not_match_regex() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text_matches("[e-h]+");
         });
     }
@@ -277,7 +277,7 @@ mod regex {
     #[stubr::mock("body/text/absent.json")]
     #[test]
     fn result_expect_body_text_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_text_matches("[a-d]+");
         });
     }
@@ -289,7 +289,7 @@ mod bytes {
     #[test]
     #[stubr::mock("body/bytes/value.json")]
     fn should_expect_body_bytes() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
         });
     }
@@ -298,7 +298,7 @@ mod bytes {
     #[stubr::mock("body/bytes/value.json")]
     #[test]
     fn expect_body_bytes_should_fail_when_closure_fails() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"dcba"));
         });
     }
@@ -306,7 +306,7 @@ mod bytes {
     #[test]
     #[stubr::mock("body/bytes/value.json")]
     fn result_should_expect_body_bytes() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
         });
     }
@@ -315,7 +315,7 @@ mod bytes {
     #[stubr::mock("body/bytes/value.json")]
     #[test]
     fn result_expect_body_bytes_should_fail_when_closure_fails() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_bytes(|b| assert_eq!(b, b"dcba"));
         });
     }
@@ -327,7 +327,7 @@ mod bytes_eq {
     #[test]
     #[stubr::mock("body/bytes/value.json")]
     fn should_expect_body_bytes_eq() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_bytes_eq(b"abcd");
         });
     }
@@ -336,7 +336,7 @@ mod bytes_eq {
     #[stubr::mock("body/bytes/value.json")]
     #[test]
     fn expect_body_bytes_should_fail_not_equal() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_bytes_eq(b"dcba");
         });
     }
@@ -345,7 +345,7 @@ mod bytes_eq {
     #[stubr::mock("body/bytes/absent.json")]
     #[test]
     fn expect_body_bytes_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_bytes_eq(b"abcd");
         });
     }
@@ -353,7 +353,7 @@ mod bytes_eq {
     #[test]
     #[stubr::mock("body/bytes/value.json")]
     fn result_should_expect_body_bytes_eq() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_bytes_eq(b"abcd");
         });
     }
@@ -362,7 +362,7 @@ mod bytes_eq {
     #[stubr::mock("body/bytes/value.json")]
     #[test]
     fn result_expect_body_bytes_should_fail_not_equal() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_bytes_eq(b"dcba");
         });
     }
@@ -371,7 +371,7 @@ mod bytes_eq {
     #[stubr::mock("body/bytes/absent.json")]
     #[test]
     fn result_expect_body_bytes_should_fail_when_missing() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_bytes_eq(b"abcd");
         });
     }
@@ -383,7 +383,7 @@ mod present {
     #[test]
     #[stubr::mock("body/bytes/value.json")]
     fn should_expect_body_present() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_present();
         });
     }
@@ -392,7 +392,7 @@ mod present {
     #[stubr::mock("body/bytes/absent.json")]
     #[test]
     fn expect_body_present_should_fail_when_absent() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_present();
         });
     }
@@ -400,7 +400,7 @@ mod present {
     #[test]
     #[stubr::mock("body/bytes/value.json")]
     fn result_should_expect_body_present() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_present();
         });
     }
@@ -409,7 +409,7 @@ mod present {
     #[stubr::mock("body/bytes/absent.json")]
     #[test]
     fn result_expect_body_present_should_fail_when_absent() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_present();
         });
     }
@@ -421,7 +421,7 @@ mod absent {
     #[test]
     #[stubr::mock("body/bytes/absent.json")]
     fn should_expect_body_absent() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_absent();
         });
     }
@@ -430,7 +430,7 @@ mod absent {
     #[stubr::mock("body/bytes/value.json")]
     #[test]
     fn expect_body_absent_should_fail_when_present() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.unwrap().expect_body_absent();
         });
     }
@@ -438,7 +438,7 @@ mod absent {
     #[test]
     #[stubr::mock("body/bytes/absent.json")]
     fn result_should_expect_body_absent() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_absent();
         });
     }
@@ -447,7 +447,7 @@ mod absent {
     #[stubr::mock("body/bytes/value.json")]
     #[test]
     fn result_expect_body_absent_should_fail_when_present() {
-        actix_rt::System::new("test").block_on(async move {
+        actix_rt::System::new().block_on(async move {
             Client::default().get(stubr.uri()).send().await.expect_body_absent();
         });
     }

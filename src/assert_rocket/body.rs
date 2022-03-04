@@ -16,9 +16,9 @@ use super::super::{
         EMPTY_BODY_BYTES_MSG,
         EMPTY_BODY_JSON_MSG,
         EMPTY_BODY_TEXT_MSG,
-        INVALID_UTF8_BODY_TEXT_MSG,
         EXPECTED_BODY_ABSENT_MSG,
         EXPECTED_BODY_PRESENT_MSG,
+        INVALID_UTF8_BODY_TEXT_MSG,
     },
 };
 

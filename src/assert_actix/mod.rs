@@ -1,5 +1,5 @@
-use actix_http::{body::Body as ActixBody, Error as ActixError, Response as ActixResponse};
-use actix_web::dev::ServiceResponse as ActixServiceResponse;
+use actix_http::{body::BoxBody, Error as ActixError};
+use actix_web::{dev::ServiceResponse as ActixServiceResponse, HttpResponse as ActixResponse};
 
 use super::Asserhttp;
 
@@ -7,8 +7,8 @@ mod status;
 mod header;
 mod body;
 
-impl Asserhttp<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {}
+impl Asserhttp<ActixResponse<BoxBody>> for ActixResponse<BoxBody> {}
 
-impl Asserhttp<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBody>, ActixError> {}
+impl Asserhttp<ActixResponse<BoxBody>> for Result<ActixResponse<BoxBody>, ActixError> {}
 
-impl Asserhttp<ActixServiceResponse<ActixBody>> for ActixServiceResponse<ActixBody> {}
+impl Asserhttp<ActixServiceResponse<BoxBody>> for ActixServiceResponse<BoxBody> {}

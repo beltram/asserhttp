@@ -10,14 +10,14 @@ mod json {
 
     #[actix_rt::test]
     async fn should_expect_raw_body_json() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     }
 
     #[actix_rt::test]
     async fn should_expect_struct_body_json() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json(|b: Body| assert_eq!(b, Body { a: String::from("b") }));
     }
@@ -25,7 +25,7 @@ mod json {
     #[should_panic]
     #[actix_rt::test]
     async fn expect_body_json_should_fail_when_closure_fails() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "c"})));
     }
@@ -36,14 +36,14 @@ mod json_eq {
 
     #[actix_rt::test]
     async fn should_expect_raw_body_json() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(json!({"a": "b"}));
     }
 
     #[actix_rt::test]
     async fn should_expect_struct_body_json() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(Body { a: String::from("b") });
     }
@@ -51,7 +51,7 @@ mod json_eq {
     #[should_panic(expected = "expected json body '{\"a\":\"b\"}' to be equal to '{\"a\":\"c\"}' but was not")]
     #[actix_rt::test]
     async fn expect_body_json_should_fail_when_not_equal() {
-        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
+        let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(json!({"a": "c"}));
     }
