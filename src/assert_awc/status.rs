@@ -1,11 +1,9 @@
-use actix_http::{encoding::Decoder, Payload};
 use awc::error::SendRequestError as AwcError;
 
-use crate::asserter::status::{assert_status, assert_status_range};
-
-use super::super::{AnyStatus, AsserhttpStatus};
-
-pub type AwcResponse = awc::ClientResponse<Decoder<Payload>>;
+use super::{
+    AwcResponse,
+    super::{AnyStatus, AsserhttpStatus, asserter::status::{assert_status, assert_status_range}},
+};
 
 impl AsserhttpStatus<AwcResponse> for AwcResponse {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {

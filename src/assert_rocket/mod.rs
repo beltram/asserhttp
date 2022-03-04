@@ -9,6 +9,6 @@ mod status;
 mod header;
 mod body;
 
-impl <'a> Asserhttp<BlockingRocketResponse<'a>> for BlockingRocketResponse<'a> {}
+impl<'a> Asserhttp<BlockingRocketResponse<'a>> for BlockingRocketResponse<'a> {}
 
-impl <'a> Asserhttp<AsyncRocketResponse<'a>> for AsyncRocketResponse<'a> {}
+impl<'a> Asserhttp<AsyncRocketResponse<'a>> for AsyncRocketResponse<'a> {}

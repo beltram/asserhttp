@@ -1,12 +1,13 @@
-use actix_http::{body::Body as ActixBody, Error as ActixError, Response as ActixResponse};
+use actix_http::Error as ActixError;
 use actix_web::dev::ServiceResponse as ActixServiceResponse;
+use actix_web::HttpResponse as ActixResponse;
 
 use super::super::{
     AsserhttpHeader,
     asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value, assert_header_values},
 };
 
-impl AsserhttpHeader<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
+impl<B> AsserhttpHeader<ActixResponse<B>> for ActixResponse<B> {
     fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         let values = self.headers().get(key.as_ref())
@@ -38,25 +39,25 @@ impl AsserhttpHeader<ActixResponse<ActixBody>> for ActixResponse<ActixBody> {
     }
 }
 
-impl AsserhttpHeader<ActixResponse<ActixBody>> for Result<ActixResponse<ActixBody>, ActixError> {
-    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut ActixResponse<ActixBody> {
+impl<B> AsserhttpHeader<ActixResponse<B>> for Result<ActixResponse<B>, ActixError> {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut ActixResponse<B> {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut ActixResponse<ActixBody> {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut ActixResponse<B> {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut ActixResponse<ActixBody> {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut ActixResponse<B> {
         self.as_mut().unwrap().expect_header_present(key)
     }
 
-    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut ActixResponse<ActixBody> {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut ActixResponse<B> {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }
 
-impl AsserhttpHeader<ActixServiceResponse<ActixBody>> for ActixServiceResponse<ActixBody> {
+impl<B> AsserhttpHeader<ActixServiceResponse<B>> for ActixServiceResponse<B> {
     fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(self.headers().iter().map(|(name, _)| name.as_str()), key.as_ref());
         let values = self.headers().get(key.as_ref())

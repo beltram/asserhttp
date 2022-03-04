@@ -23,9 +23,9 @@ surf = { version = "2.3.2", optional = true }
 isahc = { version = "1.6.0", features = ["json"], optional = true }
 reqwest = { version = "0.11.9", features = ["json", "blocking"], optional = true }
 hyper = { version = "0.14.17", features = ["client"], optional = true }
-awc = { version = "2.0.3", optional = true }
-actix-http = { version = "2.2.2", optional = true }
-actix-web = { version = "3.3.3", optional = true }
+awc = { version = "3.0.0-beta.21", optional = true }
+actix-http = { version = "3.0.0", optional = true }
+actix-web = { version = "4.0.1", optional = true }
 rocket = { version = "0.5.0-rc.1", optional = true }
 
 [dev-dependencies]
@@ -34,7 +34,7 @@ stubr = "0.4.14"
 serde_json = "1.0.79"
 async-std = { version = "1.10.0", features = ["attributes"] }
 tokio = { version = "1.16.1", features = ["macros"] }
-actix-rt = "1.1.1"
+actix-rt = "2.6.0"
 pin-project = "1.0.10"
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
 

@@ -1,22 +1,22 @@
 use std::{fmt::Debug, panic::panic_any};
 
-use actix_http::{encoding::Decoder, Payload};
 use async_std::task::block_on;
 use awc::error::SendRequestError as AwcError;
 use serde::{de::DeserializeOwned, Serialize};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
+use super::{
+    AwcResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+        },
     },
 };
-
-pub type AwcResponse = awc::ClientResponse<Decoder<Payload>>;
 
 impl AsserhttpBody<AwcResponse> for AwcResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
