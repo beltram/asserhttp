@@ -11,9 +11,10 @@ jobs:
         with:
           profile: minimal
           toolchain: stable
+      - uses: taiki-e/install-action@cargo-hack
       - uses: Swatinem/rust-cache@v1
-      - name: cargo/check
-        run: cargo check
+      - name: cargo/hack (verify features compile in isolation)
+        run: cargo hack check --each-feature --no-dev-deps
       - name: cargo/test
         run: cargo test
       - name: cargo/clippy
