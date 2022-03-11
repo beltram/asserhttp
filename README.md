@@ -62,7 +62,7 @@ Then use it in your tests, for example on [actix-web](https://actix.rs/docs/test
 use actix_web::{App, HttpResponse, test::{call_service, init_service, TestRequest}, web};
 use asserhttp::*;
 
-#[actix_rt::test]
+#[actix_web::test]
 async fn sample_test() {
     let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
     call_service(&mut init_service(app).await, TestRequest::get().to_request()).await

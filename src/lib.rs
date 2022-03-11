@@ -69,7 +69,7 @@
 //! use serde_json::json;
 //! use asserhttp::*;
 //!
-//! #[actix_rt::test]
+//! #[actix_web::test]
 //! async fn sample_test() {
 //!     async fn handler(_: HttpRequest) -> HttpResponse { HttpResponse::Ok().body(json!({"a": "b"})) }
 //!     handler(TestRequest::get().to_http_request()).await
@@ -87,7 +87,7 @@
 //! use serde_json::json;
 //! use asserhttp::*;
 //!
-//! #[actix_rt::test]
+//! #[actix_web::test]
 //! async fn sample_test() {
 //!     let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"})) }));
 //!     call_service(&mut init_service(app).await, TestRequest::get().to_request()).await

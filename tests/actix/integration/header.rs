@@ -5,14 +5,14 @@ use asserhttp::*;
 mod eq {
     use super::*;
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_header() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_header("x-a", "a");
     }
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_header_ignoring_case() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -20,14 +20,14 @@ mod eq {
     }
 
     #[should_panic(expected = "expected header 'x-a' to be equal to 'A' but was 'a'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_value_should_be_case_sensitive() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_header("x-a", "A");
     }
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_many_header() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).append_header(("x-b", "b")).finish() }));
@@ -37,7 +37,7 @@ mod eq {
     }
 
     #[should_panic(expected = "expected one header named 'x-b' but none found")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_should_panic_when_wrong_key() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -45,7 +45,7 @@ mod eq {
     }
 
     #[should_panic(expected = "expected header 'x-a' to be equal to 'b' but was 'a'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_should_panic_when_wrong_value() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -53,7 +53,7 @@ mod eq {
     }
 
     #[should_panic(expected = "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_should_panic_when_multi_valued() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -64,7 +64,7 @@ mod eq {
 mod multi {
     use super::*;
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_headers_should_expect_multi_headers() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -72,7 +72,7 @@ mod multi {
     }
 
     #[should_panic(expected = "expected one header named 'x-b' but none found")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_headers_should_fail_when_key_missing() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -80,7 +80,7 @@ mod multi {
     }
 
     #[should_panic(expected = "expected header 'x-m' to contain values '[\"a\"]' but contained '[\"a\", \"b\"]'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_headers_should_fail_when_one_value_missing() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -88,7 +88,7 @@ mod multi {
     }
 
     #[should_panic(expected = "expected header 'x-m' to contain values '[\"a\", \"c\"]' but contained '[\"a\", \"b\"]'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_headers_should_fail_when_one_value_not_eq() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -96,7 +96,7 @@ mod multi {
     }
 
     #[should_panic(expected = "expected header 'x-m' to contain values '[\"a\", \"b\", \"c\"]' but contained '[\"a\", \"b\"]'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_headers_should_fail_when_one_expected_value_missing() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -104,7 +104,7 @@ mod multi {
     }
 
     #[should_panic(expected = "no value expected for header 'x-m'. Use 'expect_header_present' instead")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_headers_should_fail_when_no_value_expected() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-m", "a, b")).finish() }));
@@ -115,14 +115,14 @@ mod multi {
 mod present {
     use super::*;
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_header_present() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
         call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_header_present("x-a");
     }
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_header_present_ignoring_case() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -130,7 +130,7 @@ mod present {
     }
 
     #[should_panic(expected = "expected one header named 'x-b' but none found")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_present_should_fail_when_absent() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -141,7 +141,7 @@ mod present {
 mod absent {
     use super::*;
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_header_absent() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -149,7 +149,7 @@ mod absent {
     }
 
     #[should_panic(expected = "expected no header named 'x-a' but one found")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_absent_should_fail_when_absent() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -157,7 +157,7 @@ mod absent {
     }
 
     #[should_panic(expected = "expected no header named 'x-a' but one found")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_absent_should_ignore_case() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("x-a", "a")).finish() }));
@@ -168,7 +168,7 @@ mod absent {
 mod json {
     use super::*;
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_content_type_json() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("content-type", "application/json")).finish() }));
@@ -176,7 +176,7 @@ mod json {
     }
 
     #[should_panic(expected = "expected header 'content-type' to be equal to 'application/json' but was 'application/xml'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_should_panic_when_wrong_value() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("content-type", "application/xml")).finish() }));
@@ -187,7 +187,7 @@ mod json {
 mod text {
     use super::*;
 
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn should_expect_content_type_text() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("content-type", "text/plain")).finish() }));
@@ -195,7 +195,7 @@ mod text {
     }
 
     #[should_panic(expected = "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'")]
-    #[actix_rt::test]
+    #[actix_web::test]
     async fn expect_header_should_panic_when_wrong_value() {
         let app = App::new()
             .route("/", web::get().to(|| async { HttpResponse::Ok().append_header(("content-type", "application/xml")).finish() }));
