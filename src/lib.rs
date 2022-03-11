@@ -253,7 +253,7 @@ mod assert_isahc;
 mod assert_reqwest;
 #[cfg(feature = "hyper")]
 mod assert_hyper;
-#[cfg(feature = "actix")]
+#[cfg(feature = "actix-web-client")]
 mod assert_awc;
 #[cfg(feature = "actix")]
 mod assert_actix;

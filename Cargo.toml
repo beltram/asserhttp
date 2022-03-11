@@ -29,7 +29,7 @@ actix-web = { version = "4.0.1", optional = true }
 rocket = { version = "0.5.0-rc.1", optional = true }
 
 [dev-dependencies]
-asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "rocket"] }
+asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket"] }
 stubr = "0.4.14"
 serde_json = "1.0.79"
 async-std = { version = "1.10.0", features = ["attributes"] }
@@ -39,7 +39,8 @@ rocket = { version = "0.5.0-rc.1", features = ["json"] }
 
 [features]
 default = []
-actix = ["awc", "actix-http", "actix-web"]
+actix = ["actix-http", "actix-web"]
+actix-web-client = ["awc", "actix-http"]
 
 [profile.dev]
 # improves compilation performances on macos
