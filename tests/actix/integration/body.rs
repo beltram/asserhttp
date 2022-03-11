@@ -11,14 +11,14 @@ mod json {
     #[actix_web::test]
     async fn should_expect_raw_body_json() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     }
 
     #[actix_web::test]
     async fn should_expect_struct_body_json() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json(|b: Body| assert_eq!(b, Body { a: String::from("b") }));
     }
 
@@ -26,7 +26,7 @@ mod json {
     #[actix_web::test]
     async fn expect_body_json_should_fail_when_closure_fails() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "c"})));
     }
 }
@@ -37,14 +37,14 @@ mod json_eq {
     #[actix_web::test]
     async fn should_expect_raw_body_json() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(json!({"a": "b"}));
     }
 
     #[actix_web::test]
     async fn should_expect_struct_body_json() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(Body { a: String::from("b") });
     }
 
@@ -52,7 +52,7 @@ mod json_eq {
     #[actix_web::test]
     async fn expect_body_json_should_fail_when_not_equal() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body(json!({"a": "b"}).to_string()) }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(json!({"a": "c"}));
     }
 
@@ -60,7 +60,7 @@ mod json_eq {
     #[actix_web::test]
     async fn expect_body_json_should_fail_when_missing() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().finish() }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_json_eq(json!({"a": "b"}));
     }
 }
@@ -71,7 +71,7 @@ mod text {
     #[actix_web::test]
     async fn should_expect_body_text() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text(|b| assert_eq!(b, String::from("abcd")));
     }
 
@@ -79,7 +79,7 @@ mod text {
     #[actix_web::test]
     async fn expect_body_text_should_fail_when_closure_fails() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text(|b| assert_eq!(b, String::from("dcba")));
     }
 }
@@ -90,7 +90,7 @@ mod text_eq {
     #[actix_web::test]
     async fn should_expect_body_text_eq() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text_eq("abcd");
     }
 
@@ -98,7 +98,7 @@ mod text_eq {
     #[actix_web::test]
     async fn expect_body_text_should_fail_when_not_equal() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text_eq("dcab");
     }
 
@@ -106,7 +106,7 @@ mod text_eq {
     #[actix_web::test]
     async fn expect_body_text_should_fail_when_missing() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().finish() }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text_eq("abcd");
     }
 }
@@ -117,7 +117,7 @@ mod regex {
     #[actix_web::test]
     async fn should_expect_body_text_matches() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text_matches("[a-d]+");
     }
 
@@ -125,7 +125,7 @@ mod regex {
     #[actix_web::test]
     async fn expect_body_text_matches_should_fail_when_does_not_match_regex() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text_matches("[e-h]+");
     }
 
@@ -133,7 +133,7 @@ mod regex {
     #[actix_web::test]
     async fn expect_body_text_should_fail_when_missing() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().finish() }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_text_matches("[a-d]+");
     }
 }
@@ -144,7 +144,7 @@ mod bytes {
     #[actix_web::test]
     async fn should_expect_body_bytes() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     }
 
@@ -152,7 +152,7 @@ mod bytes {
     #[actix_web::test]
     async fn expect_body_bytes_should_fail_when_closure_fails() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_bytes(|b| assert_eq!(b, b"dcba"));
     }
 }
@@ -163,7 +163,7 @@ mod bytes_eq {
     #[actix_web::test]
     async fn should_expect_body_bytes_eq() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_bytes_eq(b"abcd");
     }
 
@@ -171,7 +171,7 @@ mod bytes_eq {
     #[actix_web::test]
     async fn expect_body_bytes_should_fail_not_equal() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_bytes_eq(b"dcba");
     }
 
@@ -179,7 +179,7 @@ mod bytes_eq {
     #[actix_web::test]
     async fn expect_body_bytes_should_fail_when_missing() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().finish() }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await
             .expect_body_bytes_eq(b"abcd");
     }
 }
@@ -190,14 +190,14 @@ mod present {
     #[actix_web::test]
     async fn should_expect_body_present() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_body_present();
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await.expect_body_present();
     }
 
     #[should_panic(expected = "expected a response body but no response body was present")]
     #[actix_web::test]
     async fn expect_body_present_should_fail_when_absent() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().finish() }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_body_present();
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await.expect_body_present();
     }
 }
 
@@ -207,13 +207,13 @@ mod absent {
     #[actix_web::test]
     async fn should_expect_body_absent() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().finish() }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_body_absent();
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await.expect_body_absent();
     }
 
     #[should_panic(expected = "expected no response body but a response body was present")]
     #[actix_web::test]
     async fn expect_body_absent_should_fail_when_present() {
         let app = App::new().route("/", web::get().to(|| async { HttpResponse::Ok().body("abcd") }));
-        call_service(&mut init_service(app).await, TestRequest::get().to_request()).await.expect_body_absent();
+        call_service(&init_service(app).await, TestRequest::get().to_request()).await.expect_body_absent();
     }
 }
