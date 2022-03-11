@@ -168,27 +168,24 @@
 //! ## awc (Actix Web Client)
 //!
 //! ```no_run
-//! use actix_rt::System;
 //! use awc::Client;
 //! use asserhttp::*;
 //! use serde_json::json;
 //!
-//! #[test]
-//! fn sample_test() {
-//!     System::new().block_on(async move {
-//!         Client::default().get("http://localhost/api/any").await.unwrap().expect_status_ok();
-//!         // no need to call `.unwrap()` directly
-//!         Client::default().get("http://localhost/api/any").await.expect_status_eq(200);
-//!         Client::default().get("http://localhost/api/any").await.expect_status_ok();
-//!         Client::default().get("http://localhost/api/any").await.expect_status_bad_request();
-//!         Client::default().get("http://localhost/api/any").await.expect_status_internal_server_error();
-//!         // chain expectations
-//!         Client::default().get("http://localhost/api/any").await
-//!             .expect_status_ok()
-//!             .expect_content_type_json()
-//!             .expect_body_json_eq(json!({"name": "jdoe"}));
-//!         // and many more !
-//!     });
+//! #[actix_web::test]
+//! async fn sample_test() {
+//!     Client::default().get("http://localhost/api/any").await.unwrap().expect_status_ok();
+//!     // no need to call `.unwrap()` directly
+//!     Client::default().get("http://localhost/api/any").await.expect_status_eq(200);
+//!     Client::default().get("http://localhost/api/any").await.expect_status_ok();
+//!     Client::default().get("http://localhost/api/any").await.expect_status_bad_request();
+//!     Client::default().get("http://localhost/api/any").await.expect_status_internal_server_error();
+//!     // chain expectations
+//!     Client::default().get("http://localhost/api/any").await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"name": "jdoe"}));
+//!     // and many more !
 //! }
 //! ```
 //!
@@ -296,7 +293,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -330,12 +326,10 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(200);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(Status::Ok);
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(200);
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(Status::Ok);
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_eq(200);
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_eq(Status::Ok);
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(200);
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_eq(Status::Ok);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_eq(200);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_eq(Status::Ok);
     /// }
     /// ```
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T;
@@ -350,7 +344,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -372,10 +365,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_in_range(200, 400);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_in_range(200, 400);
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_in_range(200, 400);
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_in_range(200, 400);
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_in_range(200, 400);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_in_range(200, 400);
     /// }
     /// ```
     fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T;
@@ -388,7 +379,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -410,10 +400,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_success();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_success();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_success();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_success();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_success();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_success();
     /// }
     /// ```
     fn expect_status_success(&mut self) -> &mut T { self.expect_status_in_range(200, 300) }
@@ -426,7 +414,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -448,10 +435,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_redirection();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_redirection();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_redirection();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_redirection();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_redirection();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_redirection();
     /// }
     /// ```
     fn expect_status_redirection(&mut self) -> &mut T { self.expect_status_in_range(300, 400) }
@@ -464,7 +449,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -486,10 +470,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_client_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_client_error();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_client_error();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_client_error();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_client_error();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_client_error();
     /// }
     /// ```
     fn expect_status_client_error(&mut self) -> &mut T { self.expect_status_in_range(400, 500) }
@@ -502,7 +484,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -524,10 +505,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_server_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_server_error();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_server_error();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_server_error();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_server_error();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_server_error();
     /// }
     /// ```
     fn expect_status_server_error(&mut self) -> &mut T { self.expect_status_in_range(500, 600) }
@@ -540,7 +519,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -562,10 +540,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_ok();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_ok();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_ok();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_ok();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_ok();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_ok();
     /// }
     /// ```
     fn expect_status_ok(&mut self) -> &mut T { self.expect_status_eq(200) }
@@ -578,7 +554,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -600,10 +575,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_created();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_created();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_created();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_created();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_created();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_created();
     /// }
     /// ```
     fn expect_status_created(&mut self) -> &mut T { self.expect_status_eq(201) }
@@ -616,7 +589,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -638,10 +610,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_accepted();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_accepted();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_accepted();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_accepted();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_accepted();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_accepted();
     /// }
     /// ```
     fn expect_status_accepted(&mut self) -> &mut T { self.expect_status_eq(202) }
@@ -654,7 +624,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -676,10 +645,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_no_content();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_no_content();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_no_content();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_no_content();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_no_content();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_no_content();
     /// }
     /// ```
     fn expect_status_no_content(&mut self) -> &mut T { self.expect_status_eq(204) }
@@ -692,7 +659,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -714,10 +680,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_partial_content();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_partial_content();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_partial_content();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_partial_content();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_partial_content();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_partial_content();
     /// }
     /// ```
     fn expect_status_partial_content(&mut self) -> &mut T { self.expect_status_eq(206) }
@@ -730,7 +694,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -752,10 +715,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_bad_request();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_bad_request();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_bad_request();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_bad_request();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_bad_request();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_bad_request();
     /// }
     /// ```
     fn expect_status_bad_request(&mut self) -> &mut T { self.expect_status_eq(400) }
@@ -768,7 +729,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -790,10 +750,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_unauthorized();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_unauthorized();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_unauthorized();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_unauthorized();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_unauthorized();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_unauthorized();
     /// }
     /// ```
     fn expect_status_unauthorized(&mut self) -> &mut T { self.expect_status_eq(401) }
@@ -806,7 +764,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -828,10 +785,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_forbidden();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_forbidden();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_forbidden();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_forbidden();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_forbidden();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_forbidden();
     /// }
     /// ```
     fn expect_status_forbidden(&mut self) -> &mut T { self.expect_status_eq(403) }
@@ -844,7 +799,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -866,10 +820,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_not_found();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_not_found();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_not_found();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_not_found();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_not_found();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_not_found();
     /// }
     /// ```
     fn expect_status_not_found(&mut self) -> &mut T { self.expect_status_eq(404) }
@@ -882,7 +834,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -904,10 +855,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_conflict();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_conflict();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_conflict();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_conflict();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_conflict();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_conflict();
     /// }
     /// ```
     fn expect_status_conflict(&mut self) -> &mut T { self.expect_status_eq(409) }
@@ -920,7 +869,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -942,10 +890,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_gone();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_gone();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_gone();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_gone();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_gone();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_gone();
     /// }
     /// ```
     fn expect_status_gone(&mut self) -> &mut T { self.expect_status_eq(410) }
@@ -958,7 +904,6 @@ pub trait AsserhttpStatus<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -980,10 +925,8 @@ pub trait AsserhttpStatus<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_internal_server_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_internal_server_error();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_internal_server_error();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_status_internal_server_error();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_status_internal_server_error();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status_internal_server_error();
     /// }
     /// ```
     fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
@@ -1005,7 +948,6 @@ pub trait AsserhttpHeader<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1027,10 +969,8 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header("content-type", "application/json");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header("content-type", "application/json");
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_header("content-type", "application/json");
-    ///         awc::Client::default().get("http://localhost").send().await.expect_header("content-type", "application/json");
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header("content-type", "application/json");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header("content-type", "application/json");
     /// }
     /// ```
     fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut T;
@@ -1045,7 +985,6 @@ pub trait AsserhttpHeader<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1067,10 +1006,8 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
-    ///         awc::Client::default().get("http://localhost").send().await.expect_headers("cache-control", ["no-cache", "no-store"]);
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_headers("cache-control", ["no-cache", "no-store"]);
     /// }
     /// ```
     fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T;
@@ -1084,7 +1021,6 @@ pub trait AsserhttpHeader<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1106,10 +1042,8 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_present("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_present("content-type");
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_present("content-type");
-    ///         awc::Client::default().get("http://localhost").send().await.expect_header_present("content-type");
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_present("content-type");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header_present("content-type");
     /// }
     /// ```
     fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut T;
@@ -1123,7 +1057,6 @@ pub trait AsserhttpHeader<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1145,10 +1078,8 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_absent("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_absent("content-type");
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_absent("content-type");
-    ///         awc::Client::default().get("http://localhost").send().await.expect_header_absent("content-type");
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_absent("content-type");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header_absent("content-type");
     /// }
     /// ```
     fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut T;
@@ -1161,7 +1092,6 @@ pub trait AsserhttpHeader<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1183,10 +1113,8 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_json();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_json();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_json();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_content_type_json();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_json();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_content_type_json();
     /// }
     /// ```
     fn expect_content_type_json(&mut self) -> &mut T {
@@ -1201,7 +1129,6 @@ pub trait AsserhttpHeader<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1223,10 +1150,8 @@ pub trait AsserhttpHeader<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_text();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_text();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_text();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_content_type_text();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_text();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_content_type_text();
     /// }
     /// ```
     fn expect_content_type_text(&mut self) -> &mut T {
@@ -1245,7 +1170,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// # use serde::{Serialize, Deserialize};
     /// use asserhttp::*;
@@ -1272,10 +1196,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///
     ///     // or use your structs
     ///     isahc::get("http://localhost").expect_body_json(|b: MyStruct| assert_eq!(b, MyStruct { a: String::from("b") }));
@@ -1294,7 +1216,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     /// use serde_json::json;
@@ -1317,10 +1238,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_json_eq(json!({"a": "b"}));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_json_eq(json!({"a": "b"}));
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_json_eq(json!({"a": "b"}));
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_json_eq(json!({"a": "b"}));
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_json_eq(json!({"a": "b"}));
     /// }
     /// ```
     fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin {
@@ -1336,7 +1255,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1359,10 +1277,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text(|b| assert_eq!(b, "abcd"));
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_text(|b| assert_eq!(b, "abcd"));
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_text(|b| assert_eq!(b, "abcd"));
     /// }
     /// ```
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String);
@@ -1376,7 +1292,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1399,10 +1314,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text_eq("abcd");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text_eq("abcd");
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text_eq("abcd");
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_text_eq("abcd");
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text_eq("abcd");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_text_eq("abcd");
     /// }
     /// ```
     fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T where B: Into<String> {
@@ -1418,7 +1331,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1441,10 +1353,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text_matches("[a-z]+");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text_matches("[a-z]+");
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text_matches("[a-z]+");
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_text_matches("[a-z]+");
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_text_matches("[a-z]+");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_text_matches("[a-z]+");
     /// }
     /// ```
     fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T where R: Into<String> {
@@ -1462,7 +1372,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1489,10 +1398,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     /// }
     /// ```
     fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]);
@@ -1506,7 +1413,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1533,10 +1439,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_bytes_eq(b"abcd");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_bytes_eq(b"abcd");
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_bytes_eq(b"abcd");
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_bytes_eq(b"abcd");
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_bytes_eq(b"abcd");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_bytes_eq(b"abcd");
     /// }
     /// ```
     fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
@@ -1551,7 +1455,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1573,10 +1476,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_present();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_present();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_present();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_present();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_present();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_present();
     /// }
     /// ```
     fn expect_body_present(&mut self) -> &mut T;
@@ -1589,7 +1490,6 @@ pub trait AsserhttpBody<T> {
     /// # use surf;
     /// # use reqwest;
     /// # use hyper;
-    /// # use actix_rt::System;
     /// # use awc;
     /// use asserhttp::*;
     ///
@@ -1611,10 +1511,8 @@ pub trait AsserhttpBody<T> {
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_absent();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_absent();
     ///
-    ///     System::new().block_on(async move {
-    ///         awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_absent();
-    ///         awc::Client::default().get("http://localhost").send().await.expect_body_absent();
-    ///     });
+    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_body_absent();
+    ///     awc::Client::default().get("http://localhost").send().await.expect_body_absent();
     /// }
     /// ```
     fn expect_body_absent(&mut self) -> &mut T;
