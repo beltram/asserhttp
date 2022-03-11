@@ -22,7 +22,7 @@ impl AsserhttpBody<ActixResponse<BoxBody>> for ActixResponse<BoxBody> {
               F: FnOnce(Body) {
         if let Some(actual) = body_bytes(self) {
             serde_json::from_slice(actual.as_ref()).ok()
-                .map(|actual| asserter(actual))
+                .map(asserter)
                 .unwrap_or_else(|| panic_any(EMPTY_BODY_JSON_MSG));
         } else { panic_any(EMPTY_BODY_JSON_MSG) }
         self
@@ -93,7 +93,7 @@ impl AsserhttpBody<ActixServiceResponse<BoxBody>> for ActixServiceResponse<BoxBo
               F: FnOnce(Body) {
         if let Some(actual) = body_bytes(self.response_mut()) {
             serde_json::from_slice(actual.as_ref()).ok()
-                .map(|actual| asserter(actual))
+                .map(asserter)
                 .unwrap_or_else(|| panic_any(EMPTY_BODY_JSON_MSG));
         } else { panic_any(EMPTY_BODY_JSON_MSG) }
         self

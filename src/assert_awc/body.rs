@@ -24,7 +24,7 @@ impl AsserhttpBody<AwcResponse> for AwcResponse {
               F: FnOnce(B) {
         block_on(self.body()).ok()
             .and_then(|b| serde_json::from_slice::<B>(&b).ok())
-            .map(|actual| asserter(actual))
+            .map(asserter)
             .unwrap_or_else(|| panic_any(EMPTY_BODY_JSON_MSG));
         self
     }
@@ -33,7 +33,7 @@ impl AsserhttpBody<AwcResponse> for AwcResponse {
         block_on(self.body()).ok()
             .and_then(|b| String::from_utf8(b.to_vec()).ok())
             .filter(|it| !it.is_empty())
-            .map(|actual| asserter(actual))
+            .map(asserter)
             .unwrap_or_else(|| panic_any(EMPTY_BODY_TEXT_MSG));
         self
     }

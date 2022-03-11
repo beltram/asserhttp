@@ -18,7 +18,7 @@ pub fn assert_json_body_eq<B>(actual: B, expected: B) where B: DeserializeOwned 
 
 fn to_json_string<B>(json: &B) -> String where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin {
     serde_json::to_string(json)
-        .unwrap_or(String::from("Failed serializing actual response body"))
+        .unwrap_or_else(|_| String::from("Failed serializing actual response body"))
 }
 
 pub fn assert_text_body(actual: String, expected: String) {

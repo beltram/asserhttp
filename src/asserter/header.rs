@@ -1,6 +1,6 @@
 use std::fmt::{Debug, Display};
 
-pub fn assert_header_key<'a, T, I>(actual_keys: T, expected: I)
+pub fn assert_header_key<T, I>(actual_keys: T, expected: I)
     where T: Iterator<Item=I>,
           I: AsRef<str> + PartialEq + Display {
     let expected = expected.as_ref().to_lowercase();
@@ -9,7 +9,7 @@ pub fn assert_header_key<'a, T, I>(actual_keys: T, expected: I)
             "expected one header named '{}' but none found", expected);
 }
 
-pub fn assert_header_value<'a, T, I>(actual_values: T, key: I, expected: I)
+pub fn assert_header_value<T, I>(actual_values: T, key: I, expected: I)
     where T: Iterator<Item=I>,
           I: AsRef<str> + PartialEq + Display + Debug {
     let actual_values = actual_values.collect::<Vec<I>>();
@@ -34,7 +34,7 @@ pub fn assert_header_values<'a, T, I>(actual_values: T, key: I, expected: Vec<&'
 }
 
 
-pub fn assert_header_key_absent<'a, T, I>(actual_keys: T, expected: I)
+pub fn assert_header_key_absent<T, I>(actual_keys: T, expected: I)
     where T: Iterator<Item=I>,
           I: Into<String> + PartialEq + Display {
     let expected = expected.into().to_lowercase();
