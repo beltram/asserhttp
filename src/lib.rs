@@ -62,6 +62,8 @@
 //!
 //! ## [actix-web](https://actix.rs/docs/testing/)
 //!
+//! Use `actix` feature.
+//!
 //! For unit testing
 //!
 //! ```no_run
@@ -100,6 +102,8 @@
 //!
 //! ## rocket
 //!
+//! Use `rocket` feature.
+//!
 //! ```no_run
 //! use rocket::{get, http::Status, local::asynchronous::Client, routes};
 //! use serde_json::{json, Value};
@@ -118,6 +122,8 @@
 //! ```
 //!
 //! ## reqwest
+//!
+//! Use `reqwest` feature.
 //!
 //! ```no_run
 //! use reqwest;
@@ -143,6 +149,8 @@
 //!
 //! ## hyper
 //!
+//! Use `hyper` feature.
+//!
 //! ```no_run
 //! use hyper::Client;
 //! use asserhttp::*;
@@ -166,6 +174,8 @@
 //! ```
 //!
 //! ## awc (Actix Web Client)
+//!
+//! Use `actix-web-client` feature.
 //!
 //! ```no_run
 //! use awc::Client;
@@ -191,6 +201,8 @@
 //!
 //! ## surf
 //!
+//! Use `surf` feature.
+//!
 //! ```no_run
 //! use surf;
 //! use asserhttp::*;
@@ -214,6 +226,8 @@
 //! ```
 //!
 //! ## isahc
+//!
+//! Use `isahc` feature.
 //!
 //! ```no_run
 //! use isahc;

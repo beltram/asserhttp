@@ -51,6 +51,7 @@ Add it to your `Cargo.toml`
 asserhttp = { version = "0.4.0", features = ["reqwest"] }
 #                             or features = ["hyper"]
 #                             or features = ["actix"]
+#                             or features = ["actix-web-client"]
 #                             or features = ["rocket"]
 #                             or features = ["surf"]
 #                             or features = ["isahc"]
