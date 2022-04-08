@@ -23,15 +23,16 @@ http-types = "2.12.0"
 time-macros-impl = "0.1.2"
 surf = { version = "2.3.2", optional = true }
 isahc = { version = "1.7.0", features = ["json"], optional = true }
-reqwest = { version = "0.11.10", features = ["json", "blocking"], optional = true }
-hyper = { version = "0.14.18", features = ["client"], optional = true }
-awc = { version = "3.0.0", optional = true }
-actix-http = { version = "3.0.4", optional = true }
-actix-web = { version = "4.0.1", optional = true }
-rocket = { version = "0.5.0-rc.1", optional = true }
+reqwest = { version = "0.11.10", features = ["json", "blocking"], optional = true, default-features = false }
+hyper = { version = "0.14.18", features = ["client"], optional = true, default-features = false }
+awc = { version = "3.0.0", optional = true, default-features = false }
+actix-http = { version = "3.0.4", optional = true, default-features = false }
+actix-web = { version = "4.0.1", optional = true, default-features = false }
+rocket = { version = "0.5.0-rc.1", optional = true, default-features = false }
 
 [dev-dependencies]
 asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket"] }
+actix-web = { version = "4.0.1", features = ["macros"], default-features = false }
 stubr = "0.4.14"
 serde_json = "1.0.79"
 async-std = { version = "1.11.0", features = ["attributes"] }
@@ -42,7 +43,7 @@ rocket = { version = "0.5.0-rc.1", features = ["json"] }
 [features]
 default = []
 actix = ["actix-http", "actix-web"]
-actix-web-client = ["awc", "actix-http"]
+actix-web-client = ["awc", "actix-http/ws"]
 
 [profile.dev]
 # improves compilation performances on macos
