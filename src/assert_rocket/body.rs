@@ -1,6 +1,6 @@
 use std::{fmt::Debug, io::Read, panic::panic_any, str::from_utf8};
 
-use async_std::task::block_on;
+use futures_lite::future::block_on;
 use rocket::{
     local::{
         asynchronous::LocalResponse as AsyncRocketResponse,

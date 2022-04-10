@@ -1,6 +1,6 @@
 use std::{fmt::Debug, panic::panic_any};
 
-use async_std::task::block_on;
+use futures_lite::future::block_on;
 use serde::{de::DeserializeOwned, Serialize};
 use surf::{Error as SurfError, Response as SurfResponse};
 

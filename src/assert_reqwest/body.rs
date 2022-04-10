@@ -1,6 +1,6 @@
 use std::{fmt::Debug, panic::panic_any};
 
-use async_std::task::block_on;
+use futures_lite::future::block_on;
 use reqwest::{blocking::Response as ReqwestResponse, Error as ReqwestError, Response as AsyncReqwestResponse};
 use serde::{de::DeserializeOwned, Serialize};
 
