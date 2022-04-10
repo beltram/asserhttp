@@ -1,6 +1,6 @@
 use std::{fmt::Debug, panic::panic_any};
 
-use async_std::task::block_on;
+use futures_lite::future::block_on;
 use isahc::{AsyncBody as IsahcAsyncBody, AsyncReadResponseExt, Body as IsahcBody, Error as IsahcError, ReadResponseExt, Response as IsahcResponse};
 use serde::{de::DeserializeOwned, Serialize};
 

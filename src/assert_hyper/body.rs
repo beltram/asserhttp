@@ -1,6 +1,6 @@
 use std::{fmt::Debug, panic::panic_any};
 
-use async_std::task::block_on;
+use futures_lite::future::block_on;
 use hyper::{
     Body as HyperBody,
     body::HttpBody,
