@@ -257,7 +257,7 @@ pub use http_types::StatusCode as Status;
 use regex::Regex;
 use serde::{de::DeserializeOwned, Serialize};
 
-use asserter::body::{assert_body_regex, assert_bytes_body, assert_json_body_eq, assert_text_body};
+use asserter::{assert_body_regex, assert_bytes_body, assert_json_body_eq, assert_text_body};
 
 #[cfg(feature = "surf")]
 mod assert_surf;
@@ -275,6 +275,7 @@ mod assert_actix;
 mod assert_rocket;
 
 mod asserter;
+mod accessor;
 
 /// For assertions on http response
 pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
@@ -946,6 +947,30 @@ pub trait AsserhttpStatus<T> {
     fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
 }
 
+impl<T> AsserhttpStatus<T> for T where T: accessor::StatusAccessor {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T {
+        asserter::assert_status(self.get_status(), status.into().0);
+        self
+    }
+
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T {
+        asserter::assert_status_range(self.get_status(), lower.into().0, upper.into().0);
+        self
+    }
+}
+
+impl<T, E> AsserhttpStatus<T> for Result<T, E> where
+    T: accessor::StatusAccessor,
+    E: std::fmt::Debug {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T {
+        self.as_mut().unwrap().expect_status_eq(status)
+    }
+
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T {
+        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+    }
+}
+
 /// For assertions on http response headers
 pub trait AsserhttpHeader<T> {
     const CONTENT_TYPE: &'static str = "content-type";
@@ -1170,6 +1195,50 @@ pub trait AsserhttpHeader<T> {
     /// ```
     fn expect_content_type_text(&mut self) -> &mut T {
         self.expect_header(Self::CONTENT_TYPE, Self::TEXT_PLAIN)
+    }
+}
+
+impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut T {
+        asserter::assert_header_key(self.get_keys().into_iter(), key.as_ref().to_string());
+        asserter::assert_header_value(self.get_values(key.as_ref()).into_iter(), key.as_ref().to_string(), value.as_ref().to_string());
+        self
+    }
+
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T {
+        asserter::assert_header_key(self.get_keys().into_iter(), key.as_ref().to_string());
+        asserter::assert_header_values(self.get_values(key.as_ref()), key.as_ref(), value.into().iter().map(|v| v.to_string()).collect());
+        self
+    }
+
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut T {
+        asserter::assert_header_key(self.get_keys().into_iter(), key.as_ref().to_string());
+        self
+    }
+
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut T {
+        asserter::assert_header_key_absent(self.get_keys().into_iter(), key.as_ref().to_string());
+        self
+    }
+}
+
+impl<T, E> AsserhttpHeader<T> for Result<T, E> where
+    T: accessor::HeaderAccessor,
+    E: std::fmt::Debug {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut T {
+        self.as_mut().unwrap().expect_header(key, value)
+    }
+
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T {
+        self.as_mut().unwrap().expect_headers(key, value)
+    }
+
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut T {
+        self.as_mut().unwrap().expect_header_present(key)
+    }
+
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut T {
+        self.as_mut().unwrap().expect_header_absent(key)
     }
 }
 
@@ -1530,4 +1599,81 @@ pub trait AsserhttpBody<T> {
     /// }
     /// ```
     fn expect_body_absent(&mut self) -> &mut T;
+}
+
+impl<T> AsserhttpBody<T> for T where T: accessor::BodyAccessor {
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin, F: FnOnce(B) {
+        if let Ok(actual) = self.get_json() {
+            asserter(actual)
+        } else {
+            std::panic::panic_any(asserter::EMPTY_BODY_JSON_MSG)
+        }
+        self
+    }
+
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String) {
+        if let Ok(actual) = self.get_text() {
+            if !actual.is_empty() {
+                asserter(actual)
+            } else {
+                std::panic::panic_any(asserter::EMPTY_BODY_TEXT_MSG)
+            }
+        } else {
+            std::panic::panic_any(asserter::EMPTY_BODY_TEXT_MSG)
+        }
+        self
+    }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]) {
+        if let Ok(actual) = self.get_bytes() {
+            if !actual.is_empty() {
+                asserter(actual.as_slice())
+            } else {
+                std::panic::panic_any(asserter::EMPTY_BODY_BYTES_MSG)
+            }
+        } else {
+            std::panic::panic_any(asserter::EMPTY_BODY_BYTES_MSG)
+        }
+        self
+    }
+
+    fn expect_body_present(&mut self) -> &mut T {
+        if let Ok(actual) = self.get_bytes() {
+            assert!(!actual.is_empty(), "{}", asserter::EXPECTED_BODY_PRESENT_MSG);
+        } else {
+            std::panic::panic_any(asserter::EXPECTED_BODY_PRESENT_MSG)
+        }
+        self
+    }
+
+    fn expect_body_absent(&mut self) -> &mut T {
+        if let Ok(actual) = self.get_bytes() {
+            assert!(actual.is_empty(), "{}", asserter::EXPECTED_BODY_ABSENT_MSG);
+        }
+        self
+    }
+}
+
+impl<T, E> AsserhttpBody<T> for Result<T, E> where
+    T: accessor::BodyAccessor,
+    E: std::fmt::Debug {
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin, F: FnOnce(B) {
+        self.as_mut().unwrap().expect_body_json(asserter)
+    }
+
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String) {
+        self.as_mut().unwrap().expect_body_text(asserter)
+    }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]) {
+        self.as_mut().unwrap().expect_body_bytes(asserter)
+    }
+
+    fn expect_body_present(&mut self) -> &mut T {
+        self.as_mut().unwrap().expect_body_present()
+    }
+
+    fn expect_body_absent(&mut self) -> &mut T {
+        self.as_mut().unwrap().expect_body_absent()
+    }
 }
