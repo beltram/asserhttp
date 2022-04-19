@@ -1,27 +1,25 @@
 use std::{fmt::Debug, panic::panic_any};
 
 use futures_lite::future::block_on;
-use hyper::{
-    Body as HyperBody,
-    body::HttpBody,
-    Response as HyperResponse,
-    Result as HyperResult,
-};
+use hyper::body::HttpBody;
 use serde::{de::DeserializeOwned, Serialize};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
-        INVALID_UTF8_BODY_TEXT_MSG,
-    },
-};
+use super::{
+    HyperResponse,
+    ResultHyperResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+            INVALID_UTF8_BODY_TEXT_MSG,
+        },
+    }};
 
-impl AsserhttpBody<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
+impl AsserhttpBody<HyperResponse> for HyperResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
@@ -78,26 +76,26 @@ impl AsserhttpBody<HyperResponse<HyperBody>> for HyperResponse<HyperBody> {
     }
 }
 
-impl AsserhttpBody<HyperResponse<HyperBody>> for HyperResult<HyperResponse<HyperBody>> {
-    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut HyperResponse<HyperBody>
+impl AsserhttpBody<HyperResponse> for ResultHyperResponse {
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut HyperResponse
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
 
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut HyperResponse<HyperBody> where F: FnOnce(String) {
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut HyperResponse where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
     }
 
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut HyperResponse<HyperBody> where F: FnOnce(&[u8]) {
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut HyperResponse where F: FnOnce(&[u8]) {
         self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 
-    fn expect_body_present(&mut self) -> &mut HyperResponse<HyperBody> {
+    fn expect_body_present(&mut self) -> &mut HyperResponse {
         self.as_mut().unwrap().expect_body_present()
     }
 
-    fn expect_body_absent(&mut self) -> &mut HyperResponse<HyperBody> {
+    fn expect_body_absent(&mut self) -> &mut HyperResponse {
         self.as_mut().unwrap().expect_body_absent()
     }
 }
