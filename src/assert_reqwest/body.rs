@@ -1,18 +1,23 @@
 use std::{fmt::Debug, panic::panic_any};
 
 use futures_lite::future::block_on;
-use reqwest::{blocking::Response as ReqwestResponse, Error as ReqwestError, Response as AsyncReqwestResponse};
 use serde::{de::DeserializeOwned, Serialize};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
-        INVALID_UTF8_BODY_TEXT_MSG,
+use super::{
+    AsyncReqwestResponse,
+    ReqwestResponse,
+    ResultAsyncReqwestResponse,
+    ResultReqwestResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+            INVALID_UTF8_BODY_TEXT_MSG,
+        },
     },
 };
 
@@ -60,6 +65,30 @@ impl AsserhttpBody<ReqwestResponse> for ReqwestResponse {
         self.copy_to(&mut actual).unwrap();
         assert!(actual.is_empty(), "{}", EXPECTED_BODY_ABSENT_MSG);
         self
+    }
+}
+
+impl AsserhttpBody<ReqwestResponse> for ResultReqwestResponse {
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut ReqwestResponse
+        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+              F: FnOnce(B) {
+        self.as_mut().unwrap().expect_body_json(asserter)
+    }
+
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut ReqwestResponse where F: FnOnce(String) {
+        self.as_mut().unwrap().expect_body_text(asserter)
+    }
+
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut ReqwestResponse where F: FnOnce(&[u8]) {
+        self.as_mut().unwrap().expect_body_bytes(asserter)
+    }
+
+    fn expect_body_present(&mut self) -> &mut ReqwestResponse {
+        self.as_mut().unwrap().expect_body_present()
+    }
+
+    fn expect_body_absent(&mut self) -> &mut ReqwestResponse {
+        self.as_mut().unwrap().expect_body_absent()
     }
 }
 
@@ -120,31 +149,7 @@ impl AsserhttpBody<AsyncReqwestResponse> for AsyncReqwestResponse {
     }
 }
 
-impl AsserhttpBody<ReqwestResponse> for Result<ReqwestResponse, ReqwestError> {
-    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut ReqwestResponse
-        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
-              F: FnOnce(B) {
-        self.as_mut().unwrap().expect_body_json(asserter)
-    }
-
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut ReqwestResponse where F: FnOnce(String) {
-        self.as_mut().unwrap().expect_body_text(asserter)
-    }
-
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut ReqwestResponse where F: FnOnce(&[u8]) {
-        self.as_mut().unwrap().expect_body_bytes(asserter)
-    }
-
-    fn expect_body_present(&mut self) -> &mut ReqwestResponse {
-        self.as_mut().unwrap().expect_body_present()
-    }
-
-    fn expect_body_absent(&mut self) -> &mut ReqwestResponse {
-        self.as_mut().unwrap().expect_body_absent()
-    }
-}
-
-impl AsserhttpBody<AsyncReqwestResponse> for Result<AsyncReqwestResponse, ReqwestError> {
+impl AsserhttpBody<AsyncReqwestResponse> for ResultAsyncReqwestResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut AsyncReqwestResponse
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
