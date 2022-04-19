@@ -1,11 +1,16 @@
-use isahc::{AsyncBody as IsahcAsyncBody, Body as IsahcBody, Error as IsahcError, http::header::HeaderMap as IsahcHeaderMap, http::header::HeaderName as IsahcHeaderName, Response as IsahcResponse};
+use isahc::{http::header::HeaderMap as IsahcHeaderMap, http::header::HeaderName as IsahcHeaderName};
 
-use super::super::{
+use super::{
+    AsyncIsahcResponse,
+    IsahcResponse,
+    ResultAsyncIsahcResponse,
+    ResultIsahcResponse,
+    super::{
     AsserhttpHeader,
     asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value, assert_header_values},
-};
+}};
 
-impl AsserhttpHeader<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
+impl AsserhttpHeader<IsahcResponse> for IsahcResponse {
     fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
         assert_header_key(header_keys(self.headers()), key.as_ref());
         assert_header_value(header_values(key.as_ref(), self.headers()), key.as_ref(), value.as_ref());
@@ -29,62 +34,62 @@ impl AsserhttpHeader<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
     }
 }
 
-impl AsserhttpHeader<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBody> {
-    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
-        assert_header_key(header_keys(self.headers()), key.as_ref());
-        assert_header_value(header_values(key.as_ref(), self.headers()), key.as_ref(), value.as_ref());
-        self
-    }
-
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
-        assert_header_key(header_keys(self.headers()), key.as_ref());
-        assert_header_values(header_values(key.as_ref(), self.headers()), key.as_ref(), value.into());
-        self
-    }
-
-    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut Self {
-        assert_header_key(header_keys(self.headers()), key.as_ref());
-        self
-    }
-
-    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut Self {
-        assert_header_key_absent(header_keys(self.headers()), key.as_ref());
-        self
-    }
-}
-
-impl AsserhttpHeader<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {
-    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut IsahcResponse<IsahcBody> {
+impl AsserhttpHeader<IsahcResponse> for ResultIsahcResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut IsahcResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut IsahcResponse<IsahcBody> {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut IsahcResponse {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut IsahcResponse<IsahcBody> {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut IsahcResponse {
         self.as_mut().unwrap().expect_header_present(key)
     }
 
-    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut IsahcResponse<IsahcBody> {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut IsahcResponse {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }
 
-impl AsserhttpHeader<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {
-    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut IsahcResponse<IsahcAsyncBody> {
+impl AsserhttpHeader<AsyncIsahcResponse> for AsyncIsahcResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut Self {
+        assert_header_key(header_keys(self.headers()), key.as_ref());
+        assert_header_value(header_values(key.as_ref(), self.headers()), key.as_ref(), value.as_ref());
+        self
+    }
+
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut Self {
+        assert_header_key(header_keys(self.headers()), key.as_ref());
+        assert_header_values(header_values(key.as_ref(), self.headers()), key.as_ref(), value.into());
+        self
+    }
+
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut Self {
+        assert_header_key(header_keys(self.headers()), key.as_ref());
+        self
+    }
+
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut Self {
+        assert_header_key_absent(header_keys(self.headers()), key.as_ref());
+        self
+    }
+}
+
+impl AsserhttpHeader<AsyncIsahcResponse> for ResultAsyncIsahcResponse {
+    fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut AsyncIsahcResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut IsahcResponse<IsahcAsyncBody> {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut AsyncIsahcResponse {
         self.as_mut().unwrap().expect_headers(key, value)
     }
 
-    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut IsahcResponse<IsahcAsyncBody> {
+    fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut AsyncIsahcResponse {
         self.as_mut().unwrap().expect_header_present(key)
     }
 
-    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut IsahcResponse<IsahcAsyncBody> {
+    fn expect_header_absent(&mut self, key: impl AsRef<str>) -> &mut AsyncIsahcResponse {
         self.as_mut().unwrap().expect_header_absent(key)
     }
 }

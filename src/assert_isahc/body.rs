@@ -1,21 +1,27 @@
 use std::{fmt::Debug, panic::panic_any};
 
 use futures_lite::future::block_on;
-use isahc::{AsyncBody as IsahcAsyncBody, AsyncReadResponseExt, Body as IsahcBody, Error as IsahcError, ReadResponseExt, Response as IsahcResponse};
+use isahc::{AsyncReadResponseExt, ReadResponseExt};
 use serde::{de::DeserializeOwned, Serialize};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
-    },
+use super::{
+    AsyncIsahcResponse,
+    IsahcResponse,
+    ResultAsyncIsahcResponse,
+    ResultIsahcResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+        },
+    }
 };
 
-impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
+impl AsserhttpBody<IsahcResponse> for IsahcResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
@@ -58,7 +64,7 @@ impl AsserhttpBody<IsahcResponse<IsahcBody>> for IsahcResponse<IsahcBody> {
     }
 }
 
-impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBody> {
+impl AsserhttpBody<AsyncIsahcResponse> for AsyncIsahcResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
@@ -101,50 +107,50 @@ impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for IsahcResponse<IsahcAsyncBo
     }
 }
 
-impl AsserhttpBody<IsahcResponse<IsahcBody>> for Result<IsahcResponse<IsahcBody>, IsahcError> {
-    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcBody>
+impl AsserhttpBody<IsahcResponse> for ResultIsahcResponse {
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut IsahcResponse
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
 
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcBody> where F: FnOnce(String) {
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut IsahcResponse where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
     }
 
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcBody> where F: FnOnce(&[u8]) {
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut IsahcResponse where F: FnOnce(&[u8]) {
         self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 
-    fn expect_body_present(&mut self) -> &mut IsahcResponse<IsahcBody> {
+    fn expect_body_present(&mut self) -> &mut IsahcResponse {
         self.as_mut().unwrap().expect_body_present()
     }
 
-    fn expect_body_absent(&mut self) -> &mut IsahcResponse<IsahcBody> {
+    fn expect_body_absent(&mut self) -> &mut IsahcResponse {
         self.as_mut().unwrap().expect_body_absent()
     }
 }
 
-impl AsserhttpBody<IsahcResponse<IsahcAsyncBody>> for Result<IsahcResponse<IsahcAsyncBody>, IsahcError> {
-    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcAsyncBody>
+impl AsserhttpBody<AsyncIsahcResponse> for ResultAsyncIsahcResponse {
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut AsyncIsahcResponse
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
 
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcAsyncBody> where F: FnOnce(String) {
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut AsyncIsahcResponse where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
     }
 
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut IsahcResponse<IsahcAsyncBody> where F: FnOnce(&[u8]) {
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut AsyncIsahcResponse where F: FnOnce(&[u8]) {
         self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 
-    fn expect_body_present(&mut self) -> &mut IsahcResponse<IsahcAsyncBody> {
+    fn expect_body_present(&mut self) -> &mut AsyncIsahcResponse {
         self.as_mut().unwrap().expect_body_present()
     }
 
-    fn expect_body_absent(&mut self) -> &mut IsahcResponse<IsahcAsyncBody> {
+    fn expect_body_absent(&mut self) -> &mut AsyncIsahcResponse {
         self.as_mut().unwrap().expect_body_absent()
     }
 }
