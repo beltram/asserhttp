@@ -2,17 +2,20 @@ use std::{fmt::Debug, panic::panic_any};
 
 use futures_lite::future::block_on;
 use serde::{de::DeserializeOwned, Serialize};
-use surf::{Error as SurfError, Response as SurfResponse};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
+use super::{
+    ResultSurfResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+        },
     },
+    SurfResponse,
 };
 
 impl AsserhttpBody<SurfResponse> for SurfResponse {
@@ -58,7 +61,7 @@ impl AsserhttpBody<SurfResponse> for SurfResponse {
     }
 }
 
-impl AsserhttpBody<SurfResponse> for Result<SurfResponse, SurfError> {
+impl AsserhttpBody<SurfResponse> for ResultSurfResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut SurfResponse
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {

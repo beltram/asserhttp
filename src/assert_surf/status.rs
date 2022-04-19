@@ -1,8 +1,12 @@
-use surf::{Error as SurfError, Response as SurfResponse};
-
-use crate::asserter::status::{assert_status, assert_status_range};
-
-use super::super::{AnyStatus, AsserhttpStatus};
+use super::{
+    ResultSurfResponse,
+    super::{
+        AnyStatus,
+        AsserhttpStatus,
+        asserter::status::{assert_status, assert_status_range},
+    },
+    SurfResponse,
+};
 
 impl AsserhttpStatus<SurfResponse> for SurfResponse {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
@@ -16,7 +20,7 @@ impl AsserhttpStatus<SurfResponse> for SurfResponse {
     }
 }
 
-impl AsserhttpStatus<SurfResponse> for Result<SurfResponse, SurfError> {
+impl AsserhttpStatus<SurfResponse> for ResultSurfResponse {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut SurfResponse {
         self.as_mut().unwrap().expect_status_eq(status)
     }

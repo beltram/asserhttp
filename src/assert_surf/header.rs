@@ -1,8 +1,12 @@
-use surf::{Error as SurfError, http::headers::HeaderName as SurfHeaderName, http::headers::HeaderValue as SurfHeaderValue, Response as SurfResponse};
+use surf::{http::headers::HeaderName as SurfHeaderName, http::headers::HeaderValue as SurfHeaderValue};
 
-use super::super::{
-    AsserhttpHeader,
-    asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value, assert_header_values},
+use super::{
+    ResultSurfResponse,
+    super::{
+        AsserhttpHeader,
+        asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value, assert_header_values},
+    },
+    SurfResponse,
 };
 
 impl AsserhttpHeader<SurfResponse> for SurfResponse {
@@ -35,7 +39,7 @@ impl AsserhttpHeader<SurfResponse> for SurfResponse {
     }
 }
 
-impl AsserhttpHeader<SurfResponse> for Result<SurfResponse, SurfError> {
+impl AsserhttpHeader<SurfResponse> for ResultSurfResponse {
     fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut SurfResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }
