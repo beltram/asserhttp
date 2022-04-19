@@ -1,9 +1,9 @@
-use actix_http::Error as ActixError;
-use actix_web::{dev::ServiceResponse as ActixServiceResponse, HttpResponse as ActixResponse};
+use super::{
+    ActixResponse, ActixServiceResponse, ResultActixResponse,
+    super::{AnyStatus, AsserhttpStatus, asserter::status::{assert_status, assert_status_range}}
+};
 
-use super::super::{AnyStatus, AsserhttpStatus, asserter::status::{assert_status, assert_status_range}};
-
-impl<B> AsserhttpStatus<ActixResponse<B>> for ActixResponse<B> {
+impl AsserhttpStatus<ActixResponse> for ActixResponse {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().as_u16(), status.into().0);
         self
@@ -15,17 +15,17 @@ impl<B> AsserhttpStatus<ActixResponse<B>> for ActixResponse<B> {
     }
 }
 
-impl<B> AsserhttpStatus<ActixResponse<B>> for Result<ActixResponse<B>, ActixError> {
-    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut ActixResponse<B> {
+impl AsserhttpStatus<ActixResponse> for ResultActixResponse {
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut ActixResponse {
         self.as_mut().unwrap().expect_status_eq(status)
     }
 
-    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut ActixResponse<B> {
+    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut ActixResponse {
         self.as_mut().unwrap().expect_status_in_range(lower.into().0, upper.into().0)
     }
 }
 
-impl<B> AsserhttpStatus<ActixServiceResponse<B>> for ActixServiceResponse<B> {
+impl AsserhttpStatus<ActixServiceResponse> for ActixServiceResponse {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().as_u16(), status.into().0);
         self

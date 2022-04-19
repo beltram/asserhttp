@@ -1,22 +1,23 @@
 use std::{fmt::Debug, panic::panic_any};
 
-use actix_http::{body::{BoxBody, MessageBody}, Error as ActixError};
-use actix_web::{dev::ServiceResponse as ActixServiceResponse, HttpResponse as ActixResponse, web::Bytes};
+use actix_http::body::MessageBody;
 use serde::{de::DeserializeOwned, Serialize};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
-        INVALID_UTF8_BODY_TEXT_MSG,
-    },
-};
+use super::{
+    ActixResponse, ActixServiceResponse, ResultActixResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+            INVALID_UTF8_BODY_TEXT_MSG,
+        },
+    }};
 
-impl AsserhttpBody<ActixResponse<BoxBody>> for ActixResponse<BoxBody> {
+impl AsserhttpBody<ActixResponse> for ActixResponse {
     fn expect_body_json<Body, F>(&mut self, asserter: F) -> &mut Self
         where Body: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(Body) {
@@ -63,31 +64,31 @@ impl AsserhttpBody<ActixResponse<BoxBody>> for ActixResponse<BoxBody> {
     }
 }
 
-impl AsserhttpBody<ActixResponse<BoxBody>> for Result<ActixResponse<BoxBody>, ActixError> {
-    fn expect_body_json<Body, F>(&mut self, asserter: F) -> &mut ActixResponse<BoxBody>
+impl AsserhttpBody<ActixResponse> for ResultActixResponse {
+    fn expect_body_json<Body, F>(&mut self, asserter: F) -> &mut ActixResponse
         where Body: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(Body) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
 
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut ActixResponse<BoxBody> where F: FnOnce(String) {
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut ActixResponse where F: FnOnce(String) {
         self.as_mut().unwrap().expect_body_text(asserter)
     }
 
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut ActixResponse<BoxBody> where F: FnOnce(&[u8]) {
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut ActixResponse where F: FnOnce(&[u8]) {
         self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 
-    fn expect_body_present(&mut self) -> &mut ActixResponse<BoxBody> {
+    fn expect_body_present(&mut self) -> &mut ActixResponse {
         self.as_mut().unwrap().expect_body_present()
     }
 
-    fn expect_body_absent(&mut self) -> &mut ActixResponse<BoxBody> {
+    fn expect_body_absent(&mut self) -> &mut ActixResponse {
         self.as_mut().unwrap().expect_body_absent()
     }
 }
 
-impl AsserhttpBody<ActixServiceResponse<BoxBody>> for ActixServiceResponse<BoxBody> {
+impl AsserhttpBody<ActixServiceResponse> for ActixServiceResponse {
     fn expect_body_json<Body, F>(&mut self, asserter: F) -> &mut Self
         where Body: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(Body) {
@@ -134,7 +135,7 @@ impl AsserhttpBody<ActixServiceResponse<BoxBody>> for ActixServiceResponse<BoxBo
     }
 }
 
-fn body_bytes(original: &mut ActixResponse<BoxBody>) -> Option<Bytes> {
+fn body_bytes(original: &mut ActixResponse) -> Option<actix_web::web::Bytes> {
     let mut resp_cpy = ActixResponse::build(original.status());
     original.headers().iter().for_each(|h| { resp_cpy.insert_header(h); });
     let mut resp_cpy = resp_cpy.finish();
