@@ -1,13 +1,14 @@
-use rocket::local::{
-    asynchronous::LocalResponse as AsyncRocketResponse,
-    blocking::LocalResponse as BlockingRocketResponse,
+use super::{
+    AsyncRocketResponse,
+    RocketResponse,
+    super::{
+        AnyStatus,
+        AsserhttpStatus,
+        asserter::status::{assert_status, assert_status_range},
+    },
 };
 
-use crate::asserter::status::{assert_status, assert_status_range};
-
-use super::super::{AnyStatus, AsserhttpStatus};
-
-impl<'a> AsserhttpStatus<BlockingRocketResponse<'a>> for BlockingRocketResponse<'a> {
+impl<'a> AsserhttpStatus<RocketResponse<'a>> for RocketResponse<'a> {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut Self {
         assert_status(self.status().code, status.into().0);
         self

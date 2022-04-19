@@ -1,28 +1,26 @@
 use std::{fmt::Debug, io::Read, panic::panic_any, str::from_utf8};
 
 use futures_lite::future::block_on;
-use rocket::{
-    local::{
-        asynchronous::LocalResponse as AsyncRocketResponse,
-        blocking::LocalResponse as BlockingRocketResponse,
-    },
-    tokio::io::AsyncReadExt,
-};
+use rocket::tokio::io::AsyncReadExt;
 use serde::{de::DeserializeOwned, Serialize};
 
-use super::super::{
-    AsserhttpBody,
-    asserter::body::{
-        EMPTY_BODY_BYTES_MSG,
-        EMPTY_BODY_JSON_MSG,
-        EMPTY_BODY_TEXT_MSG,
-        EXPECTED_BODY_ABSENT_MSG,
-        EXPECTED_BODY_PRESENT_MSG,
-        INVALID_UTF8_BODY_TEXT_MSG,
+use super::{
+    AsyncRocketResponse,
+    RocketResponse,
+    super::{
+        AsserhttpBody,
+        asserter::body::{
+            EMPTY_BODY_BYTES_MSG,
+            EMPTY_BODY_JSON_MSG,
+            EMPTY_BODY_TEXT_MSG,
+            EXPECTED_BODY_ABSENT_MSG,
+            EXPECTED_BODY_PRESENT_MSG,
+            INVALID_UTF8_BODY_TEXT_MSG,
+        },
     },
 };
 
-impl<'a> AsserhttpBody<BlockingRocketResponse<'a>> for BlockingRocketResponse<'a> {
+impl<'a> AsserhttpBody<RocketResponse<'a>> for RocketResponse<'a> {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut Self
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {
