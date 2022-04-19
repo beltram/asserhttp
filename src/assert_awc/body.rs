@@ -1,11 +1,11 @@
 use std::{fmt::Debug, panic::panic_any};
 
 use futures_lite::future::block_on;
-use awc::error::SendRequestError as AwcError;
 use serde::{de::DeserializeOwned, Serialize};
 
 use super::{
     AwcResponse,
+    ResultAwcResponse,
     super::{
         AsserhttpBody,
         asserter::body::{
@@ -59,7 +59,7 @@ impl AsserhttpBody<AwcResponse> for AwcResponse {
     }
 }
 
-impl AsserhttpBody<AwcResponse> for Result<AwcResponse, AwcError> {
+impl AsserhttpBody<AwcResponse> for ResultAwcResponse {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut AwcResponse
         where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
               F: FnOnce(B) {

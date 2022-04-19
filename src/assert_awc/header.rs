@@ -1,7 +1,6 @@
-use awc::error::SendRequestError as AwcError;
-
 use super::{
     AwcResponse,
+    ResultAwcResponse,
     super::{
         AsserhttpHeader,
         asserter::header::{assert_header_key, assert_header_key_absent, assert_header_value, assert_header_values},
@@ -40,7 +39,7 @@ impl AsserhttpHeader<AwcResponse> for AwcResponse {
     }
 }
 
-impl AsserhttpHeader<AwcResponse> for Result<AwcResponse, AwcError> {
+impl AsserhttpHeader<AwcResponse> for ResultAwcResponse {
     fn expect_header(&mut self, key: impl AsRef<str>, value: impl AsRef<str>) -> &mut AwcResponse {
         self.as_mut().unwrap().expect_header(key, value)
     }

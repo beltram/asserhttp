@@ -1,7 +1,6 @@
-use awc::error::SendRequestError as AwcError;
-
 use super::{
     AwcResponse,
+    ResultAwcResponse,
     super::{AnyStatus, AsserhttpStatus, asserter::status::{assert_status, assert_status_range}},
 };
 
@@ -17,7 +16,7 @@ impl AsserhttpStatus<AwcResponse> for AwcResponse {
     }
 }
 
-impl AsserhttpStatus<AwcResponse> for Result<AwcResponse, AwcError> {
+impl AsserhttpStatus<AwcResponse> for ResultAwcResponse {
     fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut AwcResponse {
         self.as_mut().unwrap().expect_status_eq(status)
     }
