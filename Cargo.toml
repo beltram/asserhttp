@@ -37,6 +37,7 @@ async-std = { version = "1.11.0", features = ["attributes"] }
 tokio = { version = "1.17.0", features = ["macros"] }
 pin-project = "1.0.10"
 rocket = { version = "0.5.0-rc.1", features = ["json"] }
+paste = "1.0.7"
 
 [features]
 default = []

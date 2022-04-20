@@ -3,7 +3,7 @@ use surf::get;
 
 use asserhttp::*;
 
-use super::super::common::Body;
+use crate::Body;
 
 mod json {
     use super::*;

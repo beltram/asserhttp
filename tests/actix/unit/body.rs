@@ -3,7 +3,7 @@ use serde_json::{json, Value};
 
 use asserhttp::*;
 
-use super::super::super::common::Body;
+use crate::Body;
 
 mod json {
     use super::*;
