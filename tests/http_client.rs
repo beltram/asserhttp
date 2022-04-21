@@ -3,9 +3,6 @@ use utils::TestBody;
 #[path = "./utils.rs"]
 mod utils;
 
-#[test]
-fn placeholder() {}
-
 // For reqwest, surf, isahc, hyper & awc
 #[macro_export]
 macro_rules! http_client_test {
