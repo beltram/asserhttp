@@ -1,10 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub mod surf;
-pub mod reqwest;
-pub mod isahc;
-pub mod hyper;
-pub mod awc;
+pub mod http_client;
 pub mod actix;
 pub mod rocket;
 pub mod utils;
