@@ -13,8 +13,8 @@ macro_rules! actix_test {
             async fn [<actix_unit_ $fn_name>]() {
                 use asserhttp::*;
                 use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
-                async fn ok(_: HttpRequest) -> HttpResponse { $init }
-                $(ok(TestRequest::get().to_http_request()).await$( .$meth($($arg),*) )+;)+
+                async fn endpoint(_: HttpRequest) -> HttpResponse { $init }
+                $(endpoint(TestRequest::get().to_http_request()).await$( .$meth($($arg),*) )+;)+
             }
 
             // integration
@@ -35,8 +35,8 @@ macro_rules! actix_test {
             async fn [<actix_unit_ $fn_name>]() {
                 use asserhttp::*;
                 use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
-                async fn ok(_: HttpRequest) -> HttpResponse { $init }
-                $(ok(TestRequest::get().to_http_request()).await$( .$meth($($arg),*) )+;)+
+                async fn endpoint(_: HttpRequest) -> HttpResponse { $init }
+                $(endpoint(TestRequest::get().to_http_request()).await$( .$meth($($arg),*) )+;)+
             }
 
             // integration
