@@ -27,9 +27,9 @@ impl HeaderAccessor for UreqResponse {
 impl BodyAccessor for UreqResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let headers = self.headers_names().iter()
-        .filter_map(|k| self.header(&k).map(|v| (k, v)))
-        .map(|(k, v)| format!("{}: {}", k, v))
-        .join("\r\n");
+            .filter_map(|k| self.header(k).map(|v| (k, v)))
+            .map(|(k, v)| format!("{}: {}", k, v))
+            .join("\r\n");
         let headers = format!("{}\r\n{}", self.status_text(), headers);
         let mut resp_cpy = UreqResponse::new(self.status(), &headers, "").unwrap();
         std::mem::swap(self, &mut resp_cpy);
