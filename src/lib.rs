@@ -225,6 +225,32 @@
 //! }
 //! ```
 //!
+//! ## ureq
+//!
+//! Use `ureq` feature.
+//!
+//! ```no_run
+//! use ureq::OrAnyStatus;
+//! use asserhttp::*;
+//! use serde_json::json;
+//!
+//! #[async_std::test]
+//! async fn sample_test() {
+//!     ureq::get("http://localhost/api/any").call().or_any_status().unwrap().expect_status_ok();
+//!     // no need to call `.unwrap()` directly
+//!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_eq(200);
+//!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_ok();
+//!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_bad_request();
+//!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_internal_server_error();
+//!     // chain expectations
+//!     ureq::get("http://localhost/api/any").call().or_any_status()
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"name": "jdoe"}));
+//!     // and many more !
+//! }
+//! ```
+//!
 //! ## isahc
 //!
 //! Use `isahc` feature.
@@ -273,6 +299,8 @@ mod assert_awc;
 mod assert_actix;
 #[cfg(feature = "rocket")]
 mod assert_rocket;
+#[cfg(feature = "ureq")]
+mod assert_ureq;
 
 mod asserter;
 mod accessor;
@@ -304,11 +332,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -336,6 +360,11 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.expect_status_eq(200);
     ///     surf::get("http://localhost").await.expect_status_eq(Status::Ok);
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_eq(200);
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_eq(Status::Ok);
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_eq(200);
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_eq(Status::Ok);
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_eq(200);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_eq(Status::Ok);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(200);
@@ -355,11 +384,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -377,6 +402,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_in_range(200, 400);
     ///     surf::get("http://localhost").await.expect_status_in_range(200, 400);
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_in_range(200, 400);
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_in_range(200, 400);
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_in_range(200, 400);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_in_range(200, 400);
     ///
@@ -390,11 +418,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -412,6 +436,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_success();
     ///     surf::get("http://localhost").await.expect_status_success();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_success();
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_success();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_success();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_success();
     ///
@@ -425,11 +452,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -447,6 +470,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_redirection();
     ///     surf::get("http://localhost").await.expect_status_redirection();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_redirection();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_redirection();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_redirection();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_redirection();
     ///
@@ -460,11 +486,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -482,6 +504,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_client_error();
     ///     surf::get("http://localhost").await.expect_status_client_error();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_client_error();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_client_error();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_client_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_client_error();
     ///
@@ -495,11 +520,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -517,6 +538,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_server_error();
     ///     surf::get("http://localhost").await.expect_status_server_error();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_server_error();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_server_error();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_server_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_server_error();
     ///
@@ -530,11 +554,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -552,6 +572,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_ok();
     ///     surf::get("http://localhost").await.expect_status_ok();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_ok();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_ok();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_ok();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_ok();
     ///
@@ -565,11 +588,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -587,6 +606,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_created();
     ///     surf::get("http://localhost").await.expect_status_created();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_created();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_created();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_created();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_created();
     ///
@@ -600,11 +622,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -622,6 +640,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_accepted();
     ///     surf::get("http://localhost").await.expect_status_accepted();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_accepted();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_accepted();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_accepted();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_accepted();
     ///
@@ -635,11 +656,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -657,6 +674,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_no_content();
     ///     surf::get("http://localhost").await.expect_status_no_content();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_no_content();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_no_content();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_no_content();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_no_content();
     ///
@@ -670,11 +690,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -692,6 +708,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_partial_content();
     ///     surf::get("http://localhost").await.expect_status_partial_content();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_partial_content();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_partial_content();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_partial_content();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_partial_content();
     ///
@@ -705,11 +724,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -727,6 +742,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_bad_request();
     ///     surf::get("http://localhost").await.expect_status_bad_request();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_bad_request();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_bad_request();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_bad_request();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_bad_request();
     ///
@@ -740,11 +758,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -762,6 +776,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_unauthorized();
     ///     surf::get("http://localhost").await.expect_status_unauthorized();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_unauthorized();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_unauthorized();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_unauthorized();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_unauthorized();
     ///
@@ -775,11 +792,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -797,6 +810,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_forbidden();
     ///     surf::get("http://localhost").await.expect_status_forbidden();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_forbidden();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_forbidden();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_forbidden();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_forbidden();
     ///
@@ -810,11 +826,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -832,6 +844,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_not_found();
     ///     surf::get("http://localhost").await.expect_status_not_found();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_not_found();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_not_found();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_not_found();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_not_found();
     ///
@@ -845,11 +860,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -867,6 +878,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_conflict();
     ///     surf::get("http://localhost").await.expect_status_conflict();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_conflict();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_conflict();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_conflict();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_conflict();
     ///
@@ -880,11 +894,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -902,6 +912,9 @@ pub trait AsserhttpStatus<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_status_gone();
     ///     surf::get("http://localhost").await.expect_status_gone();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_gone();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_gone();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_gone();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_gone();
     ///
@@ -915,11 +928,7 @@ pub trait AsserhttpStatus<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -936,6 +945,9 @@ pub trait AsserhttpStatus<T> {
     ///
     ///     surf::get("http://localhost").await.unwrap().expect_status_internal_server_error();
     ///     surf::get("http://localhost").await.expect_status_internal_server_error();
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_status_internal_server_error();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status_internal_server_error();
     ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_status_internal_server_error();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_internal_server_error();
@@ -983,11 +995,7 @@ pub trait AsserhttpHeader<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1005,6 +1013,9 @@ pub trait AsserhttpHeader<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_header("content-type", "application/json");
     ///     surf::get("http://localhost").await.expect_header("content-type", "application/json");
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header("content-type", "application/json");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header("content-type", "application/json");
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header("content-type", "application/json");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header("content-type", "application/json");
     ///
@@ -1020,11 +1031,7 @@ pub trait AsserhttpHeader<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1042,6 +1049,9 @@ pub trait AsserhttpHeader<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     surf::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     ureq::get("http://localhost").call().or_any_status().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
@@ -1056,11 +1066,7 @@ pub trait AsserhttpHeader<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1078,6 +1084,9 @@ pub trait AsserhttpHeader<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_header_present("content-type");
     ///     surf::get("http://localhost").await.expect_header_present("content-type");
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header_present("content-type");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header_present("content-type");
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_present("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_present("content-type");
     ///
@@ -1092,11 +1101,7 @@ pub trait AsserhttpHeader<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1114,6 +1119,9 @@ pub trait AsserhttpHeader<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_header_absent("content-type");
     ///     surf::get("http://localhost").await.expect_header_absent("content-type");
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header_absent("content-type");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header_absent("content-type");
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_absent("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_absent("content-type");
     ///
@@ -1127,11 +1135,7 @@ pub trait AsserhttpHeader<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1149,6 +1153,9 @@ pub trait AsserhttpHeader<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_content_type_json();
     ///     surf::get("http://localhost").await.expect_content_type_json();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_content_type_json();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_content_type_json();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_json();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_json();
     ///
@@ -1164,11 +1171,7 @@ pub trait AsserhttpHeader<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1185,6 +1188,9 @@ pub trait AsserhttpHeader<T> {
     ///
     ///     surf::get("http://localhost").await.unwrap().expect_content_type_text();
     ///     surf::get("http://localhost").await.expect_content_type_text();
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_content_type_text();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_content_type_text();
     ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_text();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_text();
@@ -1249,11 +1255,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// # use serde::{Serialize, Deserialize};
     /// use asserhttp::*;
     /// use serde_json::{json, Value};
@@ -1276,6 +1278,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     surf::get("http://localhost").await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///
@@ -1295,11 +1300,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     /// use serde_json::json;
     ///
@@ -1318,6 +1319,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_json_eq(json!({"a": "b"}));
     ///     surf::get("http://localhost").await.expect_body_json_eq(json!({"a": "b"}));
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_json_eq(json!({"a": "b"}));
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_json_eq(json!({"a": "b"}));
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_json_eq(json!({"a": "b"}));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_json_eq(json!({"a": "b"}));
     ///
@@ -1334,11 +1338,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1357,6 +1357,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     surf::get("http://localhost").await.expect_body_text(|b| assert_eq!(b, "abcd"));
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_text(|b| assert_eq!(b, "abcd"));
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text(|b| assert_eq!(b, "abcd"));
     ///
@@ -1371,11 +1374,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1394,6 +1393,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_text_eq("abcd");
     ///     surf::get("http://localhost").await.expect_body_text_eq("abcd");
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_text_eq("abcd");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_text_eq("abcd");
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text_eq("abcd");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text_eq("abcd");
     ///
@@ -1410,11 +1412,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1432,6 +1430,9 @@ pub trait AsserhttpBody<T> {
     ///
     ///     surf::get("http://localhost").await.unwrap().expect_body_text_matches("[a-z]+");
     ///     surf::get("http://localhost").await.expect_body_text_matches("[a-z]+");
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_text_matches("[a-z]+");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_text_matches("[a-z]+");
     ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_text_matches("[a-z]+");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_text_matches("[a-z]+");
@@ -1451,11 +1452,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1478,6 +1475,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     surf::get("http://localhost").await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///
@@ -1492,11 +1492,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1519,6 +1515,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_bytes_eq(b"abcd");
     ///     surf::get("http://localhost").await.expect_body_bytes_eq(b"abcd");
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_bytes_eq(b"abcd");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_bytes_eq(b"abcd");
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_bytes_eq(b"abcd");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_bytes_eq(b"abcd");
     ///
@@ -1534,11 +1533,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1556,6 +1551,9 @@ pub trait AsserhttpBody<T> {
     ///     surf::get("http://localhost").await.unwrap().expect_body_present();
     ///     surf::get("http://localhost").await.expect_body_present();
     ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_present();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_present();
+    ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_present();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_present();
     ///
@@ -1569,11 +1567,7 @@ pub trait AsserhttpBody<T> {
     ///
     /// # Example
     /// ```no_run
-    /// # use isahc;
-    /// # use surf;
-    /// # use reqwest;
-    /// # use hyper;
-    /// # use awc;
+    /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
     /// #[async_std::main]
@@ -1590,6 +1584,9 @@ pub trait AsserhttpBody<T> {
     ///
     ///     surf::get("http://localhost").await.unwrap().expect_body_absent();
     ///     surf::get("http://localhost").await.expect_body_absent();
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_body_absent();
+    ///     ureq::get("http://localhost").call().or_any_status().expect_body_absent();
     ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_body_absent();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_body_absent();

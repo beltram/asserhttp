@@ -38,10 +38,11 @@
 </div>
 <br/>
 
-A standard trait for doing fluent assertions over many http client response. Currently, supports 
+A standard trait for doing fluent assertions over many http client response. Currently, supports
 [actix-web](https://actix.rs/docs/testing/), [rocket](https://github.com/SergioBenitez/Rocket),
 [reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
-[awc](https://docs.rs/awc) (Actix Web Client), [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).  
+[awc](https://docs.rs/awc) (Actix Web Client), [surf](https://github.com/http-rs/surf),
+[ureq](https://github.com/algesten/ureq) and [isahc](https://github.com/sagebind/isahc).
 
 ## Getting started
 
@@ -54,6 +55,7 @@ asserhttp = { version = "0.4.2", features = ["reqwest"] }
 #                             or features = ["actix-web-client"]
 #                             or features = ["rocket"]
 #                             or features = ["surf"]
+#                             or features = ["ureq"]
 #                             or features = ["isahc"]
 ```
 
@@ -74,6 +76,7 @@ async fn sample_test() {
 ```
 
 or on [reqwest](https://github.com/seanmonstar/reqwest)
+
 ```rust
 use reqwest;
 use asserhttp::*;

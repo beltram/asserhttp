@@ -45,6 +45,22 @@ macro_rules! http_client_test {
                 $(surf::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
 
+            // ureq
+            #[test]
+            #[stubr::mock($stub)]
+            fn [<ureq_ $fn_name>]() {
+                use asserhttp::*;
+                use ureq::OrAnyStatus;
+                $(ureq::get(&stubr.uri()).call().or_any_status()$( .$meth($($arg),*) )+;)+
+            }
+            #[test]
+            #[stubr::mock($stub)]
+            fn [<ureq_result_ $fn_name>]() {
+                use asserhttp::*;
+                use ureq::OrAnyStatus;
+                $(ureq::get(&stubr.uri()).call().or_any_status().unwrap()$( .$meth($($arg),*) )+;)+
+            }
+
             // hyper
             #[tokio::test]
             #[stubr::mock($stub)]
@@ -150,6 +166,24 @@ macro_rules! http_client_test {
             async fn [<surf_result_ $fn_name>]() {
                 use asserhttp::*;
                 $(surf::get(stubr.uri()).await$( .$meth($($arg),*) )+;)+
+            }
+
+            // ureq
+            #[should_panic(expected = $panic_msg)]
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<ureq_ $fn_name>]() {
+                use asserhttp::*;
+                use ureq::OrAnyStatus;
+                $(ureq::get(&stubr.uri()).call().or_any_status()$( .$meth($($arg),*) )+;)+
+            }
+            #[should_panic(expected = $panic_msg)]
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<ureq_result_ $fn_name>]() {
+                use asserhttp::*;
+                use ureq::OrAnyStatus;
+                $(ureq::get(&stubr.uri()).call().or_any_status().unwrap()$( .$meth($($arg),*) )+;)+
             }
 
             // hyper
