@@ -1,3 +1,5 @@
+use std::io::Cursor;
+
 use actix_web::HttpResponse;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
@@ -29,6 +31,7 @@ mod isahc_test;
 mod actix_test;
 
 pub enum Stub {
+    Full,
     StatusAccepted,
     StatusBadRequest,
     StatusConflict,
@@ -59,6 +62,16 @@ pub enum Stub {
 impl Stub {
     fn responses(&self) -> Responses {
         match self {
+            Stub::Full => Responses(
+                HttpResponse::Ok()
+                    .append_header(("content-type", "application/json"))
+                    .body(json!({"a": "b"}).to_string()),
+                rocket_test::Resp(rocket::Response::build()
+                    .status(rocket::http::Status::Ok)
+                    .raw_header("content-type", "application/json")
+                    .streamed_body(Cursor::new(json!({"a": "b"}).to_string()))
+                    .finalize()),
+            ),
             Stub::StatusAccepted => Responses(HttpResponse::Accepted().finish(), rocket::http::Status::Accepted.into()),
             Stub::StatusBadRequest => Responses(HttpResponse::BadRequest().finish(), rocket::http::Status::BadRequest.into()),
             Stub::StatusConflict => Responses(HttpResponse::Conflict().finish(), rocket::http::Status::Conflict.into()),
@@ -121,10 +134,11 @@ macro_rules! asserhttp_test {
 
 mod smoke {
     use super::Stub::*;
+    use serde_json::json;
 
     asserhttp_test!(simple_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_eq(200));
     asserhttp_test!(simple_should_fail, "status/ok.json", StatusOk.responses(), "", .expect_status_eq(100));
-    asserhttp_test!(simple_should_chain, "status/ok.json", StatusOk.responses(), .expect_status_eq(200).expect_status_eq(200));
+    asserhttp_test!(simple_should_chain, "full.json", Full.responses(), .expect_status_ok().expect_content_type_json().expect_body_json_eq(json!({"a": "b"})));
 }
 
 mod status {

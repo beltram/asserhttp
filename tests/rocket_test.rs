@@ -3,7 +3,7 @@ use std::io::Cursor;
 use rocket::{http::Header, Request, response, Response, response::Responder};
 use serde_json::Value;
 
-pub struct Resp(Response<'static>);
+pub struct Resp(pub Response<'static>);
 
 impl Responder<'_, 'static> for Resp {
     fn respond_to(self, _: &'_ Request<'_>) -> response::Result<'static> {
