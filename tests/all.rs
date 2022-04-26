@@ -133,8 +133,9 @@ macro_rules! asserhttp_test {
 }
 
 mod smoke {
-    use super::Stub::*;
     use serde_json::json;
+
+    use super::Stub::*;
 
     asserhttp_test!(simple_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_eq(200));
     asserhttp_test!(simple_should_fail, "status/ok.json", StatusOk.responses(), "", .expect_status_eq(100));
@@ -190,6 +191,8 @@ mod status {
 }
 
 mod header {
+    use serde_json::json;
+
     use super::Stub::*;
 
     asserhttp_test!(header_eq_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header("x-a", "a"));
@@ -225,6 +228,8 @@ mod header {
 
     asserhttp_test!(header_content_type_text_should_succeed, "header/text.json", HeaderText.responses(), .expect_content_type_text());
     asserhttp_test!(header_content_type_text_should_fail, "header/xml.json", HeaderXml.responses(), "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'", .expect_content_type_text());
+
+    asserhttp_test!(expect_header_first_should_not_be_destructive, "full.json", Full.responses(), .expect_content_type_json().expect_status_ok().expect_body_json_eq(json!({"a": "b"})));
 }
 
 mod body {
@@ -264,4 +269,6 @@ mod body {
 
     asserhttp_test!(body_absent_should_succeed, "body/bytes/absent.json", BodyBytesAbsent.responses(), .expect_body_absent());
     asserhttp_test!(body_absent_should_fail_when_present, "body/bytes/value.json", BodyBytes.responses(), "expected no response body but a response body was present", .expect_body_absent());
+
+    asserhttp_test!(expect_body_first_should_not_be_destructive, "full.json", Full.responses(), .expect_body_json_eq(json!({"a": "b"})).expect_status_ok().expect_content_type_json());
 }
