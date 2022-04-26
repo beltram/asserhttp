@@ -168,6 +168,7 @@ mod header {
     asserhttp_test!(header_multi_should_fail_when_key_missing, "header/multi.json", HeaderMulti.responses(), "expected one header named 'x-b' but none found", .expect_headers("x-b", ["a", "b"]));
     asserhttp_test!(header_multi_should_fail_when_one_value_missing, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a"]));
     asserhttp_test!(header_multi_should_fail_when_one_value_not_eq, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"c\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "c"]));
+    asserhttp_test!(header_multi_should_fail_because_value_case_sensitive, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"B\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "B"]));
     asserhttp_test!(header_multi_should_fail_when_one_expected_value_missing, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"b\", \"c\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "b", "c"]));
     asserhttp_test!(header_multi_should_fail_when_no_value_expected, "header/multi.json", HeaderMulti.responses(), "no value expected for header 'x-m'. Use 'expect_header_present' instead", .expect_headers("x-m", []));
 
