@@ -7,8 +7,23 @@ use rocket_test::Resp;
 #[path = "rocket_test.rs"]
 mod rocket_test;
 
-#[path = "http_client_test.rs"]
-mod http_client_test;
+#[path = "reqwest_test.rs"]
+mod reqwest_test;
+
+#[path = "surf_test.rs"]
+mod surf_test;
+
+#[path = "ureq_test.rs"]
+mod ureq_test;
+
+#[path = "hyper_test.rs"]
+mod hyper_test;
+
+#[path = "awc_test.rs"]
+mod awc_test;
+
+#[path = "isahc_test.rs"]
+mod isahc_test;
 
 #[path = "actix_test.rs"]
 mod actix_test;
@@ -83,12 +98,22 @@ pub struct TestBody {
 #[macro_export]
 macro_rules! asserhttp_test {
     ($fn_name:ident, $stub:literal, $resp:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
-        $(crate::http_client_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        $(crate::reqwest_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        $(crate::surf_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        $(crate::ureq_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        $(crate::hyper_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        $(crate::awc_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        $(crate::isahc_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $(crate::actix_test!($fn_name, $resp.0, $( .$meth($($arg),*) )* );)+
         $(crate::rocket_test!($fn_name, $resp.1, $( .$meth($($arg),*) )* );)+
     };
     ($fn_name:ident, $stub:literal, $resp:expr, $panic_msg:literal, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
-        $(crate::http_client_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $(crate::reqwest_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $(crate::surf_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $(crate::ureq_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $(crate::hyper_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $(crate::awc_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $(crate::isahc_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $(crate::actix_test!($fn_name, $resp.0, $panic_msg, $( .$meth($($arg),*) )* );)+
         $(crate::rocket_test!($fn_name, $resp.1, $panic_msg, $( .$meth($($arg),*) )* );)+
     };
