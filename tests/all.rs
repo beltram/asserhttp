@@ -165,6 +165,7 @@ mod header {
     asserhttp_test!(header_closure_should_fail, "header/one.json", HeaderOne.responses(), "", .expect_header("x-a", |h| assert_eq!(h, "b")));
 
     asserhttp_test!(header_multi_should_succeed, "header/multi.json", HeaderMulti.responses(), .expect_headers("x-m", ["a", "b"]));
+    asserhttp_test!(header_multi_should_match_key_ignoring_case, "header/multi.json", HeaderMulti.responses(), .expect_headers("X-M", ["a", "b"]));
     asserhttp_test!(header_multi_should_fail_when_key_missing, "header/multi.json", HeaderMulti.responses(), "expected one header named 'x-b' but none found", .expect_headers("x-b", ["a", "b"]));
     asserhttp_test!(header_multi_should_fail_when_one_value_missing, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a"]));
     asserhttp_test!(header_multi_should_fail_when_one_value_not_eq, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"c\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "c"]));
