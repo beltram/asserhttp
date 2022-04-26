@@ -17,41 +17,25 @@ pub trait AsserhttpHeader<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header("content-type", "application/json");
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     reqwest::blocking::get("http://localhost").expect_header("content-type", "application/json");
     ///     reqwest::blocking::get("http://localhost").expect_header("content-type", |h: &str| assert!(h.contains("application/")));
-    ///     reqwest::get("http://localhost").await.unwrap().expect_header("content-type", "application/json");
-    ///     reqwest::get("http://localhost").await.unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     reqwest::get("http://localhost").await.expect_header("content-type", "application/json");
     ///     reqwest::get("http://localhost").await.expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///
-    ///     isahc::get("http://localhost").unwrap().expect_header("content-type", "application/json");
-    ///     isahc::get("http://localhost").unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     isahc::get("http://localhost").expect_header("content-type", "application/json");
     ///     isahc::get("http://localhost").expect_header("content-type", |h: &str| assert!(h.contains("application/")));
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_header("content-type", "application/json");
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     isahc::get_async("http://localhost").await.expect_header("content-type", "application/json");
     ///     isahc::get_async("http://localhost").await.expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_header("content-type", "application/json");
-    ///     surf::get("http://localhost").await.unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     surf::get("http://localhost").await.expect_header("content-type", "application/json");
     ///     surf::get("http://localhost").await.expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header("content-type", "application/json");
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     ureq::get("http://localhost").call().or_any_status().expect_header("content-type", "application/json");
     ///     ureq::get("http://localhost").call().or_any_status().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header("content-type", "application/json");
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header("content-type", "application/json");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header("content-type", "application/json");
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     ///     awc::Client::default().get("http://localhost").send().await.expect_header("content-type", "application/json");
     ///     awc::Client::default().get("http://localhost").send().await.expect_header("content-type", |h: &str| assert!(h.contains("application/")));
     /// }
@@ -69,26 +53,18 @@ pub trait AsserhttpHeader<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     reqwest::blocking::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
-    ///     reqwest::get("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     reqwest::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     isahc::get("http://localhost").unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     isahc::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     isahc::get_async("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     surf::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     ureq::get("http://localhost").call().or_any_status().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_headers("cache-control", ["no-cache", "no-store"]);
     ///
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     awc::Client::default().get("http://localhost").send().await.expect_headers("cache-control", ["no-cache", "no-store"]);
     /// }
     /// ```
@@ -104,26 +80,18 @@ pub trait AsserhttpHeader<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header_present("content-type");
     ///     reqwest::blocking::get("http://localhost").expect_header_present("content-type");
-    ///     reqwest::get("http://localhost").await.unwrap().expect_header_present("content-type");
     ///     reqwest::get("http://localhost").await.expect_header_present("content-type");
     ///
-    ///     isahc::get("http://localhost").unwrap().expect_header_present("content-type");
     ///     isahc::get("http://localhost").expect_header_present("content-type");
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_header_present("content-type");
     ///     isahc::get_async("http://localhost").await.expect_header_present("content-type");
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_header_present("content-type");
     ///     surf::get("http://localhost").await.expect_header_present("content-type");
     ///
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header_present("content-type");
     ///     ureq::get("http://localhost").call().or_any_status().expect_header_present("content-type");
     ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_present("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_present("content-type");
     ///
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_present("content-type");
     ///     awc::Client::default().get("http://localhost").send().await.expect_header_present("content-type");
     /// }
     /// ```
@@ -139,26 +107,18 @@ pub trait AsserhttpHeader<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_header_absent("content-type");
     ///     reqwest::blocking::get("http://localhost").expect_header_absent("content-type");
-    ///     reqwest::get("http://localhost").await.unwrap().expect_header_absent("content-type");
     ///     reqwest::get("http://localhost").await.expect_header_absent("content-type");
     ///
-    ///     isahc::get("http://localhost").unwrap().expect_header_absent("content-type");
     ///     isahc::get("http://localhost").expect_header_absent("content-type");
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_header_absent("content-type");
     ///     isahc::get_async("http://localhost").await.expect_header_absent("content-type");
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_header_absent("content-type");
     ///     surf::get("http://localhost").await.expect_header_absent("content-type");
     ///
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_header_absent("content-type");
     ///     ureq::get("http://localhost").call().or_any_status().expect_header_absent("content-type");
     ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_header_absent("content-type");
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_absent("content-type");
     ///
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_header_absent("content-type");
     ///     awc::Client::default().get("http://localhost").send().await.expect_header_absent("content-type");
     /// }
     /// ```
@@ -173,26 +133,18 @@ pub trait AsserhttpHeader<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_content_type_json();
     ///     reqwest::blocking::get("http://localhost").expect_content_type_json();
-    ///     reqwest::get("http://localhost").await.unwrap().expect_content_type_json();
     ///     reqwest::get("http://localhost").await.expect_content_type_json();
     ///
-    ///     isahc::get("http://localhost").unwrap().expect_content_type_json();
     ///     isahc::get("http://localhost").expect_content_type_json();
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_content_type_json();
     ///     isahc::get_async("http://localhost").await.expect_content_type_json();
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_content_type_json();
     ///     surf::get("http://localhost").await.expect_content_type_json();
     ///
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_content_type_json();
     ///     ureq::get("http://localhost").call().or_any_status().expect_content_type_json();
     ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_json();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_json();
     ///
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_json();
     ///     awc::Client::default().get("http://localhost").send().await.expect_content_type_json();
     /// }
     /// ```
@@ -209,26 +161,18 @@ pub trait AsserhttpHeader<T> {
     ///
     /// #[async_std::main]
     /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").unwrap().expect_content_type_text();
     ///     reqwest::blocking::get("http://localhost").expect_content_type_text();
-    ///     reqwest::get("http://localhost").await.unwrap().expect_content_type_text();
     ///     reqwest::get("http://localhost").await.expect_content_type_text();
     ///
-    ///     isahc::get("http://localhost").unwrap().expect_content_type_text();
     ///     isahc::get("http://localhost").expect_content_type_text();
-    ///     isahc::get_async("http://localhost").await.unwrap().expect_content_type_text();
     ///     isahc::get_async("http://localhost").await.expect_content_type_text();
     ///
-    ///     surf::get("http://localhost").await.unwrap().expect_content_type_text();
     ///     surf::get("http://localhost").await.expect_content_type_text();
     ///
-    ///     ureq::get("http://localhost").call().or_any_status().unwrap().expect_content_type_text();
     ///     ureq::get("http://localhost").call().or_any_status().expect_content_type_text();
     ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.unwrap().expect_content_type_text();
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_content_type_text();
     ///
-    ///     awc::Client::default().get("http://localhost").send().await.unwrap().expect_content_type_text();
     ///     awc::Client::default().get("http://localhost").send().await.expect_content_type_text();
     /// }
     /// ```
