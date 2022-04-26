@@ -15,7 +15,7 @@ pub trait AsserhttpHeader<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_header("content-type", "application/json");
     ///     reqwest::blocking::get("http://localhost").expect_header("content-type", |h: &str| assert!(h.contains("application/")));
@@ -51,7 +51,7 @@ pub trait AsserhttpHeader<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
     ///     reqwest::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
@@ -78,7 +78,7 @@ pub trait AsserhttpHeader<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_header_present("content-type");
     ///     reqwest::get("http://localhost").await.expect_header_present("content-type");
@@ -105,7 +105,7 @@ pub trait AsserhttpHeader<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_header_absent("content-type");
     ///     reqwest::get("http://localhost").await.expect_header_absent("content-type");
@@ -131,7 +131,7 @@ pub trait AsserhttpHeader<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_content_type_json();
     ///     reqwest::get("http://localhost").await.expect_content_type_json();
@@ -159,7 +159,7 @@ pub trait AsserhttpHeader<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_content_type_text();
     ///     reqwest::get("http://localhost").await.expect_content_type_text();

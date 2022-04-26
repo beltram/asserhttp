@@ -208,7 +208,7 @@
 //! use asserhttp::*;
 //! use serde_json::json;
 //!
-//! #[async_std::test]
+//! #[tokio::test]
 //! async fn sample_test() {
 //!     surf::get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
@@ -234,7 +234,7 @@
 //! use asserhttp::*;
 //! use serde_json::json;
 //!
-//! #[async_std::test]
+//! #[tokio::test]
 //! async fn sample_test() {
 //!     ureq::get("http://localhost/api/any").call().or_any_status().unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
@@ -260,7 +260,7 @@
 //! use asserhttp::*;
 //! use serde_json::json;
 //!
-//! #[async_std::test]
+//! #[tokio::test]
 //! async fn sample_test() {
 //!     isahc::get_async("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly

@@ -24,7 +24,7 @@ pub trait AsserhttpBody<T> {
     /// #[derive(Serialize, Deserialize, Debug, Eq, PartialEq)]
     /// struct MyStruct { a: String }
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
     ///     reqwest::get("http://localhost").await.expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"})));
@@ -57,7 +57,7 @@ pub trait AsserhttpBody<T> {
     /// use asserhttp::*;
     /// use serde_json::json;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_json_eq(json!({"a": "b"}));
     ///     reqwest::get("http://localhost").await.expect_body_json_eq(json!({"a": "b"}));
@@ -90,7 +90,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_text(|b| assert_eq!(b, "abcd"));
     ///     reqwest::get("http://localhost").await.expect_body_text(|b| assert_eq!(b, "abcd"));
@@ -117,7 +117,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_text_eq("abcd");
     ///     reqwest::get("http://localhost").await.expect_body_text_eq("abcd");
@@ -149,7 +149,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_text_matches("[a-z]+");
     ///     reqwest::get("http://localhost").await.expect_body_text_matches("[a-z]+");
@@ -182,7 +182,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     ///     reqwest::get("http://localhost").await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
@@ -214,7 +214,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_bytes_eq(b"abcd");
     ///     reqwest::get("http://localhost").await.expect_body_bytes_eq(b"abcd");
@@ -249,7 +249,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_present();
     ///     reqwest::get("http://localhost").await.expect_body_present();
@@ -275,7 +275,7 @@ pub trait AsserhttpBody<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_body_absent();
     ///     reqwest::get("http://localhost").await.expect_body_absent();

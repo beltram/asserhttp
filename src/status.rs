@@ -29,7 +29,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_eq(200);
     ///     reqwest::blocking::get("http://localhost").expect_status_eq(Status::Ok);
@@ -65,7 +65,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_in_range(200, 400);
     ///     reqwest::get("http://localhost").await.expect_status_in_range(200, 400);
@@ -91,7 +91,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_success();
     ///     reqwest::get("http://localhost").await.expect_status_success();
@@ -117,7 +117,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_redirection();
     ///     reqwest::get("http://localhost").await.expect_status_redirection();
@@ -143,7 +143,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_client_error();
     ///     reqwest::get("http://localhost").await.expect_status_client_error();
@@ -169,7 +169,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_server_error();
     ///     reqwest::get("http://localhost").await.expect_status_server_error();
@@ -195,7 +195,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_ok();
     ///     reqwest::get("http://localhost").await.expect_status_ok();
@@ -221,7 +221,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_created();
     ///     reqwest::get("http://localhost").await.expect_status_created();
@@ -247,7 +247,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_accepted();
     ///     reqwest::get("http://localhost").await.expect_status_accepted();
@@ -273,7 +273,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_no_content();
     ///     reqwest::get("http://localhost").await.expect_status_no_content();
@@ -299,7 +299,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_partial_content();
     ///     reqwest::get("http://localhost").await.expect_status_partial_content();
@@ -325,7 +325,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_bad_request();
     ///     reqwest::get("http://localhost").await.expect_status_bad_request();
@@ -351,7 +351,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_unauthorized();
     ///     reqwest::get("http://localhost").await.expect_status_unauthorized();
@@ -377,7 +377,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_forbidden();
     ///     reqwest::get("http://localhost").await.expect_status_forbidden();
@@ -403,7 +403,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_not_found();
     ///     reqwest::get("http://localhost").await.expect_status_not_found();
@@ -429,7 +429,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_conflict();
     ///     reqwest::get("http://localhost").await.expect_status_conflict();
@@ -455,7 +455,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_gone();
     ///     reqwest::get("http://localhost").await.expect_status_gone();
@@ -481,7 +481,7 @@ pub trait AsserhttpStatus<T> {
     /// # use ureq::OrAnyStatus;
     /// use asserhttp::*;
     ///
-    /// #[async_std::main]
+    /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_status_internal_server_error();
     ///     reqwest::get("http://localhost").await.expect_status_internal_server_error();
