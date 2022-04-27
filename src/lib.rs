@@ -40,7 +40,9 @@
 //!     .expect_status_internal_server_error()
 //!     // header
 //!     .expect_header("content-type", "application/pdf")
+//!     .expect_header("content-type", |h| assert_eq!(h, "application/pdf"))
 //!     .expect_headers("cache-control", ["no-cache", "no-store"])
+//!     .expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"a") && h.contains(&"b")))
 //!     .expect_header_present("x-my-header")
 //!     .expect_header_absent("x-my-header")
 //!     .expect_content_type_json()

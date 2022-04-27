@@ -8,7 +8,7 @@ pub trait AsserhttpHeader<T> {
 
     /// Expects response header to be equal
     /// * `key` - expected header key
-    /// * `value` - expected header value
+    /// * `value` - expected header value or closure
     ///
     /// # Example
     /// ```no_run
