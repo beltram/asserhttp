@@ -213,7 +213,9 @@ mod header {
     asserhttp_test!(header_multi_should_fail_when_one_value_not_eq, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"c\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "c"]));
     asserhttp_test!(header_multi_should_fail_because_value_case_sensitive, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"B\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "B"]));
     asserhttp_test!(header_multi_should_fail_when_one_expected_value_missing, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"b\", \"c\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "b", "c"]));
-    asserhttp_test!(header_multi_should_fail_when_no_value_expected, "header/multi.json", HeaderMulti.responses(), "no value expected for header 'x-m'. Use 'expect_header_present' instead", .expect_headers("x-m", []));
+
+    asserhttp_test!(header_multi_closure_should_succeed, "header/multi.json", HeaderMulti.responses(), .expect_headers("x-m", |h: Vec<&str>| assert!(h.contains(&"a") && h.contains(&"b"))));
+    asserhttp_test!(header_multi_closure_should_fail, "header/multi.json", HeaderMulti.responses(), "", .expect_headers("x-m", |h: Vec<&str>| assert!(h.contains(&"c"))));
 
     asserhttp_test!(header_present_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header_present("x-a"));
     asserhttp_test!(header_present_should_succeed_ignoring_case, "header/one.json", HeaderOne.responses(), .expect_header_present("X-A"));

@@ -44,7 +44,7 @@ pub trait AsserhttpHeader<T> {
 
     /// Expects response multi valued headers to be equal
     /// * `key` - expected header key
-    /// * `value` - expected header values
+    /// * `value` - expected header values or closure
     ///
     /// # Example
     /// ```no_run
@@ -54,21 +54,29 @@ pub trait AsserhttpHeader<T> {
     /// #[tokio::main]
     /// async fn main() {
     ///     reqwest::blocking::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     reqwest::blocking::get("http://localhost").expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///     reqwest::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     reqwest::get("http://localhost").await.expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///
     ///     isahc::get("http://localhost").expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     isahc::get("http://localhost").expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///     isahc::get_async("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     isahc::get_async("http://localhost").await.expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///
     ///     surf::get("http://localhost").await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     surf::get("http://localhost").await.expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///
     ///     ureq::get("http://localhost").call().or_any_status().expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     ureq::get("http://localhost").call().or_any_status().expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///
     ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     ///
     ///     awc::Client::default().get("http://localhost").send().await.expect_headers("cache-control", ["no-cache", "no-store"]);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     /// }
     /// ```
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T;
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, values: impl Into<HeaderValuesAsserter>) -> &mut T;
 
     /// Expects response header to be present
     /// * `key` - expected present header key
@@ -192,16 +200,9 @@ impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
         self
     }
 
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T {
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
         assert_header_key(self.get_keys(), key.as_ref());
-        let actual_values = self.get_values(key.as_ref());
-        let expected = value.into().iter().map(|v| v.to_string()).collect::<Vec<_>>();
-        assert!(!expected.is_empty(), "no value expected for header '{}'. Use 'expect_header_present' instead", key.as_ref());
-        let same_size = actual_values.len() == expected.len();
-        let all_eq = actual_values.iter()
-            .zip(expected.iter())
-            .all(|(a, b)| a == b);
-        assert!(same_size && all_eq, "expected header '{}' to contain values '{:?}' but contained '{:?}'", key.as_ref(), expected, actual_values);
+        values.into().0(key.as_ref().to_string(), self.get_values(key.as_ref()));
         self
     }
 
@@ -229,8 +230,8 @@ impl<T, E> AsserhttpHeader<T> for Result<T, E> where
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, value: impl Into<Vec<&'a str>>) -> &mut T {
-        self.as_mut().unwrap().expect_headers(key, value)
+    fn expect_headers<'a>(&mut self, key: impl AsRef<str>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
+        self.as_mut().unwrap().expect_headers(key, values)
     }
 
     fn expect_header_present(&mut self, key: impl AsRef<str>) -> &mut T {
@@ -261,5 +262,35 @@ impl From<&'static str> for HeaderValueAsserter {
 impl<F: 'static> From<F> for HeaderValueAsserter where F: Fn(&'static str) {
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, value| fun(Box::leak(Box::new(value)))))
+    }
+}
+
+pub struct HeaderValuesAsserter(Box<dyn Fn(String, Vec<String>)>);
+
+impl<S: AsRef<str>> From<Vec<S>> for HeaderValuesAsserter {
+    fn from(expected: Vec<S>) -> Self {
+        let expected = expected.into_iter().map(|i| i.as_ref().to_string()).collect::<Vec<_>>();
+        Self(Box::new(move |key, values| {
+            assert!(!expected.is_empty(), "no value expected for header '{}'. Use 'expect_header_present' instead", key);
+            let same_size = values.len() == expected.len();
+            let all_eq = values.iter()
+                .zip(expected.iter())
+                .all(|(a, b)| a == b);
+            assert!(same_size && all_eq, "expected header '{}' to contain values '{:?}' but contained '{:?}'", key, expected, values);
+        }))
+    }
+}
+
+impl<const N: usize, S: AsRef<str>> From<[S; N]> for HeaderValuesAsserter {
+    fn from(expected: [S; N]) -> Self {
+        Self::from(Vec::from(expected))
+    }
+}
+
+impl<F: 'static> From<F> for HeaderValuesAsserter where F: Fn(Vec<&'static str>) {
+    fn from(fun: F) -> Self {
+        Self(Box::new(move |_, values: Vec<String>| {
+            fun(values.into_iter().map(|s| &*Box::leak(Box::new(s)).as_str()).collect::<Vec<_>>())
+        }))
     }
 }
