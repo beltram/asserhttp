@@ -205,6 +205,7 @@ mod header {
 
     asserhttp_test!(header_closure_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header("x-a", |h| assert_eq!(h, "a")));
     asserhttp_test!(header_closure_should_fail, "header/one.json", HeaderOne.responses(), "", .expect_header("x-a", |h| assert_eq!(h, "b")));
+    asserhttp_test!(header_closure_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "", .expect_header("x-w", |h| assert_eq!(h, "a")));
 
     asserhttp_test!(header_multi_should_succeed, "header/multi.json", HeaderMulti.responses(), .expect_headers("x-m", ["a", "b"]));
     asserhttp_test!(header_multi_should_match_key_ignoring_case, "header/multi.json", HeaderMulti.responses(), .expect_headers("X-M", ["a", "b"]));
@@ -216,6 +217,7 @@ mod header {
 
     asserhttp_test!(header_multi_closure_should_succeed, "header/multi.json", HeaderMulti.responses(), .expect_headers("x-m", |h: Vec<&str>| assert!(h.contains(&"a") && h.contains(&"b"))));
     asserhttp_test!(header_multi_closure_should_fail, "header/multi.json", HeaderMulti.responses(), "", .expect_headers("x-m", |h: Vec<&str>| assert!(h.contains(&"c"))));
+    asserhttp_test!(header_multi_closure_should_fail_when_wrong_key, "header/multi.json", HeaderMulti.responses(), "", .expect_headers("x-w", |h: Vec<&str>| assert!(h.contains(&"a") && h.contains(&"b"))));
 
     asserhttp_test!(header_present_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header_present("x-a"));
     asserhttp_test!(header_present_should_succeed_ignoring_case, "header/one.json", HeaderOne.responses(), .expect_header_present("X-A"));
