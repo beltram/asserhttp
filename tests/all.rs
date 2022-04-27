@@ -137,17 +137,20 @@ mod smoke {
 
     use super::Stub::*;
 
-    asserhttp_test!(simple_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_eq(200));
-    asserhttp_test!(simple_should_fail, "status/ok.json", StatusOk.responses(), "", .expect_status_eq(100));
+    asserhttp_test!(simple_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(200));
+    asserhttp_test!(simple_should_fail, "status/ok.json", StatusOk.responses(), "", .expect_status(100));
     asserhttp_test!(simple_should_chain, "full.json", Full.responses(), .expect_status_ok().expect_content_type_json().expect_body_json_eq(json!({"a": "b"})));
 }
 
 mod status {
     use super::Stub::*;
 
-    asserhttp_test!(status_eq_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_eq(200));
-    asserhttp_test!(status_eq_enum_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_eq(Status::Ok));
-    asserhttp_test!(status_eq_should_fail, "status/ok.json", StatusOk.responses(), "expected status to be '100' but was '200'", .expect_status_eq(100));
+    asserhttp_test!(status_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(200));
+    asserhttp_test!(status_enum_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(Status::Ok));
+    asserhttp_test!(status_should_fail, "status/ok.json", StatusOk.responses(), "expected status to be '100' but was '200'", .expect_status(100));
+
+    asserhttp_test!(status_closure_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(|s| assert_eq!(s, 200)));
+    asserhttp_test!(status_closure_should_fail, "status/ok.json", StatusOk.responses(), "", .expect_status(|s| assert_eq!(s, 400)));
 
     asserhttp_test!(status_ok_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_ok());
     asserhttp_test!(status_ok_should_fail, "status/created.json", StatusCreated.responses(), "expected status to be '200' but was '201'", .expect_status_ok());

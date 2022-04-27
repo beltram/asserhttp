@@ -1,26 +1,8 @@
 use std::str::FromStr;
 
-pub use http_types::StatusCode as Status;
-
-pub struct AnyStatus(u16);
-
-impl From<u16> for AnyStatus {
-    fn from(value: u16) -> Self { Self(value) }
-}
-
-impl From<Status> for AnyStatus {
-    fn from(value: Status) -> Self {
-        Self(u16::from_str(&value.to_string()).unwrap())
-    }
-}
-
-#[cfg(feature = "rocket")]
-impl From<rocket::http::Status> for AnyStatus {
-    fn from(value: rocket::http::Status) -> Self { Self(value.code) }
-}
-
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
+    /// DEPRECATED
     /// Expects response status to be equal
     /// * `status` - expected status
     ///
@@ -54,7 +36,53 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_eq(Status::Ok);
     /// }
     /// ```
-    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T;
+    #[deprecated(since = "0.5.0", note = "Use 'expect_status' instead with same signature")]
+    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T {
+        self.expect_status(status)
+    }
+
+    /// Expects response status to be equal
+    /// * `status` - expected status or asserhttp::Status or closure
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use ureq::OrAnyStatus;
+    /// use asserhttp::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").expect_status(200);
+    ///     reqwest::blocking::get("http://localhost").expect_status(Status::Ok);
+    ///     reqwest::blocking::get("http://localhost").expect_status(|s| assert_eq!(s, 200));
+    ///     reqwest::get("http://localhost").await.expect_status(200);
+    ///     reqwest::get("http://localhost").await.expect_status(Status::Ok);
+    ///     reqwest::get("http://localhost").await.expect_status(|s| assert_eq!(s, 200));
+    ///
+    ///     isahc::get("http://localhost").expect_status(200);
+    ///     isahc::get("http://localhost").expect_status(Status::Ok);
+    ///     isahc::get("http://localhost").expect_status(|s| assert_eq!(s, 200));
+    ///     isahc::get_async("http://localhost").await.expect_status(200);
+    ///     isahc::get_async("http://localhost").await.expect_status(Status::Ok);
+    ///     isahc::get_async("http://localhost").await.expect_status(|s| assert_eq!(s, 200));
+    ///
+    ///     surf::get("http://localhost").await.expect_status(200);
+    ///     surf::get("http://localhost").await.expect_status(Status::Ok);
+    ///     surf::get("http://localhost").await.expect_status(|s| assert_eq!(s, 200));
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status(200);
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status(Status::Ok);
+    ///     ureq::get("http://localhost").call().or_any_status().expect_status(|s| assert_eq!(s, 200));
+    ///
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status(200);
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status(Status::Ok);
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status(|s| assert_eq!(s, 200));
+    ///
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status(200);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status(Status::Ok);
+    ///     awc::Client::default().get("http://localhost").send().await.expect_status(|s| assert_eq!(s, 200));
+    /// }
+    /// ```
+    fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T;
 
     /// Expects response status to be in range
     /// * `lower` - lower inclusive bound
@@ -82,7 +110,13 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_in_range(200, 400);
     /// }
     /// ```
-    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T;
+    fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut T {
+        self.expect_status(move |status: u16| {
+            assert!(status.ge(&lower) && status.lt(&upper),
+                    "expected status to be in [{};{}[ but was '{}'",
+                    lower, upper, status);
+        })
+    }
 
     /// Expects response status to be in 2xx range
     ///
@@ -212,7 +246,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_ok();
     /// }
     /// ```
-    fn expect_status_ok(&mut self) -> &mut T { self.expect_status_eq(200) }
+    fn expect_status_ok(&mut self) -> &mut T { self.expect_status(200) }
 
     /// Expects response status to be `Created 201`
     ///
@@ -238,7 +272,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_created();
     /// }
     /// ```
-    fn expect_status_created(&mut self) -> &mut T { self.expect_status_eq(201) }
+    fn expect_status_created(&mut self) -> &mut T { self.expect_status(201) }
 
     /// Expects response status to be `Accepted 202`
     ///
@@ -264,7 +298,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_accepted();
     /// }
     /// ```
-    fn expect_status_accepted(&mut self) -> &mut T { self.expect_status_eq(202) }
+    fn expect_status_accepted(&mut self) -> &mut T { self.expect_status(202) }
 
     /// Expects response status to be `No Content 204`
     ///
@@ -290,7 +324,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_no_content();
     /// }
     /// ```
-    fn expect_status_no_content(&mut self) -> &mut T { self.expect_status_eq(204) }
+    fn expect_status_no_content(&mut self) -> &mut T { self.expect_status(204) }
 
     /// Expects response status to be `Partial Content 206`
     ///
@@ -316,7 +350,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_partial_content();
     /// }
     /// ```
-    fn expect_status_partial_content(&mut self) -> &mut T { self.expect_status_eq(206) }
+    fn expect_status_partial_content(&mut self) -> &mut T { self.expect_status(206) }
 
     /// Expects response status to be `Bad Request 400`
     ///
@@ -342,7 +376,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_bad_request();
     /// }
     /// ```
-    fn expect_status_bad_request(&mut self) -> &mut T { self.expect_status_eq(400) }
+    fn expect_status_bad_request(&mut self) -> &mut T { self.expect_status(400) }
 
     /// Expects response status to be `Unauthorized 401`
     ///
@@ -368,7 +402,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_unauthorized();
     /// }
     /// ```
-    fn expect_status_unauthorized(&mut self) -> &mut T { self.expect_status_eq(401) }
+    fn expect_status_unauthorized(&mut self) -> &mut T { self.expect_status(401) }
 
     /// Expects response status to be `Forbidden 403`
     ///
@@ -394,7 +428,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_forbidden();
     /// }
     /// ```
-    fn expect_status_forbidden(&mut self) -> &mut T { self.expect_status_eq(403) }
+    fn expect_status_forbidden(&mut self) -> &mut T { self.expect_status(403) }
 
     /// Expects response status to be `Not Found 404`
     ///
@@ -420,7 +454,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_not_found();
     /// }
     /// ```
-    fn expect_status_not_found(&mut self) -> &mut T { self.expect_status_eq(404) }
+    fn expect_status_not_found(&mut self) -> &mut T { self.expect_status(404) }
 
     /// Expects response status to be `Conflict 409`
     ///
@@ -446,7 +480,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_conflict();
     /// }
     /// ```
-    fn expect_status_conflict(&mut self) -> &mut T { self.expect_status_eq(409) }
+    fn expect_status_conflict(&mut self) -> &mut T { self.expect_status(409) }
 
     /// Expects response status to be `Gone 410`
     ///
@@ -472,7 +506,7 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_gone();
     /// }
     /// ```
-    fn expect_status_gone(&mut self) -> &mut T { self.expect_status_eq(410) }
+    fn expect_status_gone(&mut self) -> &mut T { self.expect_status(410) }
 
     /// Expects response status to be `Internal Server Error 500`
     ///
@@ -498,24 +532,12 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_internal_server_error();
     /// }
     /// ```
-    fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status_eq(500) }
+    fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status(500) }
 }
 
 impl<T> AsserhttpStatus<T> for T where T: super::accessor::StatusAccessor {
-    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T {
-        let actual = self.get_status();
-        let expected = status.into().0;
-        assert_eq!(expected, actual, "expected status to be '{}' but was '{}'", expected, actual);
-        self
-    }
-
-    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T {
-        let actual = self.get_status();
-        let expected_lower = lower.into().0;
-        let expected_upper = upper.into().0;
-        assert!(actual.ge(&expected_lower) && actual.lt(&expected_upper),
-                "expected status to be in [{};{}[ but was '{}'",
-                expected_lower, expected_upper, actual);
+    fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
+        status.into().0(self.get_status());
         self
     }
 }
@@ -523,11 +545,34 @@ impl<T> AsserhttpStatus<T> for T where T: super::accessor::StatusAccessor {
 impl<T, E> AsserhttpStatus<T> for Result<T, E> where
     T: super::accessor::StatusAccessor,
     E: std::fmt::Debug {
-    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T {
-        self.as_mut().unwrap().expect_status_eq(status)
+    fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
+        self.as_mut().unwrap().expect_status(status)
     }
+}
 
-    fn expect_status_in_range(&mut self, lower: impl Into<AnyStatus>, upper: impl Into<AnyStatus>) -> &mut T {
-        self.as_mut().unwrap().expect_status_in_range(lower, upper)
+pub struct AnyStatus(Box<dyn Fn(u16)>);
+
+impl From<u16> for AnyStatus {
+    fn from(expected: u16) -> Self {
+        Self(Box::new(move |status| {
+            assert_eq!(expected, status, "expected status to be '{}' but was '{}'", expected, status);
+        }))
+    }
+}
+
+impl From<crate::Status> for AnyStatus {
+    fn from(value: crate::Status) -> Self {
+        Self::from(u16::from_str(&value.to_string()).unwrap())
+    }
+}
+
+#[cfg(feature = "rocket")]
+impl From<rocket::http::Status> for AnyStatus {
+    fn from(value: rocket::http::Status) -> Self { Self::from(value.code) }
+}
+
+impl<F: 'static> From<F> for AnyStatus where F: Fn(u16) {
+    fn from(fun: F) -> Self {
+        Self(Box::new(fun))
     }
 }

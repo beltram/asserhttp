@@ -283,7 +283,7 @@
 pub use body::AsserhttpBody;
 pub use header::AsserhttpHeader;
 pub use status::AsserhttpStatus;
-pub use status::Status;
+pub use http_types::StatusCode as Status;
 
 #[cfg(feature = "surf")]
 mod assert_surf;
