@@ -48,6 +48,7 @@ pub enum Stub {
     HeaderJson,
     HeaderMany,
     HeaderMulti,
+    HeaderCacheControl,
     HeaderOne,
     HeaderText,
     HeaderXml,
@@ -88,6 +89,7 @@ impl Stub {
             Stub::HeaderJson => Responses(HttpResponse::Ok().append_header(("content-type", "application/json")).finish(), vec![("content-type", "application/json")].into()),
             Stub::HeaderMany => Responses(HttpResponse::Ok().append_header(("x-a", "a")).append_header(("x-b", "b")).finish(), vec![("x-a", "a"), ("x-b", "b")].into()),
             Stub::HeaderMulti => Responses(HttpResponse::Ok().append_header(("x-m", "a, b")).finish(), vec![("x-m", vec!["a", "b"])].into()),
+            Stub::HeaderCacheControl => Responses(HttpResponse::Ok().append_header(("cache-control", "no-cache, no-store")).finish(), vec![("cache-control", vec!["no-cache", "no-store"])].into()),
             Stub::HeaderOne => Responses(HttpResponse::Ok().append_header(("x-a", "a")).finish(), vec![("x-a", "a")].into()),
             Stub::HeaderText => Responses(HttpResponse::Ok().append_header(("content-type", "text/plain")).finish(), vec![("content-type", "text/plain")].into()),
             Stub::HeaderXml => Responses(HttpResponse::Ok().append_header(("content-type", "application/xml")).finish(), vec![("content-type", "application/xml")].into()),
@@ -199,9 +201,11 @@ mod header {
     use super::Stub::*;
 
     asserhttp_test!(header_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header("x-a", "a"));
+    asserhttp_test!(header_const_should_succeed, "header/json.json", HeaderJson.responses(), .expect_header(headers::CONTENT_TYPE, "application/json"));
     asserhttp_test!(header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .expect_header("X-A", "a"));
     asserhttp_test!(header_should_fail_because_value_case_sensitive, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'A' but was 'a'", .expect_header("x-a", "A"));
     asserhttp_test!(header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "expected one header named 'x-b' but none found", .expect_header("x-b", "a"));
+    asserhttp_test!(header_const_should_fail_when_wrong_key, "header/json.json", HeaderJson.responses(), "expected one header named 'accept' but none found", .expect_header(headers::ACCEPT, "application/json"));
     asserhttp_test!(header_should_fail_when_wrong_value, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'b' but was 'a'", .expect_header("x-a", "b"));
     asserhttp_test!(header_many_should_succeed, "header/many.json", HeaderMany.responses(), .expect_header("x-a", "a").expect_header("x-b", "b"));
     asserhttp_test!(header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.", .expect_header("x-m", "a"));
@@ -211,8 +215,10 @@ mod header {
     asserhttp_test!(header_closure_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "", .expect_header("x-w", |h| assert_eq!(h, "a")));
 
     asserhttp_test!(header_multi_should_succeed, "header/multi.json", HeaderMulti.responses(), .expect_headers("x-m", ["a", "b"]));
+    asserhttp_test!(header_multi_const_should_succeed, "header/cache-control.json", HeaderCacheControl.responses(), .expect_headers(headers::CACHE_CONTROL, ["no-cache", "no-store"]));
     asserhttp_test!(header_multi_should_match_key_ignoring_case, "header/multi.json", HeaderMulti.responses(), .expect_headers("X-M", ["a", "b"]));
     asserhttp_test!(header_multi_should_fail_when_key_missing, "header/multi.json", HeaderMulti.responses(), "expected one header named 'x-b' but none found", .expect_headers("x-b", ["a", "b"]));
+    asserhttp_test!(header_multi_const_should_fail_when_key_missing, "header/multi.json", HeaderMulti.responses(), "expected one header named 'cache-control' but none found", .expect_headers(headers::CACHE_CONTROL, ["a", "b"]));
     asserhttp_test!(header_multi_should_fail_when_one_value_missing, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a"]));
     asserhttp_test!(header_multi_should_fail_when_one_value_not_eq, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"c\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "c"]));
     asserhttp_test!(header_multi_should_fail_because_value_case_sensitive, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to contain values '[\"a\", \"B\"]' but contained '[\"a\", \"b\"]'", .expect_headers("x-m", ["a", "B"]));
@@ -223,12 +229,16 @@ mod header {
     asserhttp_test!(header_multi_closure_should_fail_when_wrong_key, "header/multi.json", HeaderMulti.responses(), "", .expect_headers("x-w", |h: Vec<&str>| assert!(h.contains(&"a") && h.contains(&"b"))));
 
     asserhttp_test!(header_present_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header_present("x-a"));
+    asserhttp_test!(header_present_const_should_succeed, "header/json.json", HeaderJson.responses(), .expect_header_present(headers::CONTENT_TYPE));
     asserhttp_test!(header_present_should_succeed_ignoring_case, "header/one.json", HeaderOne.responses(), .expect_header_present("X-A"));
     asserhttp_test!(header_present_should_fail_when_absent, "header/one.json", HeaderOne.responses(), "expected one header named 'x-b' but none found", .expect_header_present("x-b"));
+    asserhttp_test!(header_present_const_should_fail_when_absent, "header/json.json", HeaderJson.responses(), "expected one header named 'accept' but none found", .expect_header_present(headers::ACCEPT));
 
     asserhttp_test!(header_absent_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header_absent("x-b"));
+    asserhttp_test!(header_absent_const_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header_absent(headers::ACCEPT));
     asserhttp_test!(header_absent_should_fail_when_present, "header/one.json", HeaderOne.responses(), "expected no header named 'x-a' but one found", .expect_header_absent("x-a"));
     asserhttp_test!(header_absent_should_fail_when_present_ignoring_case, "header/one.json", HeaderOne.responses(), "expected no header named 'X-A' but one found", .expect_header_absent("X-A"));
+    asserhttp_test!(header_absent_const_should_fail_when_present, "header/json.json", HeaderJson.responses(), "expected no header named 'content-type' but one found", .expect_header_absent(headers::CONTENT_TYPE));
 
     asserhttp_test!(header_content_type_json_should_succeed, "header/json.json", HeaderJson.responses(), .expect_content_type_json());
     asserhttp_test!(header_content_type_json_should_fail, "header/xml.json", HeaderXml.responses(), "expected header 'content-type' to be equal to 'application/json' but was 'application/xml'", .expect_content_type_json());

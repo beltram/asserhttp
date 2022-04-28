@@ -40,11 +40,15 @@
 //!     .expect_status_internal_server_error()
 //!     // header
 //!     .expect_header("content-type", "application/pdf")
+//!     .expect_header(headers::CONTENT_TYPE, "application/pdf")
 //!     .expect_header("content-type", |h| assert_eq!(h, "application/pdf"))
 //!     .expect_headers("cache-control", ["no-cache", "no-store"])
+//!     .expect_headers(headers::CACHE_CONTROL, ["no-cache", "no-store"])
 //!     .expect_headers("cache-control", |h: Vec<&str>| assert!(h.contains(&"a") && h.contains(&"b")))
 //!     .expect_header_present("x-my-header")
+//!     .expect_header_present(headers::CONTENT_TYPE)
 //!     .expect_header_absent("x-my-header")
+//!     .expect_header_absent(headers::ACCEPT)
 //!     .expect_content_type_json()
 //!     .expect_content_type_text()
 //!     // body
@@ -284,6 +288,7 @@ pub use body::AsserhttpBody;
 pub use header::AsserhttpHeader;
 pub use status::AsserhttpStatus;
 pub use http_types::StatusCode as Status;
+pub use http_types::headers as headers;
 
 #[cfg(feature = "surf")]
 mod assert_surf;
