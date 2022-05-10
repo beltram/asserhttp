@@ -204,6 +204,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "aead"
+version = "0.4.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b613b8e1e3cf911a086f53f03bf286f52fd7a7258e4fa606f0ef220d39d8877"
+dependencies = [
+ "generic-array 0.14.4",
+]
+
+[[package]]
 name = "aes"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -211,7 +220,19 @@ checksum = "884391ef1066acaa41e766ba8f596341b96e93ce34f9a43e7d24bf0a0eaf0561"
 dependencies = [
  "aes-soft",
  "aesni",
- "cipher",
+ "cipher 0.2.5",
+]
+
+[[package]]
+name = "aes"
+version = "0.7.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9e8b47f52ea9bae42228d07ec09eb676433d7c4ed1ebdf0f1d1c29ed446f1ab8"
+dependencies = [
+ "cfg-if",
+ "cipher 0.3.0",
+ "cpufeatures 0.2.1",
+ "opaque-debug 0.3.0",
 ]
 
 [[package]]
@@ -220,11 +241,25 @@ version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5278b5fabbb9bd46e24aa69b2fdea62c99088e0a950a9be40e3e0101298f88da"
 dependencies = [
- "aead",
- "aes",
- "cipher",
- "ctr",
- "ghash",
+ "aead 0.3.2",
+ "aes 0.6.0",
+ "cipher 0.2.5",
+ "ctr 0.6.0",
+ "ghash 0.3.1",
+ "subtle",
+]
+
+[[package]]
+name = "aes-gcm"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "df5f85a83a7d8b0442b6aa7b504b8212c1733da07b98aae43d4bc21b2cb3cdf6"
+dependencies = [
+ "aead 0.4.3",
+ "aes 0.7.5",
+ "cipher 0.3.0",
+ "ctr 0.8.0",
+ "ghash 0.4.4",
  "subtle",
 ]
 
@@ -234,7 +269,7 @@ version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be14c7498ea50828a38d0e24a765ed2effe92a705885b57d029cd67d45744072"
 dependencies = [
- "cipher",
+ "cipher 0.2.5",
  "opaque-debug 0.3.0",
 ]
 
@@ -244,7 +279,7 @@ version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea2e11f5e94c2f7d386164cc2aa1f97823fed6f259e486940a71c174dd01b0ce"
 dependencies = [
- "cipher",
+ "cipher 0.2.5",
  "opaque-debug 0.3.0",
 ]
 
@@ -732,6 +767,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "cipher"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7ee52072ec15386f770805afd189a01c8841be8696bed250fa2f13c4c0d6dfb7"
+dependencies = [
+ "generic-array 0.14.4",
+]
+
+[[package]]
 name = "concurrent-queue"
 version = "1.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -778,25 +822,32 @@ version = "0.14.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "03a5d7b21829bc7b4bf4754a978a241ae54ea55a40f92bb20216e54096f4b951"
 dependencies = [
- "aes-gcm",
+ "aes-gcm 0.8.0",
  "base64",
- "hkdf",
- "hmac",
+ "hkdf 0.10.0",
+ "hmac 0.10.1",
  "percent-encoding",
  "rand 0.8.3",
- "sha2",
+ "sha2 0.9.5",
  "time 0.2.26",
  "version_check",
 ]
 
 [[package]]
 name = "cookie"
-version = "0.15.1"
+version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d5f1c7727e460397e56abc4bddc1d49e07a1ad78fc98eb2e1c8f032a58a2f80d"
+checksum = "94d4706de1b0fa5b132270cddffa8585166037822e260a944fe161acd137ca05"
 dependencies = [
+ "aes-gcm 0.9.4",
+ "base64",
+ "hkdf 0.12.3",
+ "hmac 0.12.1",
  "percent-encoding",
- "time 0.2.26",
+ "rand 0.8.3",
+ "sha2 0.10.2",
+ "subtle",
+ "time 0.3.7",
  "version_check",
 ]
 
@@ -870,7 +921,16 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fb4a30d54f7443bf3d6191dcd486aca19e67cb3c49fa7a06a319966346707e7f"
 dependencies = [
- "cipher",
+ "cipher 0.2.5",
+]
+
+[[package]]
+name = "ctr"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "049bb91fb4aaf0e3c7efa6cd5ef877dbbbd15b39dad06d9948de4ec8a75761ea"
+dependencies = [
+ "cipher 0.3.0",
 ]
 
 [[package]]
@@ -1003,6 +1063,7 @@ checksum = "f2fb860ca6fafa5552fb6d0e816a69c8e49f0908bf524e30a90d97c85892d506"
 dependencies = [
  "block-buffer 0.10.2",
  "crypto-common",
+ "subtle",
 ]
 
 [[package]]
@@ -1265,7 +1326,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97304e4cd182c3846f7575ced3890c53012ce534ad9114046b0a9e00bb30a375"
 dependencies = [
  "opaque-debug 0.3.0",
- "polyval",
+ "polyval 0.4.5",
+]
+
+[[package]]
+name = "ghash"
+version = "0.4.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1583cc1656d7839fd3732b80cf4f38850336cdb9b8ded1cd399ca62958de3c99"
+dependencies = [
+ "opaque-debug 0.3.0",
+ "polyval 0.5.3",
 ]
 
 [[package]]
@@ -1342,7 +1413,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51ab2f639c231793c5f6114bdb9bbe50a7dbbfcd7c7c6bd8475dec2d991e964f"
 dependencies = [
  "digest 0.9.0",
- "hmac",
+ "hmac 0.10.1",
+]
+
+[[package]]
+name = "hkdf"
+version = "0.12.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "791a029f6b9fc27657f6f188ec6e5e43f6911f6f878e0dc5501396e09809d437"
+dependencies = [
+ "hmac 0.12.1",
 ]
 
 [[package]]
@@ -1353,6 +1433,15 @@ checksum = "c1441c6b1e930e2817404b5046f1f989899143a12bf92de603b69f4e0aee1e15"
 dependencies = [
  "crypto-mac",
  "digest 0.9.0",
+]
+
+[[package]]
+name = "hmac"
+version = "0.12.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6c49c37c09c17a53d937dfbb742eb3a961d65a994e6bcdcf37e7399d0cc8ab5e"
+dependencies = [
+ "digest 0.10.3",
 ]
 
 [[package]]
@@ -1890,37 +1979,12 @@ checksum = "427c3892f9e783d91cc128285287e70a59e206ca452770ece88a76f7a3eddd72"
 
 [[package]]
 name = "parking_lot"
-version = "0.11.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6d7744ac029df22dca6284efe4e898991d28e3085c706c972bcd7da4a27a15eb"
-dependencies = [
- "instant",
- "lock_api",
- "parking_lot_core 0.8.3",
-]
-
-[[package]]
-name = "parking_lot"
 version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "87f5ec2493a61ac0506c0f4199f99070cbe83857b0337006a30f3e6719b8ef58"
 dependencies = [
  "lock_api",
- "parking_lot_core 0.9.1",
-]
-
-[[package]]
-name = "parking_lot_core"
-version = "0.8.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fa7a782938e745763fe6907fc6ba86946d72f49fe7e21de074e08128a99fb018"
-dependencies = [
- "cfg-if",
- "instant",
- "libc",
- "redox_syscall",
- "smallvec",
- "winapi",
+ "parking_lot_core",
 ]
 
 [[package]]
@@ -2120,6 +2184,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "eebcc4aa140b9abd2bc40d9c3f7ccec842679cd79045ac3a7ac698c1a064b7cd"
 dependencies = [
  "cpuid-bool",
+ "opaque-debug 0.3.0",
+ "universal-hash",
+]
+
+[[package]]
+name = "polyval"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8419d2b623c7c0896ff2d5d96e2cb4ede590fed28fcc34934f4c33c036e620a1"
+dependencies = [
+ "cfg-if",
+ "cpufeatures 0.2.1",
  "opaque-debug 0.3.0",
  "universal-hash",
 ]
@@ -2374,9 +2450,9 @@ dependencies = [
 
 [[package]]
 name = "rocket"
-version = "0.5.0-rc.1"
+version = "0.5.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0a71c18c42a0eb15bf3816831caf0dad11e7966f2a41aaf486a701979c4dd1f2"
+checksum = "98ead083fce4a405feb349cf09abdf64471c6077f14e0ce59364aa90d4b99317"
 dependencies = [
  "async-stream",
  "async-trait",
@@ -2392,7 +2468,7 @@ dependencies = [
  "memchr",
  "multer",
  "num_cpus",
- "parking_lot 0.11.1",
+ "parking_lot",
  "pin-project-lite",
  "rand 0.8.3",
  "ref-cast",
@@ -2402,10 +2478,10 @@ dependencies = [
  "serde_json",
  "state",
  "tempfile",
- "time 0.2.26",
+ "time 0.3.7",
  "tokio",
  "tokio-stream",
- "tokio-util 0.6.7",
+ "tokio-util 0.7.0",
  "ubyte",
  "version_check",
  "yansi",
@@ -2413,9 +2489,9 @@ dependencies = [
 
 [[package]]
 name = "rocket_codegen"
-version = "0.5.0-rc.1"
+version = "0.5.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "66f5fa462f7eb958bba8710c17c5d774bbbd59809fa76fb1957af7e545aea8bb"
+checksum = "d6aeb6bb9c61e9cd2c00d70ea267bf36f76a4cc615e5908b349c2f9d93999b47"
 dependencies = [
  "devise",
  "glob",
@@ -2429,19 +2505,18 @@ dependencies = [
 
 [[package]]
 name = "rocket_http"
-version = "0.5.0-rc.1"
+version = "0.5.0-rc.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23c8b7d512d2fcac2316ebe590cde67573844b99e6cc9ee0f53375fa16e25ebd"
+checksum = "2ded65d127954de3c12471630bf4b81a2792f065984461e65b91d0fdaafc17a2"
 dependencies = [
- "cookie 0.15.1",
+ "cookie 0.16.0",
  "either",
+ "futures",
  "http",
  "hyper",
  "indexmap",
  "log",
  "memchr",
- "mime",
- "parking_lot 0.11.1",
  "pear",
  "percent-encoding",
  "pin-project-lite",
@@ -2450,7 +2525,7 @@ dependencies = [
  "smallvec",
  "stable-pattern",
  "state",
- "time 0.2.26",
+ "time 0.3.7",
  "tokio",
  "uncased",
 ]
@@ -2611,6 +2686,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha2"
+version = "0.10.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "55deaec60f81eefe3cce0dc50bda92d6d8e88f2a27df7c5033b42afeb1ed2676"
+dependencies = [
+ "cfg-if",
+ "cpufeatures 0.2.1",
+ "digest 0.10.3",
+]
+
+[[package]]
 name = "sharded-slab"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2718,9 +2804,9 @@ dependencies = [
 
 [[package]]
 name = "state"
-version = "0.5.2"
+version = "0.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "87cf4f5369e6d3044b5e365c9690f451516ac8f0954084622b49ea3fde2f6de5"
+checksum = "dbe866e1e51e8260c9eed836a042a5e7f6726bb2b411dffeaa712e19c388f23b"
 dependencies = [
  "loom",
 ]
@@ -2920,7 +3006,7 @@ dependencies = [
  "libc",
  "standback",
  "stdweb",
- "time-macros",
+ "time-macros 0.1.1",
  "version_check",
  "winapi",
 ]
@@ -2934,6 +3020,7 @@ dependencies = [
  "itoa 1.0.1",
  "libc",
  "num_threads",
+ "time-macros 0.2.3",
 ]
 
 [[package]]
@@ -2945,6 +3032,12 @@ dependencies = [
  "proc-macro-hack",
  "time-macros-impl",
 ]
+
+[[package]]
+name = "time-macros"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "25eb0ca3468fc0acc11828786797f6ef9aa1555e4a211a60d64cc8e4d1be47d6"
 
 [[package]]
 name = "time-macros-impl"
@@ -2986,7 +3079,7 @@ dependencies = [
  "mio",
  "num_cpus",
  "once_cell",
- "parking_lot 0.12.0",
+ "parking_lot",
  "pin-project-lite",
  "signal-hook-registry",
  "socket2",
