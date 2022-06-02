@@ -179,6 +179,33 @@
 //! }
 //! ```
 //!
+//! ## axum
+//!
+//! Use `axum` feature.
+//!
+//! ```no_run
+//! use asserhttp::*;
+//! use serde_json::json;
+//! use tower::ServiceExt as _;
+//!
+//! #[tokio::test]
+//! async fn sample_test() {
+//!     let app = axum::Router::new().route("/", axum::routing::get( || async move {
+//!         let mut axum_response = axum::response::Response::builder()
+//!             .status(axum::http::StatusCode::OK)
+//!             .body(json!({"a": "b"}).to_string())
+//!             .unwrap();
+//!         axum_response.headers_mut().insert("content-type", "application/json".parse().unwrap());
+//!         axum_response
+//!     }));
+//!     let req = axum::http::Request::builder().method(axum::http::Method::GET).uri("/").body(axum::body::Body::empty()).unwrap();
+//!     app.oneshot(req).await
+//!         .expect_status_ok()
+//!         .expect_content_type_json()
+//!         .expect_body_json_eq(json!({"name": "jdoe"}));
+//! }
+//! ```
+//!
 //! ## awc (Actix Web Client)
 //!
 //! Use `actix-web-client` feature.
@@ -298,6 +325,8 @@ mod assert_isahc;
 mod assert_reqwest;
 #[cfg(feature = "hyper")]
 mod assert_hyper;
+#[cfg(feature = "axum")]
+mod assert_axum;
 #[cfg(feature = "actix-web-client")]
 mod assert_awc;
 #[cfg(feature = "actix")]

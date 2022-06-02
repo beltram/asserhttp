@@ -29,9 +29,10 @@ actix-http = { version = "3.0.4", optional = true, default-features = false }
 actix-web = { version = "4.0.1", optional = true, default-features = false }
 rocket = { version = "0.5.0-rc.2", optional = true, default-features = false }
 ureq = { version = "2.4.0", optional = true, default-features = false }
+axum = { version = "0.5.6", optional = true }
 
 [dev-dependencies]
-asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket", "ureq"] }
+asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket", "ureq", "axum"] }
 actix-web = { version = "4.0.1", features = ["macros"], default-features = false }
 stubr = "0.4.14"
 serde_json = "1.0.81"
@@ -40,6 +41,8 @@ tokio = { version = "1.19.1", features = ["macros"] }
 pin-project = "1.0.10"
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 paste = "1.0.7"
+tower-http = "0.3.3"
+tower = { version = "0.4.12", features = ["util"] }
 
 [features]
 default = []
