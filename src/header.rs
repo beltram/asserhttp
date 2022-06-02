@@ -109,7 +109,7 @@ pub trait AsserhttpHeader<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_headers(headers::CACHE_CONTROL, |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     /// }
     /// ```
-    fn expect_headers<'a>(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T;
+    fn expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T;
 
     /// Expects response header to be present
     /// * `key` - expected present header key
@@ -250,7 +250,7 @@ impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
         self
     }
 
-    fn expect_headers<'a>(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
+    fn expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
         let key = key.into().0;
         assert_header_key(self.get_keys(), key);
         values.into().0(key.to_string(), self.get_values(key));
@@ -282,7 +282,7 @@ impl<T, E> AsserhttpHeader<T> for Result<T, E> where
         self.as_mut().unwrap().expect_header(key, value)
     }
 
-    fn expect_headers<'a>(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
+    fn expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
         self.as_mut().unwrap().expect_headers(key, values)
     }
 
