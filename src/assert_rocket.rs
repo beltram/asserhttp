@@ -29,7 +29,7 @@ impl<'a> HeaderAccessor for RocketResponse<'a> {
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
         self.headers().get(key)
-            .map(|v| v.to_string())
+            .map(str::to_string)
             .collect::<Vec<_>>()
     }
 }
@@ -43,7 +43,7 @@ impl<'a> HeaderAccessor for AsyncRocketResponse<'a> {
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
         self.headers().get(key.as_ref())
-            .map(|v| v.to_string())
+            .map(str::to_string)
             .collect::<Vec<_>>()
     }
 }

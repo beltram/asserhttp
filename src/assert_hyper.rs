@@ -21,7 +21,7 @@ impl HeaderAccessor for HyperResponse {
     fn get_raw_values(&self, key: &str) -> Vec<String> {
         let value = self.headers().get(key)
             .and_then(|v| v.to_str().ok())
-            .map(|v| v.to_string())
+            .map(str::to_string)
             .unwrap();
         vec![value]
     }

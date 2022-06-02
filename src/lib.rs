@@ -313,4 +313,4 @@ mod header;
 mod body;
 
 /// For assertions on http response
-pub trait Asserhttp<T>: status::AsserhttpStatus<T> + header::AsserhttpHeader<T> + body::AsserhttpBody<T> {}
+pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
