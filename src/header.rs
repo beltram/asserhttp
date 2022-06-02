@@ -353,7 +353,7 @@ impl From<&'static str> for HeaderKey {
     fn from(name: &'static str) -> Self { Self(name) }
 }
 
-impl From<http_types::headers::HeaderName> for HeaderKey {
+impl From<HeaderName> for HeaderKey {
     fn from(name: HeaderName) -> Self {
         Self(Box::leak(Box::new(name.as_str().to_string())).as_str())
     }

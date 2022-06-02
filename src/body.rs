@@ -355,7 +355,7 @@ impl<T> AsserhttpBody<T> for T where T: super::accessor::BodyAccessor {
 
 impl<T, E> AsserhttpBody<T> for Result<T, E> where
     T: super::accessor::BodyAccessor,
-    E: std::fmt::Debug {
+    E: Debug {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin, F: FnOnce(B) {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
