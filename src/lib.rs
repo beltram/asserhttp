@@ -20,7 +20,8 @@
 //! fn my_test() {
 //! #    isahc::get("http://localhost/api/any")
 //!     // status
-//!     .expect_status_eq(200)
+//!     .expect_status(200)
+//!     .expect_status(Status::Ok)
 //!     .expect_status_in_range(200, 400)
 //!     .expect_status_success()
 //!     .expect_status_redirection()
@@ -140,7 +141,7 @@
 //! async fn sample_test() {
 //!     reqwest::get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     reqwest::get("http://localhost/api/any").await.expect_status_eq(200);
+//!     reqwest::get("http://localhost/api/any").await.expect_status(200);
 //!     reqwest::get("http://localhost/api/any").await.expect_status_ok();
 //!     reqwest::get("http://localhost/api/any").await.expect_status_bad_request();
 //!     reqwest::get("http://localhost/api/any").await.expect_status_internal_server_error();
@@ -166,7 +167,7 @@
 //! async fn sample_test() {
 //!     Client::new().get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     Client::new().get("http://localhost/api/any").await.expect_status_eq(200);
+//!     Client::new().get("http://localhost/api/any").await.expect_status(200);
 //!     Client::new().get("http://localhost/api/any").await.expect_status_ok();
 //!     Client::new().get("http://localhost/api/any").await.expect_status_bad_request();
 //!     Client::new().get("http://localhost/api/any").await.expect_status_internal_server_error();
@@ -219,7 +220,7 @@
 //! async fn sample_test() {
 //!     Client::default().get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     Client::default().get("http://localhost/api/any").await.expect_status_eq(200);
+//!     Client::default().get("http://localhost/api/any").await.expect_status(200);
 //!     Client::default().get("http://localhost/api/any").await.expect_status_ok();
 //!     Client::default().get("http://localhost/api/any").await.expect_status_bad_request();
 //!     Client::default().get("http://localhost/api/any").await.expect_status_internal_server_error();
@@ -245,7 +246,7 @@
 //! async fn sample_test() {
 //!     surf::get("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     surf::get("http://localhost/api/any").await.expect_status_eq(200);
+//!     surf::get("http://localhost/api/any").await.expect_status(200);
 //!     surf::get("http://localhost/api/any").await.expect_status_ok();
 //!     surf::get("http://localhost/api/any").await.expect_status_bad_request();
 //!     surf::get("http://localhost/api/any").await.expect_status_internal_server_error();
@@ -271,7 +272,7 @@
 //! async fn sample_test() {
 //!     ureq::get("http://localhost/api/any").call().or_any_status().unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_eq(200);
+//!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status(200);
 //!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_ok();
 //!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_bad_request();
 //!     ureq::get("http://localhost/api/any").call().or_any_status().expect_status_internal_server_error();
@@ -297,7 +298,7 @@
 //! async fn sample_test() {
 //!     isahc::get_async("http://localhost/api/any").await.unwrap().expect_status_ok();
 //!     // no need to call `.unwrap()` directly
-//!     isahc::get_async("http://localhost/api/any").await.expect_status_eq(200);
+//!     isahc::get_async("http://localhost/api/any").await.expect_status(200);
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_ok();
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_bad_request();
 //!     isahc::get_async("http://localhost/api/any").await.expect_status_internal_server_error();
