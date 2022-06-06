@@ -50,7 +50,7 @@ and [isahc](https://github.com/sagebind/isahc).
 Add it to your `Cargo.toml`
 
 ```toml
-asserhttp = { version = "0.4.3", features = ["reqwest"] }
+asserhttp = { version = "0.5.0", features = ["reqwest"] }
 #                             or features = ["hyper"]
 #                             or features = ["actix"]
 #                             or features = ["axum"]
