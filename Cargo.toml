@@ -48,7 +48,7 @@ tower = { version = "0.4.12", features = ["util"] }
 default = []
 actix = ["actix-http", "actix-web"]
 actix-web-client = ["awc", "actix-http/ws", "futures-lite"]
-ureq = ["dep:ureq", "itertools"]
+ureq = ["dep:ureq", "itertools/use_alloc"]
 axum = ["dep:axum", "futures-lite"]
 hyper = ["dep:hyper", "futures-lite"]
 isahc = ["dep:isahc", "futures-lite"]

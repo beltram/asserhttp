@@ -22,7 +22,7 @@ impl HeaderAccessor for UreqResponse {
 
 impl BodyAccessor for UreqResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
-        use itertools::Itertools;
+        use itertools::Itertools as _;
         let headers = self.headers_names().iter()
             .filter_map(|k| self.header(k).map(|v| (k, v)))
             .map(|(k, v)| format!("{}: {}", k, v))
