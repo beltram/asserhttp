@@ -1,5 +1,3 @@
-use futures_lite::future::block_on;
-
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 
 type ReqwestResponse = reqwest::blocking::Response;
@@ -61,7 +59,7 @@ impl BodyAccessor for ReqwestResponse {
 impl BodyAccessor for AsyncReqwestResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
-        while let Ok(Some(chunk)) = block_on(self.chunk()) {
+        while let Ok(Some(chunk)) = futures_lite::future::block_on(self.chunk()) {
             chunk.into_iter().for_each(|b| buf.push(b));
         }
         Ok(buf)

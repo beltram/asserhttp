@@ -310,13 +310,14 @@
 //!     // and many more !
 //! }
 //! ```
-//!
 
-pub use body::AsserhttpBody;
-pub use header::AsserhttpHeader;
-pub use status::AsserhttpStatus;
-pub use http_types::StatusCode as Status;
-pub use http_types::headers as headers;
+pub use {
+    body::AsserhttpBody,
+    header::AsserhttpHeader,
+    status::AsserhttpStatus,
+    http_types::StatusCode as Status,
+    http_types::headers as headers,
+};
 
 #[cfg(feature = "surf")]
 mod assert_surf;

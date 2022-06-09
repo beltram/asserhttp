@@ -1,6 +1,3 @@
-use futures_lite::future::block_on;
-use hyper::body::HttpBody;
-
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 
 type HyperResponse = hyper::Response<hyper::Body>;
@@ -30,7 +27,8 @@ impl HeaderAccessor for HyperResponse {
 impl BodyAccessor for HyperResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
-        while let Some(Ok(chunk)) = block_on(self.body_mut().data()) {
+        use hyper::body::HttpBody as _;
+        while let Some(Ok(chunk)) = futures_lite::future::block_on(self.body_mut().data()) {
             chunk.into_iter().for_each(|b| buf.push(b));
         }
         Ok(buf)

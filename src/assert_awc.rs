@@ -1,5 +1,3 @@
-use futures_lite::future::block_on;
-
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 
 type AwcResponse = awc::ClientResponse<actix_http::BoxedPayloadStream>;
@@ -28,7 +26,7 @@ impl HeaderAccessor for AwcResponse {
 
 impl BodyAccessor for AwcResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
-        block_on(self.body())
+        futures_lite::future::block_on(self.body())
             .map(|b| b.to_vec())
             .map_err(anyhow::Error::msg)
     }

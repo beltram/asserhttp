@@ -1,4 +1,3 @@
-use futures_lite::future::block_on;
 use serde::de::DeserializeOwned;
 
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
@@ -31,14 +30,14 @@ impl HeaderAccessor for SurfResponse {
 
 impl BodyAccessor for SurfResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
-        block_on(self.body_bytes()).map_err(anyhow::Error::msg)
+        futures_lite::future::block_on(self.body_bytes()).map_err(anyhow::Error::msg)
     }
 
     fn get_text(&mut self) -> anyhow::Result<String> {
-        block_on(self.body_string()).map_err(anyhow::Error::msg)
+        futures_lite::future::block_on(self.body_string()).map_err(anyhow::Error::msg)
     }
 
     fn get_json<B>(&mut self) -> anyhow::Result<B> where B: DeserializeOwned {
-        block_on(self.body_json::<B>()).map_err(anyhow::Error::msg)
+        futures_lite::future::block_on(self.body_json::<B>()).map_err(anyhow::Error::msg)
     }
 }

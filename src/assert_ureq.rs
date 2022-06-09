@@ -1,7 +1,3 @@
-use std::io::Read;
-
-use itertools::*;
-
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 
 type UreqResponse = ureq::Response;
@@ -26,6 +22,7 @@ impl HeaderAccessor for UreqResponse {
 
 impl BodyAccessor for UreqResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+        use itertools::Itertools;
         let headers = self.headers_names().iter()
             .filter_map(|k| self.header(k).map(|v| (k, v)))
             .map(|(k, v)| format!("{}: {}", k, v))
@@ -34,6 +31,7 @@ impl BodyAccessor for UreqResponse {
         let mut resp_cpy = UreqResponse::new(self.status(), &headers, "").unwrap();
         std::mem::swap(self, &mut resp_cpy);
         let mut buf: Vec<u8> = vec![];
+        use std::io::Read as _;
         resp_cpy.into_reader()
             .read_to_end(&mut buf)
             .map(|_| buf)

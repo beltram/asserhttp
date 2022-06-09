@@ -246,7 +246,7 @@ impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
         assert_eq!(actual_values.len(), 1,
                    "expected header '{}' to be single valued. Had '{}' values '{:?}'. Use 'expect_headers' instead.",
                    key, actual_values.len(), actual_values);
-        value.into().0(key.to_string(), actual_values.first().unwrap().to_string());
+        value.into().0(key, actual_values.first().unwrap().to_string());
         self
     }
 

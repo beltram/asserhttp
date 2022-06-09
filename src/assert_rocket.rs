@@ -1,8 +1,3 @@
-use std::io::Read;
-
-use futures_lite::future::block_on;
-use rocket::tokio::io::AsyncReadExt;
-
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 
 type RocketResponse<'a> = rocket::local::blocking::LocalResponse<'a>;
@@ -51,6 +46,7 @@ impl<'a> HeaderAccessor for AsyncRocketResponse<'a> {
 impl<'a> BodyAccessor for RocketResponse<'a> {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
+        use std::io::Read as _;
         self.read_to_end(&mut buf)
             .map(|_| buf)
             .map_err(anyhow::Error::msg)
@@ -60,7 +56,9 @@ impl<'a> BodyAccessor for RocketResponse<'a> {
 impl<'a> BodyAccessor for AsyncRocketResponse<'a> {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
-        block_on(self.read_to_end(&mut buf))
+
+        use rocket::tokio::io::AsyncReadExt as _;
+        futures_lite::future::block_on(self.read_to_end(&mut buf))
             .map(|_| buf)
             .map_err(anyhow::Error::msg)
     }

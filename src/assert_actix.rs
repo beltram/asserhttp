@@ -1,5 +1,3 @@
-use actix_http::body::MessageBody;
-
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 
 type ActixResponse = actix_web::HttpResponse<actix_http::body::BoxBody>;
@@ -67,6 +65,7 @@ fn body_bytes(original: &mut ActixResponse) -> anyhow::Result<Vec<u8>> {
     let mut resp_cpy = resp_cpy.finish();
     std::mem::swap(original, &mut resp_cpy);
     let (_, body) = resp_cpy.into_parts();
+    use actix_http::body::MessageBody as _;
     body.try_into_bytes()
         .map(|b| b.to_vec())
         .map_err(|_| String::from("Error"))
