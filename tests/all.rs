@@ -260,6 +260,52 @@ mod header {
     asserhttp_test!(header_content_type_text_should_fail, "header/xml.json", HeaderXml.responses(), "expected header 'content-type' to be equal to 'text/plain' but was 'application/xml'", .expect_content_type_text());
 
     asserhttp_test!(expect_header_first_should_not_be_destructive, "full.json", Full.responses(), .expect_content_type_json().expect_status_ok().expect_body_json_eq(json!({"a": "b"})));
+
+    // can't be tested through macros. It just has to compile
+    mod relax_type {
+        use asserhttp::*;
+
+        #[test]
+        #[stubr::mock("header/one.json")]
+        fn header_accepts_any_str_key() {
+            isahc::get(stubr.uri()).expect_header("x-a", "a");
+            isahc::get(stubr.uri()).expect_header("x-a".to_string(), "a");
+            let key: String = "x-a".to_string();
+            isahc::get(stubr.uri()).expect_header(key.as_str(), "a");
+            isahc::get(stubr.uri()).expect_header(&"x-a".to_string(), "a");
+        }
+
+        #[test]
+        #[stubr::mock("header/one.json")]
+        fn header_accepts_any_str_value() {
+            isahc::get(stubr.uri()).expect_header("x-a", "a");
+            isahc::get(stubr.uri()).expect_header("x-a", "a".to_string());
+            let value: String = "a".to_string();
+            isahc::get(stubr.uri()).expect_header("x-a", value.as_str());
+            isahc::get(stubr.uri()).expect_header("x-a", &"a".to_string());
+        }
+
+        #[test]
+        #[stubr::mock("header/multi.json")]
+        fn header_accepts_any_str_values() {
+            // array
+            isahc::get(stubr.uri()).expect_headers("x-m", ["a", "b"]);
+            isahc::get(stubr.uri()).expect_headers("x-m", &["a", "b"]);
+            isahc::get(stubr.uri()).expect_headers("x-m", ["a".to_string(), "b".to_string()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", &["a".to_string(), "b".to_string()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", [&"a".to_string(), &"b".to_string()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", &[&"a".to_string(), &"b".to_string()]);
+            let (a, b) = ("a".to_string(), "b".to_string());
+            isahc::get(stubr.uri()).expect_headers("x-m", [a.as_str(), b.as_str()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", &[a.as_str(), b.as_str()]);
+            // vec
+            isahc::get(stubr.uri()).expect_headers("x-m", vec!["a", "b"]);
+            isahc::get(stubr.uri()).expect_headers("x-m", vec!["a".to_string(), "b".to_string()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", vec![&"a".to_string(), &"b".to_string()]);
+            let (a, b) = ("a".to_string(), "b".to_string());
+            isahc::get(stubr.uri()).expect_headers("x-m", vec![a.as_str(), b.as_str()]);
+        }
+    }
 }
 
 mod body {

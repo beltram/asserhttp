@@ -241,8 +241,8 @@ pub trait AsserhttpHeader<T> {
 impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
     fn expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<HeaderValueAsserter>) -> &mut T {
         let key = key.into().0;
-        assert_header_key(self.get_keys(), key);
-        let actual_values = self.get_values(key);
+        assert_header_key(self.get_keys(), key.as_str());
+        let actual_values = self.get_values(key.as_str());
         assert_eq!(actual_values.len(), 1,
                    "expected header '{}' to be single valued. Had '{}' values '{:?}'. Use 'expect_headers' instead.",
                    key, actual_values.len(), actual_values);
@@ -252,19 +252,19 @@ impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
 
     fn expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
         let key = key.into().0;
-        assert_header_key(self.get_keys(), key);
-        values.into().0(key.to_string(), self.get_values(key));
+        assert_header_key(self.get_keys(), key.as_str());
+        values.into().0(key.to_string(), self.get_values(key.as_str()));
         self
     }
 
     fn expect_header_present(&mut self, key: impl Into<HeaderKey>) -> &mut T {
-        assert_header_key(self.get_keys(), key.into().0);
+        assert_header_key(self.get_keys(), key.into().0.as_str());
         self
     }
 
     fn expect_header_absent(&mut self, key: impl Into<HeaderKey>) -> &mut T {
         let key = key.into().0;
-        assert!(!self.get_keys().into_iter().any(|k| k.eq_ignore_ascii_case(key)),
+        assert!(!self.get_keys().into_iter().any(|k| k.eq_ignore_ascii_case(key.as_str())),
                 "expected no header named '{}' but one found", key);
         self
     }
@@ -297,16 +297,22 @@ impl<T, E> AsserhttpHeader<T> for Result<T, E> where
 
 pub struct HeaderValueAsserter(Box<dyn Fn(String, String)>);
 
-impl From<&'static String> for HeaderValueAsserter {
-    fn from(expected: &'static String) -> Self {
+impl<'a> From<&'a String> for HeaderValueAsserter {
+    fn from(expected: &'a String) -> Self {
         Self::from(expected.as_str())
     }
 }
 
-impl From<&'static str> for HeaderValueAsserter {
-    fn from(expected: &'static str) -> Self {
+impl<'a> From<&'a str> for HeaderValueAsserter {
+    fn from(expected: &'a str) -> Self {
+        Self::from(expected.to_string())
+    }
+}
+
+impl From<String> for HeaderValueAsserter {
+    fn from(expected: String) -> Self {
         Self(Box::new(move |key, value| {
-            assert_eq!(&value, expected, "expected header '{}' to be equal to '{}' but was '{}'", key, expected, value)
+            assert_eq!(value, expected, "expected header '{}' to be equal to '{}' but was '{}'", key, expected, value)
         }))
     }
 }
@@ -339,6 +345,12 @@ impl<const N: usize, S: AsRef<str>> From<[S; N]> for HeaderValuesAsserter {
     }
 }
 
+impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for HeaderValuesAsserter {
+    fn from(expected: &'a [S; N]) -> Self {
+        Self::from(Vec::from_iter(expected.iter()))
+    }
+}
+
 impl<F: 'static> From<F> for HeaderValuesAsserter where F: Fn(Vec<&'static str>) {
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, values: Vec<String>| {
@@ -347,14 +359,22 @@ impl<F: 'static> From<F> for HeaderValuesAsserter where F: Fn(Vec<&'static str>)
     }
 }
 
-pub struct HeaderKey(pub &'static str);
+pub struct HeaderKey(pub String);
 
-impl From<&'static str> for HeaderKey {
-    fn from(name: &'static str) -> Self { Self(name) }
+impl<'a> From<&'a str> for HeaderKey {
+    fn from(name: &'a str) -> Self { Self::from(name.to_string()) }
+}
+
+impl<'a> From<&'a String> for HeaderKey {
+    fn from(name: &'a String) -> Self { Self::from(name.to_string()) }
+}
+
+impl From<String> for HeaderKey {
+    fn from(name: String) -> Self { Self(name) }
 }
 
 impl From<HeaderName> for HeaderKey {
     fn from(name: HeaderName) -> Self {
-        Self(Box::leak(Box::new(name.as_str().to_string())).as_str())
+        Self(name.as_str().to_string())
     }
 }
