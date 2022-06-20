@@ -42,7 +42,7 @@ pin-project = "1.0.10"
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 paste = "1.0.7"
 tower-http = "0.3.4"
-tower = { version = "0.4.12", features = ["util"] }
+tower = { version = "0.4.13", features = ["util"] }
 
 [features]
 default = []
