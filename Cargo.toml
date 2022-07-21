@@ -14,7 +14,7 @@ include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
 [dependencies]
 anyhow = { version = "1.0.58", default-features = false }
-serde = { version = "1.0.139", default-features = false }
+serde = { version = "1.0.140", default-features = false }
 serde_json = { version = "1.0.82", default-features = false }
 regex = { version = "1.6.0", features = ["std", "unicode"], default-features = false }
 http-types = { version = "2.12.0", default-features = false }
