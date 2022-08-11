@@ -13,7 +13,7 @@ categories = ["development-tools::testing", "api-bindings", "web-programming::ht
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
 [dependencies]
-anyhow = { version = "1.0.60", default-features = false }
+anyhow = { version = "1.0.61", default-features = false }
 serde = { version = "1.0.143", default-features = false }
 serde_json = { version = "1.0.83", default-features = false }
 regex = { version = "1.6.0", features = ["std", "unicode"], default-features = false }
