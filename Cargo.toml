@@ -24,7 +24,7 @@ reqwest = { version = "0.11.11", features = ["json", "blocking"], optional = tru
 hyper = { version = "0.14.20", features = ["client"], optional = true, default-features = false }
 awc = { version = "3.0.1", optional = true, default-features = false }
 actix-http = { version = "3.2.2", optional = true, default-features = false }
-actix-web = { version = "4.1.0", optional = true, default-features = false }
+actix-web = { version = "4.2.0", optional = true, default-features = false }
 rocket = { version = "0.5.0-rc.2", optional = true, default-features = false }
 ureq = { version = "2.5.0", optional = true, default-features = false }
 itertools = { version = "0.10.3", optional = true, default-features = false }
@@ -33,7 +33,7 @@ futures-lite = { version = "1.12.0", features = ["std"], optional = true, defaul
 
 [dev-dependencies]
 asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket", "ureq", "axum"] }
-actix-web = { version = "4.1.0", features = ["macros"], default-features = false }
+actix-web = { version = "4.2.0", features = ["macros"], default-features = false }
 stubr = "0.4.14"
 serde_json = "1.0.85"
 async-std = { version = "1.12.0", features = ["attributes"] }
