@@ -57,7 +57,7 @@ macro_rules! rocket_test {
             fn [<rocket_blocking_ $fn_name>]() {
                 use asserhttp::*;
                 #[rocket::get("/")]
-                fn endpoint() -> crate::Resp { crate::Resp::from($init) }
+                fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
                 let client = rocket::local::blocking::Client::tracked(rocket::build().mount("/", rocket::routes![endpoint])).unwrap();
                 $(client.get("/").dispatch()$( .$meth($($arg),*) )+;)+
             }
@@ -67,7 +67,7 @@ macro_rules! rocket_test {
             async fn [<rocket_async_ $fn_name>]() {
                 use asserhttp::*;
                 #[rocket::get("/")]
-                fn endpoint() -> crate::Resp { crate::Resp::from($init) }
+                fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
                 let client = rocket::local::asynchronous::Client::tracked(rocket::build().mount("/", rocket::routes![endpoint])).await.unwrap();
                 $(client.get("/").dispatch().await$( .$meth($($arg),*) )+;)+
             }
@@ -81,7 +81,7 @@ macro_rules! rocket_test {
             fn [<rocket_blocking_ $fn_name>]() {
                 use asserhttp::*;
                 #[rocket::get("/")]
-                fn endpoint() -> crate::Resp { crate::Resp::from($init) }
+                fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
                 let client = rocket::local::blocking::Client::tracked(rocket::build().mount("/", rocket::routes![endpoint])).unwrap();
                 $(client.get("/").dispatch()$( .$meth($($arg),*) )+;)+
             }
@@ -92,7 +92,7 @@ macro_rules! rocket_test {
             async fn [<rocket_async_ $fn_name>]() {
                 use asserhttp::*;
                 #[rocket::get("/")]
-                fn endpoint() -> crate::Resp { crate::Resp::from($init) }
+                fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
                 let client = rocket::local::asynchronous::Client::tracked(rocket::build().mount("/", rocket::routes![endpoint])).await.unwrap();
                 $(client.get("/").dispatch().await$( .$meth($($arg),*) )+;)+
             }

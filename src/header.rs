@@ -354,7 +354,7 @@ impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for HeaderValuesAsserte
 impl<F: 'static> From<F> for HeaderValuesAsserter where F: Fn(Vec<&'static str>) {
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, values: Vec<String>| {
-            fun(values.into_iter().map(|s| &*Box::leak(Box::new(s)).as_str()).collect::<Vec<_>>())
+            fun(values.into_iter().map(|s| Box::leak(Box::new(s)).as_str()).collect::<Vec<_>>())
         }))
     }
 }
