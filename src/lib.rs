@@ -317,6 +317,7 @@ pub use {
     status::AsserhttpStatus,
     http_types::StatusCode as Status,
     http_types::headers as headers,
+    accessor::AllAccessors,
 };
 
 #[cfg(feature = "surf")]
@@ -345,3 +346,17 @@ mod body;
 
 /// For assertions on http response
 pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
+
+impl<T> Asserhttp<T> for T where T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor {}
+
+impl<T, E> Asserhttp<T> for Result<T, E> where
+    T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor,
+    E: std::fmt::Debug {}
+
+#[macro_export]
+macro_rules! asserhttp_customize {
+    ($custom_trait:ident) => {
+        impl<T> $custom_trait<T> for T where T: asserhttp::AllAccessors {}
+        impl<T, E> $custom_trait<T> for Result<T, E> where T: asserhttp::AllAccessors, E: std::fmt::Debug {}
+    };
+}

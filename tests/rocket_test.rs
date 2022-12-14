@@ -55,6 +55,7 @@ macro_rules! rocket_test {
             // blocking
             #[test]
             fn [<rocket_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 #[rocket::get("/")]
                 fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
@@ -65,6 +66,7 @@ macro_rules! rocket_test {
             // async
             #[rocket::async_test]
             async fn [<rocket_async_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 #[rocket::get("/")]
                 fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
@@ -79,6 +81,7 @@ macro_rules! rocket_test {
             #[should_panic(expected = $panic_msg)]
             #[test]
             fn [<rocket_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 #[rocket::get("/")]
                 fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
@@ -90,6 +93,7 @@ macro_rules! rocket_test {
             #[should_panic(expected = $panic_msg)]
             #[rocket::async_test]
             async fn [<rocket_async_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 #[rocket::get("/")]
                 fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }

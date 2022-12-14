@@ -5,6 +5,7 @@ macro_rules! axum_test {
         paste::paste! {
             #[tokio::test]
             async fn [<axum_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use tower::ServiceExt as _;
                 let app = axum::Router::new().route("/", axum::routing::get( || async move { $init }));
@@ -18,6 +19,7 @@ macro_rules! axum_test {
             #[should_panic(expected = $panic_msg)]
             #[tokio::test]
             async fn [<axum_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use tower::ServiceExt as _;
                 let app = axum::Router::new().route("/", axum::routing::get( || async move { $init }));

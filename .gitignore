@@ -1,5 +1,6 @@
 *.hprof
 .DS_Store
+Cargo.lock
 
 ### IntelliJ IDEA ###
 .idea

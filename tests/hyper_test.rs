@@ -5,12 +5,14 @@ macro_rules! hyper_test {
             #[tokio::test]
             #[stubr::mock($stub)]
             async fn [<hyper_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(hyper::Client::new().get(stubr.uri().parse().unwrap()).await$( .$meth($($arg),*) )+;)+
             }
             #[tokio::test]
             #[stubr::mock($stub)]
             async fn [<hyper_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(hyper::Client::new().get(stubr.uri().parse().unwrap()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -22,6 +24,7 @@ macro_rules! hyper_test {
             #[stubr::mock($stub)]
             #[tokio::test]
             async fn [<hyper_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(hyper::Client::new().get(stubr.uri().parse().unwrap()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -29,6 +32,7 @@ macro_rules! hyper_test {
             #[stubr::mock($stub)]
             #[tokio::test]
             async fn [<hyper_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(hyper::Client::new().get(stubr.uri().parse().unwrap()).await$( .$meth($($arg),*) )+;)+
             }

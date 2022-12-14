@@ -6,6 +6,7 @@ macro_rules! actix_test {
             // unit
             #[actix_web::test]
             async fn [<actix_unit_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
                 async fn endpoint(_: HttpRequest) -> HttpResponse { $init }
@@ -15,6 +16,7 @@ macro_rules! actix_test {
             // integration
             #[actix_web::test]
             async fn [<actix_integration_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use actix_web::{App, test::{call_service, init_service, TestRequest}, web};
                 let app = App::new().route("/", web::get().to(|| async { $init }));
@@ -28,6 +30,7 @@ macro_rules! actix_test {
             #[should_panic(expected = $panic_msg)]
             #[actix_web::test]
             async fn [<actix_unit_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
                 async fn endpoint(_: HttpRequest) -> HttpResponse { $init }
@@ -38,6 +41,7 @@ macro_rules! actix_test {
             #[should_panic(expected = $panic_msg)]
             #[actix_web::test]
             async fn [<actix_integration_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use actix_web::{App, test::{call_service, init_service, TestRequest}, web};
                 let app = App::new().route("/", web::get().to(|| async { $init }));

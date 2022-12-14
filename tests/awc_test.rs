@@ -5,12 +5,14 @@ macro_rules! awc_test {
             #[actix_web::test]
             #[stubr::mock($stub)]
             async fn [<awc_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(awc::Client::default().get(stubr.uri()).send().await$( .$meth($($arg),*) )+;)+
             }
             #[actix_web::test]
             #[stubr::mock($stub)]
             async fn [<awc_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(awc::Client::default().get(stubr.uri()).send().await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -22,6 +24,7 @@ macro_rules! awc_test {
             #[stubr::mock($stub)]
             #[actix_web::test]
             async fn [<awc_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(awc::Client::default().get(stubr.uri()).send().await$( .$meth($($arg),*) )+;)+
             }
@@ -29,6 +32,7 @@ macro_rules! awc_test {
             #[stubr::mock($stub)]
             #[actix_web::test]
             async fn [<awc_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(awc::Client::default().get(stubr.uri()).send().await.unwrap()$( .$meth($($arg),*) )+;)+
             }
