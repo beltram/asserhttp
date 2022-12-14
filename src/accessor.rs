@@ -31,3 +31,7 @@ pub trait BodyAccessor {
             .map_err(anyhow::Error::msg)
     }
 }
+
+pub trait AllAccessors : StatusAccessor + HeaderAccessor + BodyAccessor {}
+
+impl <T> AllAccessors for T where T: StatusAccessor + HeaderAccessor + BodyAccessor {}

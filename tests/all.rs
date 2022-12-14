@@ -348,3 +348,25 @@ mod body {
 
     asserhttp_test!(expect_body_first_should_not_be_destructive, "full.json", Full.responses(), .expect_body_json_eq(json!({"a": "b"})).expect_status_ok().expect_content_type_json());
 }
+
+mod customizable {
+    use super::Stub::*;
+
+    asserhttp::asserhttp_customize!(MyHttpDsl);
+
+    pub trait MyHttpDsl<T>: asserhttp::Asserhttp<T> {
+        fn is_status_ok(&mut self) -> &mut T {
+            self.expect_status_ok()
+        }
+
+        fn is_json(&mut self) -> &mut T {
+            self.expect_content_type_json()
+        }
+
+        fn has_body(&mut self) -> &mut T { self.expect_body_present() }
+    }
+
+    asserhttp_test!(custom_status_should_succeed, "status/ok.json", StatusOk.responses(), .is_status_ok());
+    asserhttp_test!(custom_content_type_json_should_succeed, "header/json.json", HeaderJson.responses(), .is_json());
+    asserhttp_test!(custom_body_present_should_succeed, "body/bytes/value.json", BodyBytes.responses(), .has_body());
+}

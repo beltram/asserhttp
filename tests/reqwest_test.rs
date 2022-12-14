@@ -6,12 +6,14 @@ macro_rules! reqwest_test {
             #[test]
             #[stubr::mock($stub)]
             fn [<reqwest_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::blocking::get(stubr.uri()).unwrap()$( .$meth($($arg),*) )+;)+
             }
             #[test]
             #[stubr::mock($stub)]
             fn [<reqwest_blocking_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::blocking::get(stubr.uri())$( .$meth($($arg),*) )+;)+
             }
@@ -20,12 +22,14 @@ macro_rules! reqwest_test {
             #[tokio::test]
             #[stubr::mock($stub)]
             async fn [<reqwest_async_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::get(stubr.uri()).await$( .$meth($($arg),*) )+;)+
             }
             #[tokio::test]
             #[stubr::mock($stub)]
             async fn [<reqwest_async_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -38,6 +42,7 @@ macro_rules! reqwest_test {
             #[stubr::mock($stub)]
             #[test]
             fn [<reqwest_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::blocking::get(stubr.uri()).unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -45,6 +50,7 @@ macro_rules! reqwest_test {
             #[stubr::mock($stub)]
             #[test]
             fn [<reqwest_blocking_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::blocking::get(stubr.uri())$( .$meth($($arg),*) )+;)+
             }
@@ -54,6 +60,7 @@ macro_rules! reqwest_test {
             #[stubr::mock($stub)]
             #[tokio::test]
             async fn [<reqwest_async_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -61,6 +68,7 @@ macro_rules! reqwest_test {
             #[stubr::mock($stub)]
             #[tokio::test]
             async fn [<reqwest_async_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(reqwest::get(stubr.uri()).await$( .$meth($($arg),*) )+;)+
             }

@@ -91,3 +91,24 @@ async fn my_test() {
         .expect_body_json_eq(json!({"name": "jdoe"}));
 }
 ```
+
+## Customize
+
+You don't like the asserhttp methods name ? That's fine, you can define yours. Define you own trait and use asserhttp 
+methods to define your own ! 
+
+As simple as this:
+
+```rust
+asserhttp::asserhttp_customize!(MyHttpDsl);
+
+pub trait MyHttpDsl<T>: asserhttp::Asserhttp<T> {
+    fn is_status_ok(&mut self) -> &mut T {
+        self.expect_status_ok()
+    }
+    fn is_json(&mut self) -> &mut T {
+        self.expect_content_type_json()
+    }
+    fn has_body(&mut self) -> &mut T { self.expect_body_present() }
+}
+```

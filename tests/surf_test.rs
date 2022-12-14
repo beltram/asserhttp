@@ -5,12 +5,14 @@ macro_rules! surf_test {
             #[tokio::test]
             #[stubr::mock($stub)]
             async fn [<surf_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(surf::get(stubr.uri()).await$( .$meth($($arg),*) )+;)+
             }
             #[tokio::test]
             #[stubr::mock($stub)]
             async fn [<surf_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(surf::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -22,6 +24,7 @@ macro_rules! surf_test {
             #[stubr::mock($stub)]
             #[tokio::test]
             async fn [<surf_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(surf::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+;)+
             }
@@ -29,6 +32,7 @@ macro_rules! surf_test {
             #[stubr::mock($stub)]
             #[tokio::test]
             async fn [<surf_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 $(surf::get(stubr.uri()).await$( .$meth($($arg),*) )+;)+
             }

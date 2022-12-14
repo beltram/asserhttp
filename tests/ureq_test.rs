@@ -5,6 +5,7 @@ macro_rules! ureq_test {
             #[test]
             #[stubr::mock($stub)]
             fn [<ureq_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use ureq::OrAnyStatus;
                 $(ureq::get(&stubr.uri()).call().or_any_status()$( .$meth($($arg),*) )+;)+
@@ -12,6 +13,7 @@ macro_rules! ureq_test {
             #[test]
             #[stubr::mock($stub)]
             fn [<ureq_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use ureq::OrAnyStatus;
                 $(ureq::get(&stubr.uri()).call().or_any_status().unwrap()$( .$meth($($arg),*) )+;)+
@@ -24,6 +26,7 @@ macro_rules! ureq_test {
             #[stubr::mock($stub)]
             #[test]
             fn [<ureq_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use ureq::OrAnyStatus;
                 $(ureq::get(&stubr.uri()).call().or_any_status()$( .$meth($($arg),*) )+;)+
@@ -32,6 +35,7 @@ macro_rules! ureq_test {
             #[stubr::mock($stub)]
             #[test]
             fn [<ureq_result_ $fn_name>]() {
+                #[allow(unused_imports)]
                 use asserhttp::*;
                 use ureq::OrAnyStatus;
                 $(ureq::get(&stubr.uri()).call().or_any_status().unwrap()$( .$meth($($arg),*) )+;)+
