@@ -152,8 +152,7 @@ pub trait AsserhttpBody<T> {
             let expected = body.into();
             assert_eq!(
                 actual, expected,
-                "expected text body '{}' to be equal to '{}' but was not",
-                actual, expected
+                "expected text body '{actual}' to be equal to '{expected}' but was not"
             );
         })
     }
@@ -191,9 +190,7 @@ pub trait AsserhttpBody<T> {
         self.expect_body_text(|actual| {
             assert!(
                 regex.is_match(actual.as_str()),
-                "expected text body '{}' to match regex '{}' but did not",
-                actual,
-                regex
+                "expected text body '{actual}' to match regex '{regex}' but did not"
             );
         })
     }
@@ -264,11 +261,7 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
         self.expect_body_bytes(|actual| {
-            assert_eq!(
-                actual, body,
-                "expected body '{:?}' to be equal to '{:?}' but was not",
-                actual, body
-            );
+            assert_eq!(actual, body, "expected body '{actual:?}' to be equal to '{body:?}' but was not");
         })
     }
 

@@ -274,8 +274,7 @@ where
         let key = key.into().0;
         assert!(
             !self.get_keys().into_iter().any(|k| k.eq_ignore_ascii_case(key.as_str())),
-            "expected no header named '{}' but one found",
-            key
+            "expected no header named '{key}' but one found"
         );
         self
     }
@@ -284,8 +283,7 @@ where
 pub fn assert_header_key(actual_keys: Vec<String>, expected: &str) {
     assert!(
         actual_keys.into_iter().any(|k| k.eq_ignore_ascii_case(expected)),
-        "expected one header named '{}' but none found",
-        expected
+        "expected one header named '{expected}' but none found"
     );
 }
 
@@ -330,8 +328,7 @@ impl From<String> for HeaderValueAsserter {
         Self(Box::new(move |key, value| {
             assert_eq!(
                 value, expected,
-                "expected header '{}' to be equal to '{}' but was '{}'",
-                key, expected, value
+                "expected header '{key}' to be equal to '{expected}' but was '{value}'"
             )
         }))
     }
@@ -354,17 +351,13 @@ impl<S: AsRef<str>> From<Vec<S>> for HeaderValuesAsserter {
         Self(Box::new(move |key, values| {
             assert!(
                 !expected.is_empty(),
-                "no value expected for header '{}'. Use 'expect_header_present' instead",
-                key
+                "no value expected for header '{key}'. Use 'expect_header_present' instead"
             );
             let same_size = values.len() == expected.len();
             let all_eq = values.iter().zip(expected.iter()).all(|(a, b)| a == b);
             assert!(
                 same_size && all_eq,
-                "expected header '{}' to contain values '{:?}' but contained '{:?}'",
-                key,
-                expected,
-                values
+                "expected header '{key}' to contain values '{expected:?}' but contained '{values:?}'"
             );
         }))
     }

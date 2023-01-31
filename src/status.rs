@@ -114,10 +114,7 @@ pub trait AsserhttpStatus<T> {
         self.expect_status(move |status: u16| {
             assert!(
                 status.ge(&lower) && status.lt(&upper),
-                "expected status to be in [{};{}[ but was '{}'",
-                lower,
-                upper,
-                status
+                "expected status to be in [{lower};{upper}[ but was '{status}'"
             );
         })
     }
@@ -596,7 +593,7 @@ pub struct AnyStatus(Box<dyn Fn(u16)>);
 impl From<u16> for AnyStatus {
     fn from(expected: u16) -> Self {
         Self(Box::new(move |status| {
-            assert_eq!(expected, status, "expected status to be '{}' but was '{}'", expected, status);
+            assert_eq!(expected, status, "expected status to be '{expected}' but was '{status}'");
         }))
     }
 }
