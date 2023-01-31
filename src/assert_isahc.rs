@@ -19,13 +19,13 @@ impl StatusAccessor for AsyncIsahcResponse {
 
 impl HeaderAccessor for IsahcResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().keys()
-            .map(|k| k.as_str().to_string())
-            .collect::<Vec<_>>()
+        self.headers().keys().map(|k| k.as_str().to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        let value = self.headers().get(key)
+        let value = self
+            .headers()
+            .get(key)
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -35,13 +35,13 @@ impl HeaderAccessor for IsahcResponse {
 
 impl HeaderAccessor for AsyncIsahcResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().keys()
-            .map(|k| k.as_str().to_string())
-            .collect::<Vec<_>>()
+        self.headers().keys().map(|k| k.as_str().to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        let value = self.headers().get(key)
+        let value = self
+            .headers()
+            .get(key)
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -53,9 +53,7 @@ impl BodyAccessor for IsahcResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf = vec![];
         use isahc::ReadResponseExt as _;
-        self.copy_to(&mut buf)
-            .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+        self.copy_to(&mut buf).map(|_| buf).map_err(anyhow::Error::msg)
     }
 
     fn get_text(&mut self) -> anyhow::Result<String> {
@@ -63,7 +61,10 @@ impl BodyAccessor for IsahcResponse {
         self.text().map_err(anyhow::Error::msg)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B> where B: DeserializeOwned + Unpin {
+    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    where
+        B: DeserializeOwned + Unpin,
+    {
         use isahc::ReadResponseExt as _;
         self.json::<B>().map_err(anyhow::Error::msg)
     }
@@ -83,7 +84,10 @@ impl BodyAccessor for AsyncIsahcResponse {
         futures_lite::future::block_on(self.text()).map_err(anyhow::Error::msg)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B> where B: DeserializeOwned + Unpin {
+    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    where
+        B: DeserializeOwned + Unpin,
+    {
         use isahc::AsyncReadResponseExt as _;
         futures_lite::future::block_on(self.json::<B>()).map_err(anyhow::Error::msg)
     }

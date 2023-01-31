@@ -112,9 +112,13 @@ pub trait AsserhttpStatus<T> {
     /// ```
     fn expect_status_in_range(&mut self, lower: u16, upper: u16) -> &mut T {
         self.expect_status(move |status: u16| {
-            assert!(status.ge(&lower) && status.lt(&upper),
-                    "expected status to be in [{};{}[ but was '{}'",
-                    lower, upper, status);
+            assert!(
+                status.ge(&lower) && status.lt(&upper),
+                "expected status to be in [{};{}[ but was '{}'",
+                lower,
+                upper,
+                status
+            );
         })
     }
 
@@ -142,7 +146,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_success();
     /// }
     /// ```
-    fn expect_status_success(&mut self) -> &mut T { self.expect_status_in_range(200, 300) }
+    fn expect_status_success(&mut self) -> &mut T {
+        self.expect_status_in_range(200, 300)
+    }
 
     /// Expects response status to be in 3xx range
     ///
@@ -168,7 +174,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_redirection();
     /// }
     /// ```
-    fn expect_status_redirection(&mut self) -> &mut T { self.expect_status_in_range(300, 400) }
+    fn expect_status_redirection(&mut self) -> &mut T {
+        self.expect_status_in_range(300, 400)
+    }
 
     /// Expects response status to be in 4xx range
     ///
@@ -194,7 +202,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_client_error();
     /// }
     /// ```
-    fn expect_status_client_error(&mut self) -> &mut T { self.expect_status_in_range(400, 500) }
+    fn expect_status_client_error(&mut self) -> &mut T {
+        self.expect_status_in_range(400, 500)
+    }
 
     /// Expects response status to be in 5xx range
     ///
@@ -220,7 +230,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_server_error();
     /// }
     /// ```
-    fn expect_status_server_error(&mut self) -> &mut T { self.expect_status_in_range(500, 600) }
+    fn expect_status_server_error(&mut self) -> &mut T {
+        self.expect_status_in_range(500, 600)
+    }
 
     /// Expects response status to be `OK 200`
     ///
@@ -246,7 +258,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_ok();
     /// }
     /// ```
-    fn expect_status_ok(&mut self) -> &mut T { self.expect_status(200) }
+    fn expect_status_ok(&mut self) -> &mut T {
+        self.expect_status(200)
+    }
 
     /// Expects response status to be `Created 201`
     ///
@@ -272,7 +286,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_created();
     /// }
     /// ```
-    fn expect_status_created(&mut self) -> &mut T { self.expect_status(201) }
+    fn expect_status_created(&mut self) -> &mut T {
+        self.expect_status(201)
+    }
 
     /// Expects response status to be `Accepted 202`
     ///
@@ -298,7 +314,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_accepted();
     /// }
     /// ```
-    fn expect_status_accepted(&mut self) -> &mut T { self.expect_status(202) }
+    fn expect_status_accepted(&mut self) -> &mut T {
+        self.expect_status(202)
+    }
 
     /// Expects response status to be `No Content 204`
     ///
@@ -324,7 +342,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_no_content();
     /// }
     /// ```
-    fn expect_status_no_content(&mut self) -> &mut T { self.expect_status(204) }
+    fn expect_status_no_content(&mut self) -> &mut T {
+        self.expect_status(204)
+    }
 
     /// Expects response status to be `Partial Content 206`
     ///
@@ -350,7 +370,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_partial_content();
     /// }
     /// ```
-    fn expect_status_partial_content(&mut self) -> &mut T { self.expect_status(206) }
+    fn expect_status_partial_content(&mut self) -> &mut T {
+        self.expect_status(206)
+    }
 
     /// Expects response status to be `Bad Request 400`
     ///
@@ -376,7 +398,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_bad_request();
     /// }
     /// ```
-    fn expect_status_bad_request(&mut self) -> &mut T { self.expect_status(400) }
+    fn expect_status_bad_request(&mut self) -> &mut T {
+        self.expect_status(400)
+    }
 
     /// Expects response status to be `Unauthorized 401`
     ///
@@ -402,7 +426,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_unauthorized();
     /// }
     /// ```
-    fn expect_status_unauthorized(&mut self) -> &mut T { self.expect_status(401) }
+    fn expect_status_unauthorized(&mut self) -> &mut T {
+        self.expect_status(401)
+    }
 
     /// Expects response status to be `Forbidden 403`
     ///
@@ -428,7 +454,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_forbidden();
     /// }
     /// ```
-    fn expect_status_forbidden(&mut self) -> &mut T { self.expect_status(403) }
+    fn expect_status_forbidden(&mut self) -> &mut T {
+        self.expect_status(403)
+    }
 
     /// Expects response status to be `Not Found 404`
     ///
@@ -454,7 +482,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_not_found();
     /// }
     /// ```
-    fn expect_status_not_found(&mut self) -> &mut T { self.expect_status(404) }
+    fn expect_status_not_found(&mut self) -> &mut T {
+        self.expect_status(404)
+    }
 
     /// Expects response status to be `Conflict 409`
     ///
@@ -480,7 +510,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_conflict();
     /// }
     /// ```
-    fn expect_status_conflict(&mut self) -> &mut T { self.expect_status(409) }
+    fn expect_status_conflict(&mut self) -> &mut T {
+        self.expect_status(409)
+    }
 
     /// Expects response status to be `Gone 410`
     ///
@@ -506,7 +538,9 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_gone();
     /// }
     /// ```
-    fn expect_status_gone(&mut self) -> &mut T { self.expect_status(410) }
+    fn expect_status_gone(&mut self) -> &mut T {
+        self.expect_status(410)
+    }
 
     /// Expects response status to be `Internal Server Error 500`
     ///
@@ -532,19 +566,26 @@ pub trait AsserhttpStatus<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_status_internal_server_error();
     /// }
     /// ```
-    fn expect_status_internal_server_error(&mut self) -> &mut T { self.expect_status(500) }
+    fn expect_status_internal_server_error(&mut self) -> &mut T {
+        self.expect_status(500)
+    }
 }
 
-impl<T> AsserhttpStatus<T> for T where T: super::accessor::StatusAccessor {
+impl<T> AsserhttpStatus<T> for T
+where
+    T: super::accessor::StatusAccessor,
+{
     fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
         status.into().0(self.get_status());
         self
     }
 }
 
-impl<T, E> AsserhttpStatus<T> for Result<T, E> where
+impl<T, E> AsserhttpStatus<T> for Result<T, E>
+where
     T: super::accessor::StatusAccessor,
-    E: std::fmt::Debug {
+    E: std::fmt::Debug,
+{
     fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
         self.as_mut().unwrap().expect_status(status)
     }
@@ -568,10 +609,15 @@ impl From<crate::Status> for AnyStatus {
 
 #[cfg(feature = "rocket")]
 impl From<rocket::http::Status> for AnyStatus {
-    fn from(value: rocket::http::Status) -> Self { Self::from(value.code) }
+    fn from(value: rocket::http::Status) -> Self {
+        Self::from(value.code)
+    }
 }
 
-impl<F: 'static> From<F> for AnyStatus where F: Fn(u16) {
+impl<F: 'static> From<F> for AnyStatus
+where
+    F: Fn(u16),
+{
     fn from(fun: F) -> Self {
         Self(Box::new(fun))
     }

@@ -12,18 +12,12 @@ impl StatusAccessor for SurfResponse {
 
 impl HeaderAccessor for SurfResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.header_names()
-            .map(|k| k.to_string())
-            .collect::<Vec<_>>()
+        self.header_names().map(|k| k.to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
         self.header(key)
-            .map(|values| {
-                values.into_iter()
-                    .map(|v| v.to_string())
-                    .collect::<Vec<_>>()
-            })
+            .map(|values| values.into_iter().map(|v| v.to_string()).collect::<Vec<_>>())
             .unwrap_or_default()
     }
 }
@@ -37,7 +31,10 @@ impl BodyAccessor for SurfResponse {
         futures_lite::future::block_on(self.body_string()).map_err(anyhow::Error::msg)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B> where B: DeserializeOwned {
+    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    where
+        B: DeserializeOwned,
+    {
         futures_lite::future::block_on(self.body_json::<B>()).map_err(anyhow::Error::msg)
     }
 }

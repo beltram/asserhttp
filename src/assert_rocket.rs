@@ -17,29 +17,21 @@ impl<'a> StatusAccessor for AsyncRocketResponse<'a> {
 
 impl<'a> HeaderAccessor for RocketResponse<'a> {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().iter()
-            .map(|k| k.name.to_string())
-            .collect::<Vec<_>>()
+        self.headers().iter().map(|k| k.name.to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.headers().get(key)
-            .map(str::to_string)
-            .collect::<Vec<_>>()
+        self.headers().get(key).map(str::to_string).collect::<Vec<_>>()
     }
 }
 
 impl<'a> HeaderAccessor for AsyncRocketResponse<'a> {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().iter()
-            .map(|k| k.name.to_string())
-            .collect::<Vec<_>>()
+        self.headers().iter().map(|k| k.name.to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.headers().get(key.as_ref())
-            .map(str::to_string)
-            .collect::<Vec<_>>()
+        self.headers().get(key.as_ref()).map(str::to_string).collect::<Vec<_>>()
     }
 }
 
@@ -47,9 +39,7 @@ impl<'a> BodyAccessor for RocketResponse<'a> {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
         use std::io::Read as _;
-        self.read_to_end(&mut buf)
-            .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+        self.read_to_end(&mut buf).map(|_| buf).map_err(anyhow::Error::msg)
     }
 }
 

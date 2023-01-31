@@ -71,45 +71,150 @@ impl Stub {
             .status(axum::http::StatusCode::OK)
             .body(json!({"a": "b"}).to_string())
             .unwrap();
-        axum_response.headers_mut().insert("content-type", "application/json".parse().unwrap());
+        axum_response
+            .headers_mut()
+            .insert("content-type", "application/json".parse().unwrap());
         match self {
             Stub::Full => Responses(
                 HttpResponse::Ok()
                     .append_header(("content-type", "application/json"))
                     .body(json!({"a": "b"}).to_string()),
-                Resp(rocket::Response::build()
-                    .status(rocket::http::Status::Ok)
-                    .raw_header("content-type", "application/json")
-                    .streamed_body(Cursor::new(json!({"a": "b"}).to_string()))
-                    .finalize()),
+                Resp(
+                    rocket::Response::build()
+                        .status(rocket::http::Status::Ok)
+                        .raw_header("content-type", "application/json")
+                        .streamed_body(Cursor::new(json!({"a": "b"}).to_string()))
+                        .finalize(),
+                ),
                 axum_response.into_response(),
             ),
-            Stub::StatusAccepted => Responses(HttpResponse::Accepted().finish(), rocket::http::Status::Accepted.into(), axum::http::StatusCode::ACCEPTED.into_response()),
-            Stub::StatusBadRequest => Responses(HttpResponse::BadRequest().finish(), rocket::http::Status::BadRequest.into(), axum::http::StatusCode::BAD_REQUEST.into_response()),
-            Stub::StatusConflict => Responses(HttpResponse::Conflict().finish(), rocket::http::Status::Conflict.into(), axum::http::StatusCode::CONFLICT.into_response()),
-            Stub::StatusCreated => Responses(HttpResponse::Created().finish(), rocket::http::Status::Created.into(), axum::http::StatusCode::CREATED.into_response()),
-            Stub::StatusForbidden => Responses(HttpResponse::Forbidden().finish(), rocket::http::Status::Forbidden.into(), axum::http::StatusCode::FORBIDDEN.into_response()),
-            Stub::StatusGone => Responses(HttpResponse::Gone().finish(), rocket::http::Status::Gone.into(), axum::http::StatusCode::GONE.into_response()),
-            Stub::StatusMovedPermanently => Responses(HttpResponse::MovedPermanently().finish(), rocket::http::Status::MovedPermanently.into(), axum::http::StatusCode::MOVED_PERMANENTLY.into_response()),
-            Stub::StatusNoContent => Responses(HttpResponse::NoContent().finish(), rocket::http::Status::NoContent.into(), axum::http::StatusCode::NO_CONTENT.into_response()),
-            Stub::StatusNotFound => Responses(HttpResponse::NotFound().finish(), rocket::http::Status::NotFound.into(), axum::http::StatusCode::NOT_FOUND.into_response()),
-            Stub::StatusOk => Responses(HttpResponse::Ok().finish(), rocket::http::Status::Ok.into(), axum::http::StatusCode::OK.into_response()),
-            Stub::StatusPartialContent => Responses(HttpResponse::PartialContent().finish(), rocket::http::Status::PartialContent.into(), axum::http::StatusCode::PARTIAL_CONTENT.into_response()),
-            Stub::StatusInternalServerError => Responses(HttpResponse::InternalServerError().finish(), rocket::http::Status::InternalServerError.into(), axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response()),
-            Stub::StatusUnauthorized => Responses(HttpResponse::Unauthorized().finish(), rocket::http::Status::Unauthorized.into(), axum::http::StatusCode::UNAUTHORIZED.into_response()),
-            Stub::HeaderJson => Responses(HttpResponse::Ok().append_header(("content-type", "application/json")).finish(), vec![("content-type", "application/json")].into(), [("content-type", "application/json")].into_response()),
-            Stub::HeaderMany => Responses(HttpResponse::Ok().append_header(("x-a", "a")).append_header(("x-b", "b")).finish(), vec![("x-a", "a"), ("x-b", "b")].into(), [("x-a", "a"), ("x-b", "b")].into_response()),
-            Stub::HeaderMulti => Responses(HttpResponse::Ok().append_header(("x-m", "a, b")).finish(), vec![("x-m", vec!["a", "b"])].into(), [("x-m", "a, b")].into_response()),
-            Stub::HeaderCacheControl => Responses(HttpResponse::Ok().append_header(("cache-control", "no-cache, no-store")).finish(), vec![("cache-control", vec!["no-cache", "no-store"])].into(), [("cache-control", "no-cache, no-store")].into_response()),
-            Stub::HeaderOne => Responses(HttpResponse::Ok().append_header(("x-a", "a")).finish(), vec![("x-a", "a")].into(), [("x-a", "a")].into_response()),
-            Stub::HeaderText => Responses(HttpResponse::Ok().append_header(("content-type", "text/plain")).finish(), vec![("content-type", "text/plain")].into(), [("content-type", "text/plain")].into_response()),
-            Stub::HeaderXml => Responses(HttpResponse::Ok().append_header(("content-type", "application/xml")).finish(), vec![("content-type", "application/xml")].into(), [("content-type", "application/xml")].into_response()),
-            Stub::BodyJson => Responses(HttpResponse::Ok().body(json!({"a": "b"}).to_string()), json!({"a": "b"}).into(), axum::Json(json!({"a": "b"})).into_response()),
-            Stub::BodyJsonAbsent => Responses(HttpResponse::Ok().finish(), rocket::http::Status::Ok.into(), axum::http::StatusCode::OK.into_response()),
+            Stub::StatusAccepted => Responses(
+                HttpResponse::Accepted().finish(),
+                rocket::http::Status::Accepted.into(),
+                axum::http::StatusCode::ACCEPTED.into_response(),
+            ),
+            Stub::StatusBadRequest => Responses(
+                HttpResponse::BadRequest().finish(),
+                rocket::http::Status::BadRequest.into(),
+                axum::http::StatusCode::BAD_REQUEST.into_response(),
+            ),
+            Stub::StatusConflict => Responses(
+                HttpResponse::Conflict().finish(),
+                rocket::http::Status::Conflict.into(),
+                axum::http::StatusCode::CONFLICT.into_response(),
+            ),
+            Stub::StatusCreated => Responses(
+                HttpResponse::Created().finish(),
+                rocket::http::Status::Created.into(),
+                axum::http::StatusCode::CREATED.into_response(),
+            ),
+            Stub::StatusForbidden => Responses(
+                HttpResponse::Forbidden().finish(),
+                rocket::http::Status::Forbidden.into(),
+                axum::http::StatusCode::FORBIDDEN.into_response(),
+            ),
+            Stub::StatusGone => Responses(
+                HttpResponse::Gone().finish(),
+                rocket::http::Status::Gone.into(),
+                axum::http::StatusCode::GONE.into_response(),
+            ),
+            Stub::StatusMovedPermanently => Responses(
+                HttpResponse::MovedPermanently().finish(),
+                rocket::http::Status::MovedPermanently.into(),
+                axum::http::StatusCode::MOVED_PERMANENTLY.into_response(),
+            ),
+            Stub::StatusNoContent => Responses(
+                HttpResponse::NoContent().finish(),
+                rocket::http::Status::NoContent.into(),
+                axum::http::StatusCode::NO_CONTENT.into_response(),
+            ),
+            Stub::StatusNotFound => Responses(
+                HttpResponse::NotFound().finish(),
+                rocket::http::Status::NotFound.into(),
+                axum::http::StatusCode::NOT_FOUND.into_response(),
+            ),
+            Stub::StatusOk => Responses(
+                HttpResponse::Ok().finish(),
+                rocket::http::Status::Ok.into(),
+                axum::http::StatusCode::OK.into_response(),
+            ),
+            Stub::StatusPartialContent => Responses(
+                HttpResponse::PartialContent().finish(),
+                rocket::http::Status::PartialContent.into(),
+                axum::http::StatusCode::PARTIAL_CONTENT.into_response(),
+            ),
+            Stub::StatusInternalServerError => Responses(
+                HttpResponse::InternalServerError().finish(),
+                rocket::http::Status::InternalServerError.into(),
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
+            ),
+            Stub::StatusUnauthorized => Responses(
+                HttpResponse::Unauthorized().finish(),
+                rocket::http::Status::Unauthorized.into(),
+                axum::http::StatusCode::UNAUTHORIZED.into_response(),
+            ),
+            Stub::HeaderJson => Responses(
+                HttpResponse::Ok().append_header(("content-type", "application/json")).finish(),
+                vec![("content-type", "application/json")].into(),
+                [("content-type", "application/json")].into_response(),
+            ),
+            Stub::HeaderMany => Responses(
+                HttpResponse::Ok()
+                    .append_header(("x-a", "a"))
+                    .append_header(("x-b", "b"))
+                    .finish(),
+                vec![("x-a", "a"), ("x-b", "b")].into(),
+                [("x-a", "a"), ("x-b", "b")].into_response(),
+            ),
+            Stub::HeaderMulti => Responses(
+                HttpResponse::Ok().append_header(("x-m", "a, b")).finish(),
+                vec![("x-m", vec!["a", "b"])].into(),
+                [("x-m", "a, b")].into_response(),
+            ),
+            Stub::HeaderCacheControl => Responses(
+                HttpResponse::Ok()
+                    .append_header(("cache-control", "no-cache, no-store"))
+                    .finish(),
+                vec![("cache-control", vec!["no-cache", "no-store"])].into(),
+                [("cache-control", "no-cache, no-store")].into_response(),
+            ),
+            Stub::HeaderOne => Responses(
+                HttpResponse::Ok().append_header(("x-a", "a")).finish(),
+                vec![("x-a", "a")].into(),
+                [("x-a", "a")].into_response(),
+            ),
+            Stub::HeaderText => Responses(
+                HttpResponse::Ok().append_header(("content-type", "text/plain")).finish(),
+                vec![("content-type", "text/plain")].into(),
+                [("content-type", "text/plain")].into_response(),
+            ),
+            Stub::HeaderXml => Responses(
+                HttpResponse::Ok().append_header(("content-type", "application/xml")).finish(),
+                vec![("content-type", "application/xml")].into(),
+                [("content-type", "application/xml")].into_response(),
+            ),
+            Stub::BodyJson => Responses(
+                HttpResponse::Ok().body(json!({"a": "b"}).to_string()),
+                json!({"a": "b"}).into(),
+                axum::Json(json!({"a": "b"})).into_response(),
+            ),
+            Stub::BodyJsonAbsent => Responses(
+                HttpResponse::Ok().finish(),
+                rocket::http::Status::Ok.into(),
+                axum::http::StatusCode::OK.into_response(),
+            ),
             Stub::BodyBytes => Responses(HttpResponse::Ok().body("abcd"), "abcd".into(), b"abcd".into_response()),
-            Stub::BodyBytesAbsent => Responses(HttpResponse::Ok().finish(), rocket::http::Status::Ok.into(), axum::http::StatusCode::OK.into_response()),
+            Stub::BodyBytesAbsent => Responses(
+                HttpResponse::Ok().finish(),
+                rocket::http::Status::Ok.into(),
+                axum::http::StatusCode::OK.into_response(),
+            ),
             Stub::BodyText => Responses(HttpResponse::Ok().body("abcd"), "abcd".into(), "abcd".into_response()),
-            Stub::BodyTextAbsent => Responses(HttpResponse::Ok().finish(), rocket::http::Status::Ok.into(), axum::http::StatusCode::OK.into_response()),
+            Stub::BodyTextAbsent => Responses(
+                HttpResponse::Ok().finish(),
+                rocket::http::Status::Ok.into(),
+                axum::http::StatusCode::OK.into_response(),
+            ),
         }
     }
 }
@@ -311,7 +416,7 @@ mod header {
 mod body {
     use serde_json::{json, Value};
 
-    use super::{*, Stub::*};
+    use super::{Stub::*, *};
 
     asserhttp_test!(body_json_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "b"}))));
     asserhttp_test!(body_json_struct_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json(|b: TestBody| assert_eq!(b, TestBody { a: String::from("b") })));
@@ -363,7 +468,9 @@ mod customizable {
             self.expect_content_type_json()
         }
 
-        fn has_body(&mut self) -> &mut T { self.expect_body_present() }
+        fn has_body(&mut self) -> &mut T {
+            self.expect_body_present()
+        }
     }
 
     asserhttp_test!(custom_status_should_succeed, "status/ok.json", StatusOk.responses(), .is_status_ok());

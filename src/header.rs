@@ -238,14 +238,22 @@ pub trait AsserhttpHeader<T> {
     }
 }
 
-impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
+impl<T> AsserhttpHeader<T> for T
+where
+    T: accessor::HeaderAccessor,
+{
     fn expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<HeaderValueAsserter>) -> &mut T {
         let key = key.into().0;
         assert_header_key(self.get_keys(), key.as_str());
         let actual_values = self.get_values(key.as_str());
-        assert_eq!(actual_values.len(), 1,
-                   "expected header '{}' to be single valued. Had '{}' values '{:?}'. Use 'expect_headers' instead.",
-                   key, actual_values.len(), actual_values);
+        assert_eq!(
+            actual_values.len(),
+            1,
+            "expected header '{}' to be single valued. Had '{}' values '{:?}'. Use 'expect_headers' instead.",
+            key,
+            actual_values.len(),
+            actual_values
+        );
         value.into().0(key, actual_values.first().unwrap().to_string());
         self
     }
@@ -264,20 +272,28 @@ impl<T> AsserhttpHeader<T> for T where T: accessor::HeaderAccessor {
 
     fn expect_header_absent(&mut self, key: impl Into<HeaderKey>) -> &mut T {
         let key = key.into().0;
-        assert!(!self.get_keys().into_iter().any(|k| k.eq_ignore_ascii_case(key.as_str())),
-                "expected no header named '{}' but one found", key);
+        assert!(
+            !self.get_keys().into_iter().any(|k| k.eq_ignore_ascii_case(key.as_str())),
+            "expected no header named '{}' but one found",
+            key
+        );
         self
     }
 }
 
 pub fn assert_header_key(actual_keys: Vec<String>, expected: &str) {
-    assert!(actual_keys.into_iter().any(|k| k.eq_ignore_ascii_case(expected)),
-            "expected one header named '{}' but none found", expected);
+    assert!(
+        actual_keys.into_iter().any(|k| k.eq_ignore_ascii_case(expected)),
+        "expected one header named '{}' but none found",
+        expected
+    );
 }
 
-impl<T, E> AsserhttpHeader<T> for Result<T, E> where
+impl<T, E> AsserhttpHeader<T> for Result<T, E>
+where
     T: accessor::HeaderAccessor,
-    E: std::fmt::Debug {
+    E: std::fmt::Debug,
+{
     fn expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<HeaderValueAsserter>) -> &mut T {
         self.as_mut().unwrap().expect_header(key, value)
     }
@@ -312,12 +328,19 @@ impl<'a> From<&'a str> for HeaderValueAsserter {
 impl From<String> for HeaderValueAsserter {
     fn from(expected: String) -> Self {
         Self(Box::new(move |key, value| {
-            assert_eq!(value, expected, "expected header '{}' to be equal to '{}' but was '{}'", key, expected, value)
+            assert_eq!(
+                value, expected,
+                "expected header '{}' to be equal to '{}' but was '{}'",
+                key, expected, value
+            )
         }))
     }
 }
 
-impl<F: 'static> From<F> for HeaderValueAsserter where F: Fn(&'static str) {
+impl<F: 'static> From<F> for HeaderValueAsserter
+where
+    F: Fn(&'static str),
+{
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, value| fun(Box::leak(Box::new(value)))))
     }
@@ -329,12 +352,20 @@ impl<S: AsRef<str>> From<Vec<S>> for HeaderValuesAsserter {
     fn from(expected: Vec<S>) -> Self {
         let expected = expected.into_iter().map(|i| i.as_ref().to_string()).collect::<Vec<_>>();
         Self(Box::new(move |key, values| {
-            assert!(!expected.is_empty(), "no value expected for header '{}'. Use 'expect_header_present' instead", key);
+            assert!(
+                !expected.is_empty(),
+                "no value expected for header '{}'. Use 'expect_header_present' instead",
+                key
+            );
             let same_size = values.len() == expected.len();
-            let all_eq = values.iter()
-                .zip(expected.iter())
-                .all(|(a, b)| a == b);
-            assert!(same_size && all_eq, "expected header '{}' to contain values '{:?}' but contained '{:?}'", key, expected, values);
+            let all_eq = values.iter().zip(expected.iter()).all(|(a, b)| a == b);
+            assert!(
+                same_size && all_eq,
+                "expected header '{}' to contain values '{:?}' but contained '{:?}'",
+                key,
+                expected,
+                values
+            );
         }))
     }
 }
@@ -351,7 +382,10 @@ impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for HeaderValuesAsserte
     }
 }
 
-impl<F: 'static> From<F> for HeaderValuesAsserter where F: Fn(Vec<&'static str>) {
+impl<F: 'static> From<F> for HeaderValuesAsserter
+where
+    F: Fn(Vec<&'static str>),
+{
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, values: Vec<String>| {
             fun(values.into_iter().map(|s| Box::leak(Box::new(s)).as_str()).collect::<Vec<_>>())
@@ -362,15 +396,21 @@ impl<F: 'static> From<F> for HeaderValuesAsserter where F: Fn(Vec<&'static str>)
 pub struct HeaderKey(pub String);
 
 impl<'a> From<&'a str> for HeaderKey {
-    fn from(name: &'a str) -> Self { Self::from(name.to_string()) }
+    fn from(name: &'a str) -> Self {
+        Self::from(name.to_string())
+    }
 }
 
 impl<'a> From<&'a String> for HeaderKey {
-    fn from(name: &'a String) -> Self { Self::from(name.to_string()) }
+    fn from(name: &'a String) -> Self {
+        Self::from(name.to_string())
+    }
 }
 
 impl From<String> for HeaderKey {
-    fn from(name: String) -> Self { Self(name) }
+    fn from(name: String) -> Self {
+        Self(name)
+    }
 }
 
 impl From<HeaderName> for HeaderKey {
