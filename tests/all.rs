@@ -395,14 +395,14 @@ mod header {
         fn header_accepts_any_str_values() {
             // array
             isahc::get(stubr.uri()).expect_headers("x-m", ["a", "b"]);
-            isahc::get(stubr.uri()).expect_headers("x-m", &["a", "b"]);
+            isahc::get(stubr.uri()).expect_headers("x-m", ["a", "b"]);
             isahc::get(stubr.uri()).expect_headers("x-m", ["a".to_string(), "b".to_string()]);
             isahc::get(stubr.uri()).expect_headers("x-m", &["a".to_string(), "b".to_string()]);
             isahc::get(stubr.uri()).expect_headers("x-m", [&"a".to_string(), &"b".to_string()]);
-            isahc::get(stubr.uri()).expect_headers("x-m", &[&"a".to_string(), &"b".to_string()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", [&"a".to_string(), &"b".to_string()]);
             let (a, b) = ("a".to_string(), "b".to_string());
             isahc::get(stubr.uri()).expect_headers("x-m", [a.as_str(), b.as_str()]);
-            isahc::get(stubr.uri()).expect_headers("x-m", &[a.as_str(), b.as_str()]);
+            isahc::get(stubr.uri()).expect_headers("x-m", [a.as_str(), b.as_str()]);
             // vec
             isahc::get(stubr.uri()).expect_headers("x-m", vec!["a", "b"]);
             isahc::get(stubr.uri()).expect_headers("x-m", vec!["a".to_string(), "b".to_string()]);

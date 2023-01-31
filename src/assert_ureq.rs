@@ -25,7 +25,7 @@ impl BodyAccessor for UreqResponse {
             .headers_names()
             .iter()
             .filter_map(|k| self.header(k).map(|v| (k, v)))
-            .map(|(k, v)| format!("{}: {}", k, v))
+            .map(|(k, v)| format!("{k}: {v}"))
             .join("\r\n");
         let headers = format!("{}\r\n{}", self.status_text(), headers);
         let mut resp_cpy = UreqResponse::new(self.status(), &headers, "").unwrap();
