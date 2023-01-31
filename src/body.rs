@@ -45,8 +45,9 @@ pub trait AsserhttpBody<T> {
     /// }
     /// ```
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
-        where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
-              F: FnOnce(B);
+    where
+        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+        F: FnOnce(B);
 
     /// Expects response body to be json and equal
     /// * `body` - expected json body
@@ -74,11 +75,18 @@ pub trait AsserhttpBody<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_body_json_eq(json!({"a": "b"}));
     /// }
     /// ```
-    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin {
+    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T
+    where
+        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+    {
         self.expect_body_json(|actual: B| {
-            assert_eq!(actual, body, "expected json body '{}' to be equal to '{}' but was not",
-                       to_json_string(&actual),
-                       to_json_string(&body));
+            assert_eq!(
+                actual,
+                body,
+                "expected json body '{}' to be equal to '{}' but was not",
+                to_json_string(&actual),
+                to_json_string(&body)
+            );
         })
     }
 
@@ -107,7 +115,9 @@ pub trait AsserhttpBody<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_body_text(|b| assert_eq!(b, "abcd"));
     /// }
     /// ```
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String);
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T
+    where
+        F: FnOnce(String);
 
     /// Expects response body to be text and equal
     /// * `body` - expected text body
@@ -134,10 +144,17 @@ pub trait AsserhttpBody<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_body_text_eq("abcd");
     /// }
     /// ```
-    fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T where B: Into<String> {
+    fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T
+    where
+        B: Into<String>,
+    {
         self.expect_body_text(|actual| {
             let expected = body.into();
-            assert_eq!(actual, expected, "expected text body '{}' to be equal to '{}' but was not", actual, expected);
+            assert_eq!(
+                actual, expected,
+                "expected text body '{}' to be equal to '{}' but was not",
+                actual, expected
+            );
         })
     }
 
@@ -166,11 +183,18 @@ pub trait AsserhttpBody<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_body_text_matches("[a-z]+");
     /// }
     /// ```
-    fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T where R: Into<String> {
-        let regex = Regex::from_str(regex.into().as_str())
-            .expect("'{}' is not a valid regex");
+    fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T
+    where
+        R: Into<String>,
+    {
+        let regex = Regex::from_str(regex.into().as_str()).expect("'{}' is not a valid regex");
         self.expect_body_text(|actual| {
-            assert!(regex.is_match(actual.as_str()), "expected text body '{}' to match regex '{}' but did not", actual, regex);
+            assert!(
+                regex.is_match(actual.as_str()),
+                "expected text body '{}' to match regex '{}' but did not",
+                actual,
+                regex
+            );
         })
     }
 
@@ -204,7 +228,9 @@ pub trait AsserhttpBody<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_body_bytes(|b| assert_eq!(b, b"abcd"));
     /// }
     /// ```
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]);
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T
+    where
+        F: FnOnce(&[u8]);
 
     /// Expects response body to be equal by comparing bytes
     /// * `body` - expected bytes response body
@@ -238,7 +264,11 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
         self.expect_body_bytes(|actual| {
-            assert_eq!(actual, body, "expected body '{:?}' to be equal to '{:?}' but was not", actual, body);
+            assert_eq!(
+                actual, body,
+                "expected body '{:?}' to be equal to '{:?}' but was not",
+                actual, body
+            );
         })
     }
 
@@ -295,13 +325,22 @@ pub trait AsserhttpBody<T> {
     fn expect_body_absent(&mut self) -> &mut T;
 }
 
-fn to_json_string<B>(json: &B) -> String where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin {
-    serde_json::to_string(json)
-        .unwrap_or_else(|_| String::from("Failed serializing actual response body"))
+fn to_json_string<B>(json: &B) -> String
+where
+    B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+{
+    serde_json::to_string(json).unwrap_or_else(|_| String::from("Failed serializing actual response body"))
 }
 
-impl<T> AsserhttpBody<T> for T where T: super::accessor::BodyAccessor {
-    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin, F: FnOnce(B) {
+impl<T> AsserhttpBody<T> for T
+where
+    T: super::accessor::BodyAccessor,
+{
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
+    where
+        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+        F: FnOnce(B),
+    {
         if let Ok(actual) = self.get_json() {
             asserter(actual)
         } else {
@@ -310,7 +349,10 @@ impl<T> AsserhttpBody<T> for T where T: super::accessor::BodyAccessor {
         self
     }
 
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String) {
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T
+    where
+        F: FnOnce(String),
+    {
         if let Ok(actual) = self.get_text() {
             if !actual.is_empty() {
                 asserter(actual)
@@ -323,7 +365,10 @@ impl<T> AsserhttpBody<T> for T where T: super::accessor::BodyAccessor {
         self
     }
 
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]) {
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T
+    where
+        F: FnOnce(&[u8]),
+    {
         if let Ok(actual) = self.get_bytes() {
             if !actual.is_empty() {
                 asserter(actual.as_slice())
@@ -353,18 +398,30 @@ impl<T> AsserhttpBody<T> for T where T: super::accessor::BodyAccessor {
     }
 }
 
-impl<T, E> AsserhttpBody<T> for Result<T, E> where
+impl<T, E> AsserhttpBody<T> for Result<T, E>
+where
     T: super::accessor::BodyAccessor,
-    E: Debug {
-    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T where B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin, F: FnOnce(B) {
+    E: Debug,
+{
+    fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
+    where
+        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+        F: FnOnce(B),
+    {
         self.as_mut().unwrap().expect_body_json(asserter)
     }
 
-    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(String) {
+    fn expect_body_text<F>(&mut self, asserter: F) -> &mut T
+    where
+        F: FnOnce(String),
+    {
         self.as_mut().unwrap().expect_body_text(asserter)
     }
 
-    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T where F: FnOnce(&[u8]) {
+    fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T
+    where
+        F: FnOnce(&[u8]),
+    {
         self.as_mut().unwrap().expect_body_bytes(asserter)
     }
 

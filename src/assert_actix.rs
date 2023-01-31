@@ -17,13 +17,13 @@ impl StatusAccessor for ActixServiceResponse {
 
 impl HeaderAccessor for ActixResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().iter()
-            .map(|(k, _)| k.as_str().to_string())
-            .collect::<Vec<_>>()
+        self.headers().iter().map(|(k, _)| k.as_str().to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        let value = self.headers().get(key)
+        let value = self
+            .headers()
+            .get(key)
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -33,13 +33,13 @@ impl HeaderAccessor for ActixResponse {
 
 impl HeaderAccessor for ActixServiceResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().iter()
-            .map(|(k, _)| k.as_str().to_string())
-            .collect::<Vec<_>>()
+        self.headers().iter().map(|(k, _)| k.as_str().to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        let value = self.headers().get(key)
+        let value = self
+            .headers()
+            .get(key)
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -61,7 +61,9 @@ impl BodyAccessor for ActixServiceResponse {
 
 fn body_bytes(original: &mut ActixResponse) -> anyhow::Result<Vec<u8>> {
     let mut resp_cpy = ActixResponse::build(original.status());
-    original.headers().iter().for_each(|h| { resp_cpy.insert_header(h); });
+    original.headers().iter().for_each(|h| {
+        resp_cpy.insert_header(h);
+    });
     let mut resp_cpy = resp_cpy.finish();
     std::mem::swap(original, &mut resp_cpy);
     let (_, body) = resp_cpy.into_parts();

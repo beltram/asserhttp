@@ -17,13 +17,13 @@ impl StatusAccessor for AsyncReqwestResponse {
 
 impl HeaderAccessor for ReqwestResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().keys()
-            .map(|k| k.to_string())
-            .collect::<Vec<_>>()
+        self.headers().keys().map(|k| k.to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        let value = self.headers().get(key)
+        let value = self
+            .headers()
+            .get(key)
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -33,13 +33,13 @@ impl HeaderAccessor for ReqwestResponse {
 
 impl HeaderAccessor for AsyncReqwestResponse {
     fn get_keys(&self) -> Vec<String> {
-        self.headers().keys()
-            .map(|k| k.to_string())
-            .collect::<Vec<_>>()
+        self.headers().keys().map(|k| k.to_string()).collect::<Vec<_>>()
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        let value = self.headers().get(key)
+        let value = self
+            .headers()
+            .get(key)
             .and_then(|v| v.to_str().ok())
             .map(|v| v.to_string())
             .unwrap();
@@ -50,9 +50,7 @@ impl HeaderAccessor for AsyncReqwestResponse {
 impl BodyAccessor for ReqwestResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         let mut buf = vec![];
-        self.copy_to(&mut buf)
-            .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+        self.copy_to(&mut buf).map(|_| buf).map_err(anyhow::Error::msg)
     }
 }
 

@@ -312,51 +312,55 @@
 //! ```
 
 pub use {
-    body::AsserhttpBody,
-    header::AsserhttpHeader,
+    accessor::AllAccessors, body::AsserhttpBody, header::AsserhttpHeader, http_types::headers, http_types::StatusCode as Status,
     status::AsserhttpStatus,
-    http_types::StatusCode as Status,
-    http_types::headers as headers,
-    accessor::AllAccessors,
 };
 
-#[cfg(feature = "surf")]
-mod assert_surf;
+#[cfg(feature = "actix")]
+mod assert_actix;
+#[cfg(feature = "actix-web-client")]
+mod assert_awc;
+#[cfg(feature = "axum")]
+mod assert_axum;
+#[cfg(feature = "hyper")]
+mod assert_hyper;
 #[cfg(feature = "isahc")]
 mod assert_isahc;
 #[cfg(feature = "reqwest")]
 mod assert_reqwest;
-#[cfg(feature = "hyper")]
-mod assert_hyper;
-#[cfg(feature = "axum")]
-mod assert_axum;
-#[cfg(feature = "actix-web-client")]
-mod assert_awc;
-#[cfg(feature = "actix")]
-mod assert_actix;
 #[cfg(feature = "rocket")]
 mod assert_rocket;
+#[cfg(feature = "surf")]
+mod assert_surf;
 #[cfg(feature = "ureq")]
 mod assert_ureq;
 
 mod accessor;
-mod status;
-mod header;
 mod body;
+mod header;
+mod status;
 
 /// For assertions on http response
 pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
 
 impl<T> Asserhttp<T> for T where T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor {}
 
-impl<T, E> Asserhttp<T> for Result<T, E> where
+impl<T, E> Asserhttp<T> for Result<T, E>
+where
     T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor,
-    E: std::fmt::Debug {}
+    E: std::fmt::Debug,
+{
+}
 
 #[macro_export]
 macro_rules! asserhttp_customize {
     ($custom_trait:ident) => {
         impl<T> $custom_trait<T> for T where T: asserhttp::AllAccessors {}
-        impl<T, E> $custom_trait<T> for Result<T, E> where T: asserhttp::AllAccessors, E: std::fmt::Debug {}
+        impl<T, E> $custom_trait<T> for Result<T, E>
+        where
+            T: asserhttp::AllAccessors,
+            E: std::fmt::Debug,
+        {
+        }
     };
 }

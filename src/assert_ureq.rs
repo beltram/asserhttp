@@ -14,16 +14,16 @@ impl HeaderAccessor for UreqResponse {
     }
 
     fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.header(key)
-            .map(|v| vec![v.to_string()])
-            .unwrap_or_default()
+        self.header(key).map(|v| vec![v.to_string()]).unwrap_or_default()
     }
 }
 
 impl BodyAccessor for UreqResponse {
     fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
         use itertools::Itertools as _;
-        let headers = self.headers_names().iter()
+        let headers = self
+            .headers_names()
+            .iter()
             .filter_map(|k| self.header(k).map(|v| (k, v)))
             .map(|(k, v)| format!("{}: {}", k, v))
             .join("\r\n");
@@ -32,10 +32,10 @@ impl BodyAccessor for UreqResponse {
         std::mem::swap(self, &mut resp_cpy);
         let mut buf: Vec<u8> = vec![];
         use std::io::Read as _;
-        resp_cpy.into_reader()
+        resp_cpy
+            .into_reader()
             .read_to_end(&mut buf)
             .map(|_| buf)
             .map_err(anyhow::Error::msg)
     }
 }
-
