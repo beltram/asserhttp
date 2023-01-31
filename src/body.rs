@@ -80,13 +80,9 @@ pub trait AsserhttpBody<T> {
         B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
     {
         self.expect_body_json(|actual: B| {
-            assert_eq!(
-                actual,
-                body,
-                "expected json body '{}' to be equal to '{}' but was not",
-                to_json_string(&actual),
-                to_json_string(&body)
-            );
+            let actual = serde_json::to_value(&actual).unwrap();
+            let expected = serde_json::to_value(&body).unwrap();
+            assert_json_diff::assert_json_eq!(actual, expected);
         })
     }
 
@@ -316,13 +312,6 @@ pub trait AsserhttpBody<T> {
     /// }
     /// ```
     fn expect_body_absent(&mut self) -> &mut T;
-}
-
-fn to_json_string<B>(json: &B) -> String
-where
-    B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
-{
-    serde_json::to_string(json).unwrap_or_else(|_| String::from("Failed serializing actual response body"))
 }
 
 impl<T> AsserhttpBody<T> for T

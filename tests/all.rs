@@ -424,7 +424,8 @@ mod body {
 
     asserhttp_test!(body_json_eq_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json_eq(json!({"a": "b"})));
     asserhttp_test!(body_json_struct_eq_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json_eq(TestBody { a: String::from("b") }));
-    asserhttp_test!(body_json_eq_should_fail_when_not_eq, "body/json/value.json", BodyJson.responses(), "expected json body '{\"a\":\"b\"}' to be equal to '{\"a\":\"c\"}' but was not", .expect_body_json_eq(json!({"a": "c"})));
+
+    asserhttp_test!(body_json_eq_should_fail_when_not_eq, "body/json/value.json", BodyJson.responses(), "json atoms at path \".a\" are not equal:\n    lhs:\n        \"b\"\n    rhs:\n        \"c\"", .expect_body_json_eq(json!({"a": "c"})));
     asserhttp_test!(body_json_eq_should_fail_when_absent, "body/json/absent.json", BodyJsonAbsent.responses(), "expected a json body but no response body was present", .expect_body_json_eq(json!({"a": "b"})));
 
     asserhttp_test!(body_text_should_succeed, "body/text/value.json", BodyText.responses(), .expect_body_text(|b| assert_eq!(b, String::from("abcd"))));
