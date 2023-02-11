@@ -12,6 +12,9 @@ categories = ["development-tools::testing", "api-bindings", "web-programming::ht
 
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
+[build-dependencies]
+tonic-build = "0.8"
+
 [dependencies]
 anyhow = { version = "1.0", default-features = false }
 serde = { version = "1.0", default-features = false }
@@ -31,9 +34,10 @@ itertools = { version = "0.10", optional = true, default-features = false }
 axum = { version = "0.6", features = ["json"], optional = true, default-features = false }
 futures-lite = { version = "1.12", features = ["std"], optional = true, default-features = false }
 assert-json-diff = "2.0"
+tonic = { version = "0.8", optional = true, default-features = false }
 
 [dev-dependencies]
-asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket", "ureq", "axum"] }
+asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket", "ureq", "axum", "tonic"] }
 actix-web = { version = "4.2", features = ["macros"], default-features = false }
 stubr = "0.5"
 serde_json = "1.0"
@@ -44,6 +48,8 @@ rocket = { version = "0.5.0-rc.2", features = ["json"] }
 paste = "1.0"
 tower-http = "0.3"
 tower = { version = "0.4", features = ["util"] }
+tonic = { version = "0.8", features = ["codegen"] }
+prost = "0.11"
 
 [features]
 default = []
@@ -56,6 +62,8 @@ isahc = ["dep:isahc", "futures-lite"]
 reqwest = ["dep:reqwest", "futures-lite"]
 rocket = ["dep:rocket", "futures-lite"]
 surf = ["dep:surf", "futures-lite"]
+tonic = ["dep:tonic", "grpc"]
+grpc = []
 
 [profile.dev]
 # improves compilation performances on macos

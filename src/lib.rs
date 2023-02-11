@@ -335,6 +335,9 @@ mod assert_surf;
 #[cfg(feature = "ureq")]
 mod assert_ureq;
 
+#[cfg(all(feature = "grpc", feature = "tonic"))]
+pub mod grpc;
+
 mod accessor;
 mod body;
 mod header;
