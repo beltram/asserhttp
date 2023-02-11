@@ -112,3 +112,20 @@ pub trait MyHttpDsl<T>: asserhttp::Asserhttp<T> {
     fn has_body(&mut self) -> &mut T { self.expect_body_present() }
 }
 ```
+
+## gRPC
+
+Asserting gRPC is also supported with a [tonic](https://github.com/hyperium/tonic) client. Simply turn on the `tonic` 
+feature and use it like this:
+
+```rust
+use asserhttp::grpc::*;
+
+#[tokio::main]
+async fn main() {
+    // success
+    client.call_svc(tonic::Request::new(Payload)).await.expect_status_ok().expect_body(Payload);
+    // error
+    client.call_svc(tonic::Request::new(Payload)).await.expect_status_error(Code::NotFound);
+}
+```

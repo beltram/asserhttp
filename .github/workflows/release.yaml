@@ -23,6 +23,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: Swatinem/rust-cache@v2
       - run: cargo check
 
@@ -31,6 +35,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: Swatinem/rust-cache@v2
       - run: cargo build --verbose
       - run: cargo clippy --tests -- -D warnings
@@ -41,6 +49,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@nextest
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: Swatinem/rust-cache@v2
       - run: cargo nextest run --verbose
       - run: cargo test --doc
@@ -51,6 +63,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@stable
       - uses: taiki-e/install-action@cargo-hack
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - uses: Swatinem/rust-cache@v2
       - name: cargo/hack (verify features compile in isolation)
         run: cargo hack check --each-feature --no-dev-deps

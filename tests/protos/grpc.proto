@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package grpc;
+
+service Grpc {
+  rpc statusOk (Empty) returns (Empty) {}
+  rpc statusCancelled (Empty) returns (Empty) {}
+  rpc statusUnknown (Empty) returns (Empty) {}
+  rpc statusDeadlineExceeded (Empty) returns (Empty) {}
+  rpc statusNotFound (Empty) returns (Empty) {}
+  rpc statusAlreadyExists (Empty) returns (Empty) {}
+  rpc statusPermissionDenied (Empty) returns (Empty) {}
+  rpc statusResourceExhausted (Empty) returns (Empty) {}
+  rpc statusFailedPrecondition (Empty) returns (Empty) {}
+  rpc statusAborted (Empty) returns (Empty) {}
+  rpc statusOutOfRange (Empty) returns (Empty) {}
+  rpc statusUnimplemented (Empty) returns (Empty) {}
+  rpc statusInternal (Empty) returns (Empty) {}
+  rpc statusUnavailable (Empty) returns (Empty) {}
+  rpc statusDataLoss (Empty) returns (Empty) {}
+  rpc statusUnauthenticated (Empty) returns (Empty) {}
+  rpc body (Empty) returns (Simple) {}
+}
+
+message Empty {}
+
+message Simple {
+  string string = 14;
+}
