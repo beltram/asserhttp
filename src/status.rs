@@ -2,44 +2,6 @@ use std::str::FromStr;
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
-    /// DEPRECATED
-    /// Expects response status to be equal
-    /// * `status` - expected status
-    ///
-    /// # Example
-    /// ```no_run
-    /// # use ureq::OrAnyStatus;
-    /// use asserhttp::*;
-    ///
-    /// #[tokio::main]
-    /// async fn main() {
-    ///     reqwest::blocking::get("http://localhost").expect_status_eq(200);
-    ///     reqwest::blocking::get("http://localhost").expect_status_eq(Status::Ok);
-    ///     reqwest::get("http://localhost").await.expect_status_eq(200);
-    ///     reqwest::get("http://localhost").await.expect_status_eq(Status::Ok);
-    ///
-    ///     isahc::get("http://localhost").expect_status_eq(200);
-    ///     isahc::get("http://localhost").expect_status_eq(Status::Ok);
-    ///     isahc::get_async("http://localhost").await.expect_status_eq(200);
-    ///     isahc::get_async("http://localhost").await.expect_status_eq(Status::Ok);
-    ///
-    ///     surf::get("http://localhost").await.expect_status_eq(200);
-    ///     surf::get("http://localhost").await.expect_status_eq(Status::Ok);
-    ///
-    ///     ureq::get("http://localhost").call().or_any_status().expect_status_eq(200);
-    ///     ureq::get("http://localhost").call().or_any_status().expect_status_eq(Status::Ok);
-    ///
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(200);
-    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_status_eq(Status::Ok);
-    ///
-    ///     awc::Client::default().get("http://localhost").send().await.expect_status_eq(200);
-    ///     awc::Client::default().get("http://localhost").send().await.expect_status_eq(Status::Ok);
-    /// }
-    /// ```
-    #[deprecated(since = "0.5.0", note = "Use 'expect_status' instead with same signature")]
-    fn expect_status_eq(&mut self, status: impl Into<AnyStatus>) -> &mut T {
-        self.expect_status(status)
-    }
 
     /// Expects response status to be equal
     /// * `status` - expected status or asserhttp::Status or closure
