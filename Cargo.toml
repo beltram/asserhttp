@@ -46,7 +46,7 @@ tokio = { version = "1.19", features = ["macros"] }
 pin-project = "1.0"
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 paste = "1.0"
-tower-http = "0.3"
+tower-http = "0.4"
 tower = { version = "0.4", features = ["util"] }
 tonic = { version = "0.8", features = ["codegen"] }
 prost = "0.11"
