@@ -2,7 +2,6 @@ use std::str::FromStr;
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
-
     /// Expects response status to be equal
     /// * `status` - expected status or asserhttp::Status or closure
     ///
