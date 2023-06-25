@@ -112,7 +112,7 @@ async fn grpc_server() -> GrpcInstance {
         .add_service(grpc_server::GrpcServer::new(GrpcService::default()))
         .serve_with_incoming_shutdown(incoming, rx.map(drop));
 
-    tokio::spawn(async move { server.await });
+    tokio::spawn(server);
     tokio::time::sleep(core::time::Duration::from_millis(100)).await;
     GrpcInstance(format!("http://{uri}/"), Some(tx))
 }
