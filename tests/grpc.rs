@@ -109,7 +109,7 @@ async fn grpc_server() -> GrpcInstance {
     let incoming = TcpIncoming::from_listener(listener, true, None).unwrap();
 
     let server = tonic::transport::Server::builder()
-        .add_service(grpc_server::GrpcServer::new(GrpcService::default()))
+        .add_service(grpc_server::GrpcServer::new(GrpcService))
         .serve_with_incoming_shutdown(incoming, rx.map(drop));
 
     tokio::spawn(server);
