@@ -13,7 +13,7 @@ categories = ["development-tools::testing", "api-bindings", "web-programming::ht
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
 [build-dependencies]
-tonic-build = "0.9"
+tonic-build = "0.10"
 
 [dependencies]
 anyhow = { version = "1.0", default-features = false }
