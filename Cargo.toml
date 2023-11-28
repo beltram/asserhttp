@@ -31,7 +31,7 @@ actix-web = { version = "4.2", optional = true, default-features = false }
 rocket = { version = "0.5.0-rc.2", optional = true, default-features = false }
 ureq = { version = "2.5", optional = true, default-features = false }
 itertools = { version = "0.12", optional = true, default-features = false }
-axum = { version = "0.6", features = ["json"], optional = true, default-features = false }
+axum = { version = "0.7", features = ["json"], optional = true, default-features = false }
 futures-lite = { version = "2.0", features = ["std"], optional = true, default-features = false }
 assert-json-diff = "2.0"
 tonic = { version = "0.9", optional = true, default-features = false }
