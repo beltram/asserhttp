@@ -1,4 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
+use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 
 type UreqResponse = ureq::Response;
 
@@ -9,17 +11,17 @@ impl StatusAccessor for UreqResponse {
 }
 
 impl HeaderAccessor for UreqResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers_names()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers_names().into_iter().map(|k| k.into()).collect()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.header(key).map(|v| vec![v.to_string()]).unwrap_or_default()
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
+        self.header(key.as_ref()).map(|v| vec![v.to_string()]).unwrap_or_default()
     }
 }
 
 impl BodyAccessor for UreqResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         use itertools::Itertools as _;
         let headers = self
             .headers_names()
@@ -32,10 +34,10 @@ impl BodyAccessor for UreqResponse {
         std::mem::swap(self, &mut resp_cpy);
         let mut buf: Vec<u8> = vec![];
         use std::io::Read as _;
-        resp_cpy
-            .into_reader()
-            .read_to_end(&mut buf)
-            .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+        resp_cpy.into_reader().read_to_end(&mut buf).map_err(AsserhttpError::from)?;
+        if buf.is_empty() {
+            return Err(AsserhttpError::BodyAbsent);
+        }
+        Ok(buf)
     }
 }

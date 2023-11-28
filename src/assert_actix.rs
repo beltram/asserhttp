@@ -1,4 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
+use crate::{header::key::HeaderKey, AsserhttpError, AsserhttpResult};
 
 type ActixResponse = actix_web::HttpResponse<actix_http::body::BoxBody>;
 type ActixServiceResponse = actix_web::dev::ServiceResponse;
@@ -16,14 +17,14 @@ impl StatusAccessor for ActixServiceResponse {
 }
 
 impl HeaderAccessor for ActixResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().iter().map(|(k, _)| k.as_str().to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().iter().map(|(k, _)| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         let value = self
             .headers()
-            .get(key)
+            .get(key.as_ref())
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -32,14 +33,14 @@ impl HeaderAccessor for ActixResponse {
 }
 
 impl HeaderAccessor for ActixServiceResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().iter().map(|(k, _)| k.as_str().to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().iter().map(|(k, _)| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         let value = self
             .headers()
-            .get(key)
+            .get(key.as_ref())
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -48,18 +49,18 @@ impl HeaderAccessor for ActixServiceResponse {
 }
 
 impl BodyAccessor for ActixResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         body_bytes(self)
     }
 }
 
 impl BodyAccessor for ActixServiceResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         body_bytes(self.response_mut())
     }
 }
 
-fn body_bytes(original: &mut ActixResponse) -> anyhow::Result<Vec<u8>> {
+fn body_bytes(original: &mut ActixResponse) -> AsserhttpResult<Vec<u8>> {
     let mut resp_cpy = ActixResponse::build(original.status());
     original.headers().iter().for_each(|h| {
         resp_cpy.insert_header(h);
@@ -68,8 +69,12 @@ fn body_bytes(original: &mut ActixResponse) -> anyhow::Result<Vec<u8>> {
     std::mem::swap(original, &mut resp_cpy);
     let (_, body) = resp_cpy.into_parts();
     use actix_http::body::MessageBody as _;
-    body.try_into_bytes()
+    let buf = body
+        .try_into_bytes()
         .map(|b| b.to_vec())
-        .map_err(|_| String::from("Error"))
-        .map_err(anyhow::Error::msg)
+        .map_err(|_| AsserhttpError::HttpError("Could not read actix response body".to_string()))?;
+    if buf.is_empty() {
+        return Err(AsserhttpError::BodyAbsent);
+    }
+    Ok(buf)
 }

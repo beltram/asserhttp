@@ -42,4 +42,24 @@ macro_rules! ureq_test {
             }
         }
     };
+    ($fn_name:ident, $stub:literal, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<ureq_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                use ureq::OrAnyStatus;
+                $(assert_eq!(ureq::get(&stubr.uri()).call().or_any_status()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<ureq_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                use ureq::OrAnyStatus;
+                $(assert_eq!(ureq::get(&stubr.uri()).call().or_any_status().unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

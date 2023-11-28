@@ -74,4 +74,40 @@ macro_rules! reqwest_test {
             }
         }
     };
+    ($fn_name:ident, $stub:literal, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            // blocking
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<reqwest_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(reqwest::blocking::get(stubr.uri()).unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+
+            }
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<reqwest_blocking_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(reqwest::blocking::get(stubr.uri())$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+
+            // async
+            #[stubr::mock($stub)]
+            #[tokio::test]
+            async fn [<reqwest_async_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(reqwest::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+            #[stubr::mock($stub)]
+            #[tokio::test]
+            async fn [<reqwest_async_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(reqwest::get(stubr.uri()).await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

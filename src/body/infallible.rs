@@ -1,13 +1,6 @@
-use std::{fmt::Debug, str::FromStr};
-
-use regex::Regex;
 use serde::{de::DeserializeOwned, Serialize};
 
-const EMPTY_BODY_JSON_MSG: &str = "expected a json body but no response body was present";
-const EMPTY_BODY_TEXT_MSG: &str = "expected a text body but no response body was present";
-const EMPTY_BODY_BYTES_MSG: &str = "expected a response body but no response body was present";
-const EXPECTED_BODY_PRESENT_MSG: &str = "expected a response body but no response body was present";
-const EXPECTED_BODY_ABSENT_MSG: &str = "expected no response body but a response body was present";
+use crate::{accessor::BodyAccessor, body::fallible::FallibleAsserhttpBody};
 
 /// For assertions on http response body
 pub trait AsserhttpBody<T> {
@@ -46,7 +39,7 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
         F: FnOnce(B);
 
     /// Expects response body to be json and equal
@@ -77,14 +70,7 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
-    {
-        self.expect_body_json(|actual: B| {
-            let actual = serde_json::to_value(&actual).unwrap();
-            let expected = serde_json::to_value(&body).unwrap();
-            assert_json_diff::assert_json_eq!(actual, expected);
-        })
-    }
+        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin + Sized;
 
     /// Allows verifying text body in a closure
     /// * `asserter` - closure to verify text body
@@ -142,16 +128,7 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T
     where
-        B: Into<String>,
-    {
-        self.expect_body_text(|actual| {
-            let expected = body.into();
-            assert_eq!(
-                actual, expected,
-                "expected text body '{actual}' to be equal to '{expected}' but was not"
-            );
-        })
-    }
+        B: Into<String>;
 
     /// Expects response body to be text and to match provided regex
     /// * `regex` - must match text response body
@@ -180,16 +157,7 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T
     where
-        R: Into<String>,
-    {
-        let regex = Regex::from_str(regex.into().as_str()).expect("'{}' is not a valid regex");
-        self.expect_body_text(|actual| {
-            assert!(
-                regex.is_match(actual.as_str()),
-                "expected text body '{actual}' to match regex '{regex}' but did not"
-            );
-        })
-    }
+        R: TryInto<regex::Regex, Error = regex::Error>;
 
     /// Allows verifying response body bytes in a closure
     /// * `asserter` - closure to verify response body as bytes
@@ -255,11 +223,7 @@ pub trait AsserhttpBody<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_body_bytes_eq(b"abcd");
     /// }
     /// ```
-    fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
-        self.expect_body_bytes(|actual| {
-            assert_eq!(actual, body, "expected body '{actual:?}' to be equal to '{body:?}' but was not");
-        })
-    }
+    fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T;
 
     /// Expects a response body to be present and not empty
     ///
@@ -316,81 +280,125 @@ pub trait AsserhttpBody<T> {
 
 impl<T> AsserhttpBody<T> for T
 where
-    T: super::accessor::BodyAccessor,
+    T: BodyAccessor,
 {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
         F: FnOnce(B),
     {
-        if let Ok(actual) = self.get_json() {
-            asserter(actual)
-        } else {
-            std::panic::panic_any(EMPTY_BODY_JSON_MSG)
+        #[allow(clippy::blocks_in_conditions)]
+        match self.try_expect_body_json(|j| {
+            asserter(j);
+            Ok(())
+        }) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
         }
-        self
+    }
+
+    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T
+    where
+        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+    {
+        match self.try_expect_body_json_eq(body) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
+        }
     }
 
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut T
     where
         F: FnOnce(String),
     {
-        if let Ok(actual) = self.get_text() {
-            if !actual.is_empty() {
-                asserter(actual)
-            } else {
-                std::panic::panic_any(EMPTY_BODY_TEXT_MSG)
-            }
-        } else {
-            std::panic::panic_any(EMPTY_BODY_TEXT_MSG)
+        #[allow(clippy::blocks_in_conditions)]
+        match self.try_expect_body_text(|t| {
+            asserter(t);
+            Ok(())
+        }) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
         }
-        self
+    }
+
+    fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T
+    where
+        B: Into<String>,
+    {
+        match self.try_expect_body_text_eq(body) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
+        }
+    }
+
+    fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T
+    where
+        R: TryInto<regex::Regex, Error = regex::Error>,
+    {
+        let r: regex::Regex = match regex.try_into() {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
+        };
+        match self.try_expect_body_text_matches(r.to_string()) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
+        }
     }
 
     fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T
     where
         F: FnOnce(&[u8]),
     {
-        if let Ok(actual) = self.get_bytes() {
-            if !actual.is_empty() {
-                asserter(actual.as_slice())
-            } else {
-                std::panic::panic_any(EMPTY_BODY_BYTES_MSG)
-            }
-        } else {
-            std::panic::panic_any(EMPTY_BODY_BYTES_MSG)
+        #[allow(clippy::blocks_in_conditions)]
+        match self.try_expect_body_bytes(|b| {
+            asserter(b);
+            Ok(())
+        }) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
         }
-        self
+    }
+
+    fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
+        match self.try_expect_body_bytes_eq(body) {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
+        }
     }
 
     fn expect_body_present(&mut self) -> &mut T {
-        if let Ok(actual) = self.get_bytes() {
-            assert!(!actual.is_empty(), "{}", EXPECTED_BODY_PRESENT_MSG);
-        } else {
-            std::panic::panic_any(EXPECTED_BODY_PRESENT_MSG)
+        match self.try_expect_body_present() {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
         }
-        self
     }
 
     fn expect_body_absent(&mut self) -> &mut T {
-        if let Ok(actual) = self.get_bytes() {
-            assert!(actual.is_empty(), "{}", EXPECTED_BODY_ABSENT_MSG);
+        match self.try_expect_body_absent() {
+            Err(e) => panic!("{e}"),
+            Ok(r) => r,
         }
-        self
     }
 }
 
 impl<T, E> AsserhttpBody<T> for Result<T, E>
 where
-    T: super::accessor::BodyAccessor,
-    E: Debug,
+    T: BodyAccessor,
+    E: std::fmt::Debug,
 {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + Debug + Unpin,
+        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
         F: FnOnce(B),
     {
         self.as_mut().unwrap().expect_body_json(asserter)
+    }
+
+    fn expect_body_json_eq<B>(&mut self, body: B) -> &mut T
+    where
+        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+    {
+        self.as_mut().unwrap().expect_body_json_eq(body)
     }
 
     fn expect_body_text<F>(&mut self, asserter: F) -> &mut T
@@ -400,11 +408,29 @@ where
         self.as_mut().unwrap().expect_body_text(asserter)
     }
 
+    fn expect_body_text_eq<B>(&mut self, body: B) -> &mut T
+    where
+        B: Into<String>,
+    {
+        self.as_mut().unwrap().expect_body_text_eq(body)
+    }
+
+    fn expect_body_text_matches<R>(&mut self, regex: R) -> &mut T
+    where
+        R: TryInto<regex::Regex, Error = regex::Error>,
+    {
+        self.as_mut().unwrap().expect_body_text_matches(regex)
+    }
+
     fn expect_body_bytes<F>(&mut self, asserter: F) -> &mut T
     where
         F: FnOnce(&[u8]),
     {
         self.as_mut().unwrap().expect_body_bytes(asserter)
+    }
+
+    fn expect_body_bytes_eq(&mut self, body: &[u8]) -> &mut T {
+        self.as_mut().unwrap().expect_body_bytes_eq(body)
     }
 
     fn expect_body_present(&mut self) -> &mut T {
