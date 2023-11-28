@@ -74,4 +74,39 @@ macro_rules! isahc_test {
             }
         }
     };
+    ($fn_name:ident, $stub:literal, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            // blocking
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<isahc_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(isahc::get(stubr.uri()).unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+            #[stubr::mock($stub)]
+            #[test]
+            fn [<isahc_blocking_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(isahc::get(stubr.uri())$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+
+            // async
+            #[stubr::mock($stub)]
+            #[tokio::test]
+            async fn [<isahc_async_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(isahc::get_async(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+            #[stubr::mock($stub)]
+            #[tokio::test]
+            async fn [<isahc_async_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(isahc::get_async(stubr.uri()).await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

@@ -38,4 +38,22 @@ macro_rules! awc_test {
             }
         }
     };
+    ($fn_name:ident, $stub:literal, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            #[stubr::mock($stub)]
+            #[actix_web::test]
+            async fn [<awc_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(awc::Client::default().get(stubr.uri()).send().await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+            #[stubr::mock($stub)]
+            #[actix_web::test]
+            async fn [<awc_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(awc::Client::default().get(stubr.uri()).send().await.unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

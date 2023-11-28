@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use crate::{accessor::StatusAccessor, status::fallible::FallibleAnyStatus};
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
@@ -531,17 +531,17 @@ pub trait AsserhttpStatus<T> {
 
 impl<T> AsserhttpStatus<T> for T
 where
-    T: super::accessor::StatusAccessor,
+    T: StatusAccessor,
 {
     fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
-        status.into().0(self.get_status());
+        status.into()(self.get_status());
         self
     }
 }
 
 impl<T, E> AsserhttpStatus<T> for Result<T, E>
 where
-    T: super::accessor::StatusAccessor,
+    T: StatusAccessor,
     E: std::fmt::Debug,
 {
     fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
@@ -553,22 +553,13 @@ pub struct AnyStatus(Box<dyn Fn(u16)>);
 
 impl From<u16> for AnyStatus {
     fn from(expected: u16) -> Self {
-        Self(Box::new(move |status| {
-            assert_eq!(expected, status, "expected status to be '{expected}' but was '{status}'");
-        }))
+        FallibleAnyStatus::from(expected).into()
     }
 }
 
 impl From<crate::Status> for AnyStatus {
-    fn from(value: crate::Status) -> Self {
-        Self::from(u16::from_str(&value.to_string()).unwrap())
-    }
-}
-
-#[cfg(feature = "rocket")]
-impl From<rocket::http::Status> for AnyStatus {
-    fn from(value: rocket::http::Status) -> Self {
-        Self::from(value.code)
+    fn from(expected: crate::Status) -> Self {
+        FallibleAnyStatus::from(expected).into()
     }
 }
 
@@ -577,6 +568,35 @@ where
     F: Fn(u16),
 {
     fn from(fun: F) -> Self {
-        Self(Box::new(fun))
+        FallibleAnyStatus::from(move |s| {
+            fun(s);
+            Ok(())
+        })
+        .into()
+    }
+}
+
+#[cfg(feature = "rocket")]
+impl From<rocket::http::Status> for AnyStatus {
+    fn from(expected: rocket::http::Status) -> Self {
+        FallibleAnyStatus::from(expected).into()
+    }
+}
+
+impl std::ops::Deref for AnyStatus {
+    type Target = dyn Fn(u16);
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl From<FallibleAnyStatus> for AnyStatus {
+    fn from(asserter: FallibleAnyStatus) -> Self {
+        Self(Box::new(move |status| {
+            if let Err(e) = asserter(status) {
+                panic!("{e}")
+            }
+        }))
     }
 }

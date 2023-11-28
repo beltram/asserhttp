@@ -310,11 +310,36 @@
 //!     // and many more !
 //! }
 //! ```
+//!
+//! # Errors
+//!
+//! In case you would want to use `asserhttp` in a non-test context (be aware though that it has not been written with performance in mind)
+//! you likely do not want it to panic. In that case you can use the (non-default) `fallible` feature which will bring in some `try_*` variants
+//! of the aforementioned methods, all of them yielding an [AsserhttpError] instead of panicking
+//!
+//! ```no_run
+//! # use isahc;
+//! # use serde::Deserialize;
+//! # use serde_json::{json, Value};
+//! use asserhttp::*;
+//!
+//! #[tokio::test]
+//! async fn my_test() {
+//!     assert!(matches!(AsserhttpError::StatusMismatch { actual: 200, expected: 201 }, isahc::get_async("http://localhost/api/any").await.try_expect_status(201)));
+//! }
+//! ```
 
 pub use {
-    accessor::AllAccessors, body::AsserhttpBody, header::AsserhttpHeader, http_types::headers, http_types::StatusCode as Status,
-    status::AsserhttpStatus,
+    accessor::AllAccessors,
+    body::infallible::AsserhttpBody,
+    error::{AsserhttpError, AsserhttpResult},
+    header::{infallible::AsserhttpHeader, key::HeaderKey, value::HeaderValue, values::HeaderValues},
+    http_types::{headers, StatusCode as Status},
+    status::infallible::AsserhttpStatus,
 };
+
+#[cfg(feature = "fallible")]
+pub use {body::fallible::FallibleAsserhttpBody, header::fallible::FallibleAsserhttpHeader, status::fallible::FallibleAsserhttpStatus};
 
 #[cfg(feature = "actix")]
 mod assert_actix;
@@ -334,6 +359,7 @@ mod assert_rocket;
 mod assert_surf;
 #[cfg(feature = "ureq")]
 mod assert_ureq;
+mod error;
 
 #[cfg(all(feature = "grpc", feature = "tonic"))]
 pub mod grpc;
@@ -344,7 +370,19 @@ mod header;
 mod status;
 
 /// For assertions on http response
+#[cfg(not(feature = "fallible"))]
 pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
+
+#[cfg(feature = "fallible")]
+pub trait Asserhttp<T>:
+    AsserhttpStatus<T>
+    + FallibleAsserhttpStatus<T>
+    + AsserhttpHeader<T>
+    + FallibleAsserhttpHeader<T>
+    + AsserhttpBody<T>
+    + FallibleAsserhttpBody<T>
+{
+}
 
 impl<T> Asserhttp<T> for T where T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor {}
 

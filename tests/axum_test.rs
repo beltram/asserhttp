@@ -28,4 +28,17 @@ macro_rules! axum_test {
             }
         }
     };
+    ($fn_name:ident, $init:expr, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            #[tokio::test]
+            async fn [<axum_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                use tower::ServiceExt as _;
+                let app = axum::Router::new().route("/", axum::routing::get( || async move { $init }));
+                let req = axum::http::Request::builder().method(axum::http::Method::GET).uri("/").body(axum::body::Body::empty()).unwrap();
+                $(assert_eq!(app.oneshot(req).await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }
