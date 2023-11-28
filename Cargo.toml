@@ -35,6 +35,7 @@ axum = { version = "0.6", features = ["json"], optional = true, default-features
 futures-lite = { version = "2.0", features = ["std"], optional = true, default-features = false }
 assert-json-diff = "2.0"
 tonic = { version = "0.9", optional = true, default-features = false }
+thiserror = { version = "1", optional = true }
 
 [dev-dependencies]
 asserhttp = { path = ".", features = ["surf", "isahc", "reqwest", "hyper", "actix", "actix-web-client", "rocket", "ureq", "axum", "tonic"] }
@@ -52,7 +53,8 @@ tonic = { version = "0.9", features = ["codegen"] }
 prost = "0.11"
 
 [features]
-default = []
+default = ["fallible"]
+fallible = ["thiserror"]
 actix = ["actix-http", "actix-web"]
 actix-web-client = ["awc", "actix-http/ws", "futures-lite"]
 ureq = ["dep:ureq", "itertools/use_alloc"]

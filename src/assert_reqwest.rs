@@ -1,4 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
+use crate::header::key::HeaderKey;
 
 type ReqwestResponse = reqwest::blocking::Response;
 type AsyncReqwestResponse = reqwest::Response;
@@ -16,14 +17,14 @@ impl StatusAccessor for AsyncReqwestResponse {
 }
 
 impl HeaderAccessor for ReqwestResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().keys().map(|k| k.to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().keys().map(|k| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         let value = self
             .headers()
-            .get(key)
+            .get(key.as_ref())
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -32,14 +33,14 @@ impl HeaderAccessor for ReqwestResponse {
 }
 
 impl HeaderAccessor for AsyncReqwestResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().keys().map(|k| k.to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().keys().map(|k| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         let value = self
             .headers()
-            .get(key)
+            .get(key.as_ref())
             .and_then(|v| v.to_str().ok())
             .map(|v| v.to_string())
             .unwrap();

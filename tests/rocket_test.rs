@@ -102,4 +102,29 @@ macro_rules! rocket_test {
             }
         }
     };
+    ($fn_name:ident, $init:expr, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            // blocking
+            #[test]
+            fn [<rocket_blocking_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                #[rocket::get("/")]
+                fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
+                let client = rocket::local::blocking::Client::tracked(rocket::build().mount("/", rocket::routes![endpoint])).unwrap();
+                $(assert_eq!(client.get("/").dispatch()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+
+            // async
+            #[rocket::async_test]
+            async fn [<rocket_async_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                #[rocket::get("/")]
+                fn endpoint() -> $crate::Resp { $crate::Resp::from($init) }
+                let client = rocket::local::asynchronous::Client::tracked(rocket::build().mount("/", rocket::routes![endpoint])).await.unwrap();
+                $(assert_eq!(client.get("/").dispatch().await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

@@ -1,6 +1,7 @@
-use http_types::headers::HeaderName;
-
-use super::accessor;
+use crate::{
+    accessor::HeaderAccessor,
+    header::{key::HeaderKey, value::HeaderValue, values::HeaderValues},
+};
 
 /// For assertions on http response headers
 pub trait AsserhttpHeader<T> {
@@ -240,56 +241,44 @@ pub trait AsserhttpHeader<T> {
 
 impl<T> AsserhttpHeader<T> for T
 where
-    T: accessor::HeaderAccessor,
+    T: HeaderAccessor,
 {
     fn expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<HeaderValueAsserter>) -> &mut T {
-        let key = key.into().0;
-        assert_header_key(self.get_keys(), key.as_str());
-        let actual_values = self.get_values(key.as_str());
+        let key = key.into();
+        key.assert_contained(self.get_keys());
+        let actual_values = self.get_values(&key);
+        let values_count = actual_values.len();
         assert_eq!(
-            actual_values.len(),
-            1,
-            "expected header '{}' to be single valued. Had '{}' values '{:?}'. Use 'expect_headers' instead.",
-            key,
-            actual_values.len(),
-            actual_values
+            values_count, 1,
+            "expected header '{key}' to be single valued. Had '{values_count}' values '{actual_values:?}'. Use 'expect_headers' instead.",
         );
-        value.into().0(key, actual_values.first().unwrap().to_string());
+        let actual_value = actual_values.first().unwrap().into();
+        value.into()(key, actual_value);
         self
     }
 
     fn expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<HeaderValuesAsserter>) -> &mut T {
-        let key = key.into().0;
-        assert_header_key(self.get_keys(), key.as_str());
-        values.into().0(key.to_string(), self.get_values(key.as_str()));
+        let key = key.into();
+        key.assert_contained(self.get_keys());
+        let actual_values = self.get_values(&key);
+        values.into()(key, actual_values);
         self
     }
 
     fn expect_header_present(&mut self, key: impl Into<HeaderKey>) -> &mut T {
-        assert_header_key(self.get_keys(), key.into().0.as_str());
+        key.into().assert_contained(self.get_keys());
         self
     }
 
     fn expect_header_absent(&mut self, key: impl Into<HeaderKey>) -> &mut T {
-        let key = key.into().0;
-        assert!(
-            !self.get_keys().into_iter().any(|k| k.eq_ignore_ascii_case(key.as_str())),
-            "expected no header named '{key}' but one found"
-        );
+        key.into().assert_absent(self.get_keys());
         self
     }
 }
 
-pub fn assert_header_key(actual_keys: Vec<String>, expected: &str) {
-    assert!(
-        actual_keys.into_iter().any(|k| k.eq_ignore_ascii_case(expected)),
-        "expected one header named '{expected}' but none found"
-    );
-}
-
 impl<T, E> AsserhttpHeader<T> for Result<T, E>
 where
-    T: accessor::HeaderAccessor,
+    T: HeaderAccessor,
     E: std::fmt::Debug,
 {
     fn expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<HeaderValueAsserter>) -> &mut T {
@@ -309,26 +298,32 @@ where
     }
 }
 
-pub struct HeaderValueAsserter(Box<dyn Fn(String, String)>);
+pub struct HeaderValueAsserter(Box<dyn Fn(HeaderKey, HeaderValue)>);
 
 impl<'a> From<&'a String> for HeaderValueAsserter {
     fn from(expected: &'a String) -> Self {
-        Self::from(expected.as_str())
+        expected.into()
     }
 }
 
 impl<'a> From<&'a str> for HeaderValueAsserter {
     fn from(expected: &'a str) -> Self {
-        Self::from(expected.to_string())
+        expected.into()
     }
 }
 
 impl From<String> for HeaderValueAsserter {
     fn from(expected: String) -> Self {
-        Self(Box::new(move |key, value| {
+        expected.into()
+    }
+}
+
+impl From<HeaderValue> for HeaderValueAsserter {
+    fn from(expected: HeaderValue) -> Self {
+        Self(Box::new(move |key, actual| {
             assert_eq!(
-                value, expected,
-                "expected header '{key}' to be equal to '{expected}' but was '{value}'"
+                actual, expected,
+                "expected header '{key}' to be equal to '{expected}' but was '{actual}'"
             )
         }))
     }
@@ -343,21 +338,34 @@ where
     }
 }
 
-pub struct HeaderValuesAsserter(Box<dyn Fn(String, Vec<String>)>);
+impl std::ops::Deref for HeaderValueAsserter {
+    type Target = dyn Fn(HeaderKey, HeaderValue);
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+pub struct HeaderValuesAsserter(Box<dyn Fn(HeaderKey, HeaderValues)>);
 
 impl<S: AsRef<str>> From<Vec<S>> for HeaderValuesAsserter {
     fn from(expected: Vec<S>) -> Self {
-        let expected = expected.into_iter().map(|i| i.as_ref().to_string()).collect::<Vec<_>>();
-        Self(Box::new(move |key, values| {
+        expected.into()
+    }
+}
+
+impl From<HeaderValues> for HeaderValuesAsserter {
+    fn from(expected: HeaderValues) -> Self {
+        Self(Box::new(move |key, actual_values| {
             assert!(
                 !expected.is_empty(),
                 "no value expected for header '{key}'. Use 'expect_header_present' instead"
             );
-            let same_size = values.len() == expected.len();
-            let all_eq = values.iter().zip(expected.iter()).all(|(a, b)| a == b);
+            let same_size = actual_values.len() == expected.len();
+            let all_eq = actual_values == expected;
             assert!(
                 same_size && all_eq,
-                "expected header '{key}' to contain values '{expected:?}' but contained '{values:?}'"
+                "expected header '{key}' to contain values '{expected:?}' but contained '{actual_values}'"
             );
         }))
     }
@@ -365,13 +373,13 @@ impl<S: AsRef<str>> From<Vec<S>> for HeaderValuesAsserter {
 
 impl<const N: usize, S: AsRef<str>> From<[S; N]> for HeaderValuesAsserter {
     fn from(expected: [S; N]) -> Self {
-        Self::from(Vec::from(expected))
+        expected.into()
     }
 }
 
 impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for HeaderValuesAsserter {
     fn from(expected: &'a [S; N]) -> Self {
-        Self::from(Vec::from_iter(expected.iter()))
+        Vec::from_iter(expected.iter()).into()
     }
 }
 
@@ -380,34 +388,19 @@ where
     F: Fn(Vec<&'static str>),
 {
     fn from(fun: F) -> Self {
-        Self(Box::new(move |_, values: Vec<String>| {
-            fun(values.into_iter().map(|s| Box::leak(Box::new(s)).as_str()).collect::<Vec<_>>())
+        Self(Box::new(move |_, actual_values| {
+            fun(actual_values
+                .iter()
+                .map(|s| Box::leak(Box::new(s.clone())).as_str())
+                .collect::<Vec<_>>())
         }))
     }
 }
 
-pub struct HeaderKey(pub String);
+impl std::ops::Deref for HeaderValuesAsserter {
+    type Target = dyn Fn(HeaderKey, HeaderValues);
 
-impl<'a> From<&'a str> for HeaderKey {
-    fn from(name: &'a str) -> Self {
-        Self::from(name.to_string())
-    }
-}
-
-impl<'a> From<&'a String> for HeaderKey {
-    fn from(name: &'a String) -> Self {
-        Self::from(name.to_string())
-    }
-}
-
-impl From<String> for HeaderKey {
-    fn from(name: String) -> Self {
-        Self(name)
-    }
-}
-
-impl From<HeaderName> for HeaderKey {
-    fn from(name: HeaderName) -> Self {
-        Self(name.as_str().to_string())
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

@@ -49,4 +49,27 @@ macro_rules! actix_test {
             }
         }
     };
+    ($fn_name:ident, $init:expr, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            // unit
+            #[actix_web::test]
+            async fn [<actix_unit_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                use actix_web::{HttpRequest, HttpResponse, test::TestRequest};
+                async fn endpoint(_: HttpRequest) -> HttpResponse { $init }
+                $(assert_eq!(endpoint(TestRequest::get().to_http_request()).await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+
+            // integration
+            #[actix_web::test]
+            async fn [<actix_integration_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                use actix_web::{App, test::{call_service, init_service, TestRequest}, web};
+                let app = App::new().route("/", web::get().to(|| async { $init }));
+                $(assert_eq!(call_service(&init_service(app).await, TestRequest::get().to_request()).await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

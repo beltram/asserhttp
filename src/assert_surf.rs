@@ -1,3 +1,4 @@
+use crate::header::key::HeaderKey;
 use serde::de::DeserializeOwned;
 
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
@@ -11,12 +12,12 @@ impl StatusAccessor for SurfResponse {
 }
 
 impl HeaderAccessor for SurfResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.header_names().map(|k| k.to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.header_names().map(|k| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.header(key)
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
+        self.header(key.as_ref())
             .map(|values| values.into_iter().map(|v| v.to_string()).collect::<Vec<_>>())
             .unwrap_or_default()
     }

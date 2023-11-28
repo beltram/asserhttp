@@ -1,3 +1,4 @@
+use crate::header::{key::HeaderKey, values::HeaderValues};
 use serde::de::DeserializeOwned;
 
 pub trait StatusAccessor {
@@ -5,16 +6,17 @@ pub trait StatusAccessor {
 }
 
 pub trait HeaderAccessor {
-    fn get_keys(&self) -> Vec<String>;
+    fn get_keys(&self) -> Vec<HeaderKey>;
 
-    fn get_raw_values(&self, key: &str) -> Vec<String>;
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String>;
 
-    fn get_values(&self, key: &str) -> Vec<String> {
+    fn get_values(&self, key: &HeaderKey) -> HeaderValues {
         self.get_raw_values(key)
             .iter()
             .flat_map(|v| v.split(',').map(str::trim))
             .map(str::to_string)
             .collect::<Vec<_>>()
+            .into()
     }
 }
 

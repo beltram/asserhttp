@@ -250,6 +250,17 @@ macro_rules! asserhttp_test {
         $($crate::rocket_test!($fn_name, $resp.1, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::axum_test!($fn_name, $resp.2, $panic_msg, $( .$meth($($arg),*) )* );)+
     };
+    ($fn_name:ident, $stub:literal, $resp:expr, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        $($crate::reqwest_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )*);)+
+        $($crate::surf_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::ureq_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::hyper_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::awc_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::isahc_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::actix_test!($fn_name, $resp.0, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::rocket_test!($fn_name, $resp.1, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.2, $error, $( .$meth($($arg),*) )* );)+
+    };
 }
 
 mod smoke {
@@ -268,9 +279,14 @@ mod status {
     asserhttp_test!(status_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(200));
     asserhttp_test!(status_enum_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(Status::Ok));
     asserhttp_test!(status_should_fail, "status/ok.json", StatusOk.responses(), "expected status to be '100' but was '200'", .expect_status(100));
-
     asserhttp_test!(status_closure_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status(|s| assert_eq!(s, 200)));
     asserhttp_test!(status_closure_should_fail, "status/ok.json", StatusOk.responses(), "", .expect_status(|s| assert_eq!(s, 400)));
+
+    asserhttp_test!(fallible_status_should_succeed, "status/ok.json", StatusOk.responses(), .try_expect_status(200).unwrap());
+    asserhttp_test!(fallible_status_enum_should_succeed, "status/ok.json", StatusOk.responses(), .try_expect_status(Status::Ok).unwrap());
+    asserhttp_test!(fallible_status_should_fail, "status/ok.json", StatusOk.responses(), AsserhttpError::StatusMismatch { expected: 100, actual: 200 }, .try_expect_status(100));
+    asserhttp_test!(fallible_status_closure_should_succeed, "status/ok.json", StatusOk.responses(), .try_expect_status(|actual| if actual != 200 { return Err(AsserhttpError::StatusMismatch { expected: 200, actual }) } else { Ok(()) }).unwrap());
+    asserhttp_test!(fallible_status_closure_should_fail, "status/ok.json", StatusOk.responses(), AsserhttpError::StatusMismatch { expected: 400, actual: 200 }, .try_expect_status(|actual| if actual != 400 { return Err(AsserhttpError::StatusMismatch { expected: 400, actual }) } else { Ok(()) }));
 
     asserhttp_test!(status_ok_should_succeed, "status/ok.json", StatusOk.responses(), .expect_status_ok());
     asserhttp_test!(status_ok_should_fail, "status/created.json", StatusCreated.responses(), "expected status to be '200' but was '201'", .expect_status_ok());
@@ -315,18 +331,30 @@ mod status {
 
 mod header {
     use serde_json::json;
-
     use super::Stub::*;
 
     asserhttp_test!(header_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header("x-a", "a"));
     asserhttp_test!(header_const_should_succeed, "header/json.json", HeaderJson.responses(), .expect_header(headers::CONTENT_TYPE, "application/json"));
     asserhttp_test!(header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .expect_header("X-A", "a"));
-    asserhttp_test!(header_should_fail_because_value_case_sensitive, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'A' but was 'a'", .expect_header("x-a", "A"));
+    asserhttp_test!(header_should_fail_because_key_case_sensitive, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'A' but was 'a'", .expect_header("x-a", "A"));
     asserhttp_test!(header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "expected one header named 'x-b' but none found", .expect_header("x-b", "a"));
     asserhttp_test!(header_const_should_fail_when_wrong_key, "header/json.json", HeaderJson.responses(), "expected one header named 'accept' but none found", .expect_header(headers::ACCEPT, "application/json"));
     asserhttp_test!(header_should_fail_when_wrong_value, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'b' but was 'a'", .expect_header("x-a", "b"));
     asserhttp_test!(header_many_should_succeed, "header/many.json", HeaderMany.responses(), .expect_header("x-a", "a").expect_header("x-b", "b"));
     asserhttp_test!(header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.", .expect_header("x-m", "a"));
+
+    asserhttp_test!(fallible_header_should_succeed, "header/one.json", HeaderOne.responses(), .try_expect_header("x-a", "a").unwrap());
+    asserhttp_test!(fallible_header_const_should_succeed, "header/json.json", HeaderOne.responses(), .try_expect_header(headers::CONTENT_TYPE, "application/json").unwrap());
+    asserhttp_test!(fallible_header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .try_expect_header("X-A", "a").unwrap());
+    asserhttp_test!(fallible_header_should_fail_because_key_case_sensitive, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderValueMismatch { key: HeaderKey::from("x-a"), actual: HeaderValue::from("a"), expected: HeaderValue::from("A") }, .try_expect_header("x-a", "A"));
+
+    // asserhttp_test!(fallible_header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "expected one header named 'x-b' but none found", .expect_header("x-b", "a"));
+    // asserhttp_test!(fallible_header_const_should_fail_when_wrong_key, "header/json.json", HeaderJson.responses(), "expected one header named 'accept' but none found", .expect_header(headers::ACCEPT, "application/json"));
+    // asserhttp_test!(fallible_header_should_fail_when_wrong_value, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'b' but was 'a'", .expect_header("x-a", "b"));
+    // asserhttp_test!(fallible_header_many_should_succeed, "header/many.json", HeaderMany.responses(), .expect_header("x-a", "a").expect_header("x-b", "b"));
+    // asserhttp_test!(fallible_header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.", .expect_header("x-m", "a"));
+
+    // asserhttp_test!(fallible_header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderAbsent { key: HeaderKey::from("x-b") }, .try_expect_header("x-b", "a"));
 
     asserhttp_test!(header_closure_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header("x-a", |h| assert_eq!(h, "a")));
     asserhttp_test!(header_closure_should_fail, "header/one.json", HeaderOne.responses(), "", .expect_header("x-a", |h| assert_eq!(h, "b")));

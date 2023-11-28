@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use crate::accessor::StatusAccessor;
 
 /// For assertions on http response status
 pub trait AsserhttpStatus<T> {
@@ -531,17 +531,17 @@ pub trait AsserhttpStatus<T> {
 
 impl<T> AsserhttpStatus<T> for T
 where
-    T: super::accessor::StatusAccessor,
+    T: StatusAccessor,
 {
     fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
-        status.into().0(self.get_status());
+        status.into()(self.get_status());
         self
     }
 }
 
 impl<T, E> AsserhttpStatus<T> for Result<T, E>
 where
-    T: super::accessor::StatusAccessor,
+    T: StatusAccessor,
     E: std::fmt::Debug,
 {
     fn expect_status(&mut self, status: impl Into<AnyStatus>) -> &mut T {
@@ -561,7 +561,16 @@ impl From<u16> for AnyStatus {
 
 impl From<crate::Status> for AnyStatus {
     fn from(value: crate::Status) -> Self {
-        Self::from(u16::from_str(&value.to_string()).unwrap())
+        value.to_string().parse::<u16>().map(Self::from).unwrap()
+    }
+}
+
+impl<F: 'static> From<F> for AnyStatus
+where
+    F: Fn(u16),
+{
+    fn from(fun: F) -> Self {
+        Self(Box::new(fun))
     }
 }
 
@@ -572,11 +581,10 @@ impl From<rocket::http::Status> for AnyStatus {
     }
 }
 
-impl<F: 'static> From<F> for AnyStatus
-where
-    F: Fn(u16),
-{
-    fn from(fun: F) -> Self {
-        Self(Box::new(fun))
+impl std::ops::Deref for AnyStatus {
+    type Target = dyn Fn(u16);
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }

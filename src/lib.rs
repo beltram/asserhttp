@@ -312,8 +312,20 @@
 //! ```
 
 pub use {
-    accessor::AllAccessors, body::AsserhttpBody, header::AsserhttpHeader, http_types::headers, http_types::StatusCode as Status,
-    status::AsserhttpStatus,
+    accessor::AllAccessors, body::AsserhttpBody, header::{
+        infaillible::AsserhttpHeader,
+        key::HeaderKey,
+        value::HeaderValue,
+        values::HeaderValues,
+    }, http_types::headers,
+    http_types::StatusCode as Status, status::infaillible::AsserhttpStatus,
+};
+
+#[cfg(feature = "fallible")]
+pub use {
+    error::{AsserhttpError, AsserhttpResult},
+    header::faillible::FallibleAsserhttpHeader,
+    status::faillible::FaillibleAsserhttpStatus,
 };
 
 #[cfg(feature = "actix")]
@@ -334,6 +346,8 @@ mod assert_rocket;
 mod assert_surf;
 #[cfg(feature = "ureq")]
 mod assert_ureq;
+#[cfg(feature = "fallible")]
+mod error;
 
 #[cfg(all(feature = "grpc", feature = "tonic"))]
 pub mod grpc;
@@ -344,16 +358,21 @@ mod header;
 mod status;
 
 /// For assertions on http response
+#[cfg(not(feature = "fallible"))]
 pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<T> {}
+
+#[cfg(feature = "fallible")]
+pub trait Asserhttp<T>:
+AsserhttpStatus<T> + FaillibleAsserhttpStatus<T> + AsserhttpHeader<T> + FallibleAsserhttpHeader<T> + AsserhttpBody<T>
+{}
 
 impl<T> Asserhttp<T> for T where T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor {}
 
 impl<T, E> Asserhttp<T> for Result<T, E>
-where
-    T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor,
-    E: std::fmt::Debug,
-{
-}
+    where
+        T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor,
+        E: std::fmt::Debug,
+{}
 
 #[macro_export]
 macro_rules! asserhttp_customize {

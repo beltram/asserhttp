@@ -1,4 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
+use crate::header::key::HeaderKey;
 
 type UreqResponse = ureq::Response;
 
@@ -9,12 +10,12 @@ impl StatusAccessor for UreqResponse {
 }
 
 impl HeaderAccessor for UreqResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers_names()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers_names().into_iter().map(|k| k.into()).collect()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.header(key).map(|v| vec![v.to_string()]).unwrap_or_default()
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
+        self.header(key.as_ref()).map(|v| vec![v.to_string()]).unwrap_or_default()
     }
 }
 

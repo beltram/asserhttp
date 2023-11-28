@@ -1,4 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
+use crate::header::key::HeaderKey;
 
 type ActixResponse = actix_web::HttpResponse<actix_http::body::BoxBody>;
 type ActixServiceResponse = actix_web::dev::ServiceResponse;
@@ -16,14 +17,14 @@ impl StatusAccessor for ActixServiceResponse {
 }
 
 impl HeaderAccessor for ActixResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().iter().map(|(k, _)| k.as_str().to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().iter().map(|(k, _)| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         let value = self
             .headers()
-            .get(key)
+            .get(key.as_ref())
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();
@@ -32,14 +33,14 @@ impl HeaderAccessor for ActixResponse {
 }
 
 impl HeaderAccessor for ActixServiceResponse {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().iter().map(|(k, _)| k.as_str().to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().iter().map(|(k, _)| k.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         let value = self
             .headers()
-            .get(key)
+            .get(key.as_ref())
             .and_then(|v| v.to_str().ok())
             .map(str::to_string)
             .unwrap();

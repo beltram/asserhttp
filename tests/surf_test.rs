@@ -38,4 +38,22 @@ macro_rules! surf_test {
             }
         }
     };
+    ($fn_name:ident, $stub:literal, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
+        paste::paste! {
+            #[stubr::mock($stub)]
+            #[tokio::test]
+            async fn [<surf_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(surf::get(stubr.uri()).await.unwrap()$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+            #[stubr::mock($stub)]
+            #[tokio::test]
+            async fn [<surf_result_ $fn_name>]() {
+                #[allow(unused_imports)]
+                use asserhttp::*;
+                $(assert_eq!(surf::get(stubr.uri()).await$( .$meth($($arg),*) )+.unwrap_err(), $error);)+
+            }
+        }
+    };
 }

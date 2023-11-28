@@ -1,4 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
+use crate::header::key::HeaderKey;
 
 type RocketResponse<'a> = rocket::local::blocking::LocalResponse<'a>;
 type AsyncRocketResponse<'a> = rocket::local::asynchronous::LocalResponse<'a>;
@@ -16,21 +17,21 @@ impl<'a> StatusAccessor for AsyncRocketResponse<'a> {
 }
 
 impl<'a> HeaderAccessor for RocketResponse<'a> {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().iter().map(|k| k.name.to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().iter().map(|k| k.name.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
-        self.headers().get(key).map(str::to_string).collect::<Vec<_>>()
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
+        self.headers().get(key.as_ref()).map(str::to_string).collect::<Vec<_>>()
     }
 }
 
 impl<'a> HeaderAccessor for AsyncRocketResponse<'a> {
-    fn get_keys(&self) -> Vec<String> {
-        self.headers().iter().map(|k| k.name.to_string()).collect::<Vec<_>>()
+    fn get_keys(&self) -> Vec<HeaderKey> {
+        self.headers().iter().map(|k| k.name.as_str().into()).collect::<Vec<_>>()
     }
 
-    fn get_raw_values(&self, key: &str) -> Vec<String> {
+    fn get_raw_values(&self, key: &HeaderKey) -> Vec<String> {
         self.headers().get(key.as_ref()).map(str::to_string).collect::<Vec<_>>()
     }
 }
