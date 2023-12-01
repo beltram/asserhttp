@@ -164,19 +164,31 @@ pub struct FallibleHeaderValueAsserter(Box<dyn Fn(HeaderKey, HeaderValue) -> Ass
 
 impl<'a> From<&'a String> for FallibleHeaderValueAsserter {
     fn from(expected: &'a String) -> Self {
-        Self::from(expected.as_str())
+        HeaderValue::from(expected).into()
     }
 }
 
 impl<'a> From<&'a str> for FallibleHeaderValueAsserter {
     fn from(expected: &'a str) -> Self {
-        Self::from(expected.to_string())
+        HeaderValue::from(expected).into()
     }
 }
 
 impl From<String> for FallibleHeaderValueAsserter {
     fn from(expected: String) -> Self {
-        expected.into()
+        HeaderValue::from(expected).into()
+    }
+}
+
+impl<F: 'static> From<F> for FallibleHeaderValueAsserter
+    where
+        F: Fn(&'static str),
+{
+    fn from(fun: F) -> Self {
+        Self(Box::new(move |_, value| {
+            fun(Box::leak(Box::new(value)));
+            Ok(())
+        }))
     }
 }
 
@@ -195,18 +207,6 @@ impl From<HeaderValue> for FallibleHeaderValueAsserter {
     }
 }
 
-impl<F: 'static> From<F> for FallibleHeaderValueAsserter
-    where
-        F: Fn(&'static str),
-{
-    fn from(fun: F) -> Self {
-        Self(Box::new(move |_, value| {
-            fun(Box::leak(Box::new(value)));
-            Ok(())
-        }))
-    }
-}
-
 impl std::ops::Deref for FallibleHeaderValueAsserter {
     type Target = dyn Fn(HeaderKey, HeaderValue) -> AsserhttpResult<()>;
 
@@ -219,33 +219,19 @@ pub struct FallibleHeaderValuesAsserter(Box<dyn Fn(HeaderKey, HeaderValues) -> A
 
 impl<S: AsRef<str>> From<Vec<S>> for FallibleHeaderValuesAsserter {
     fn from(expected: Vec<S>) -> Self {
-        expected.into()
-    }
-}
-
-impl From<HeaderValues> for FallibleHeaderValuesAsserter {
-    fn from(expected: HeaderValues) -> Self {
-        Self(Box::new(move |key, actual_values| {
-            if expected.is_empty() {
-                return Err(AsserhttpError::InvalidHeaderValuesSupplied { key });
-            }
-            if expected != actual_values {
-                return Err(AsserhttpError::HeaderValuesMismatch { key, actual_values, expected: expected.clone() });
-            }
-            Ok(())
-        }))
+        HeaderValues::from(expected).into()
     }
 }
 
 impl<const N: usize, S: AsRef<str>> From<[S; N]> for FallibleHeaderValuesAsserter {
     fn from(expected: [S; N]) -> Self {
-        expected.into()
+        HeaderValues::from(expected).into()
     }
 }
 
 impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for FallibleHeaderValuesAsserter {
     fn from(expected: &'a [S; N]) -> Self {
-        Vec::from_iter(expected.iter()).into()
+        HeaderValues::from(Vec::from_iter(expected.iter())).into()
     }
 }
 
@@ -259,6 +245,20 @@ impl<F: 'static> From<F> for FallibleHeaderValuesAsserter
                 .iter()
                 .map(|s| Box::leak(Box::new(s.clone())).as_str())
                 .collect::<Vec<_>>())
+        }))
+    }
+}
+
+impl From<HeaderValues> for FallibleHeaderValuesAsserter {
+    fn from(expected: HeaderValues) -> Self {
+        Self(Box::new(move |key, actual_values| {
+            if expected.is_empty() {
+                return Err(AsserhttpError::InvalidHeaderValuesSupplied { key });
+            }
+            if expected != actual_values {
+                return Err(AsserhttpError::HeaderValuesMismatch { key, actual_values, expected: expected.clone() });
+            }
+            Ok(())
         }))
     }
 }

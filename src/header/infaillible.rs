@@ -302,19 +302,28 @@ pub struct HeaderValueAsserter(Box<dyn Fn(HeaderKey, HeaderValue)>);
 
 impl<'a> From<&'a String> for HeaderValueAsserter {
     fn from(expected: &'a String) -> Self {
-        expected.into()
+        HeaderValue::from(expected).into()
     }
 }
 
 impl<'a> From<&'a str> for HeaderValueAsserter {
     fn from(expected: &'a str) -> Self {
-        expected.into()
+        HeaderValue::from(expected).into()
     }
 }
 
 impl From<String> for HeaderValueAsserter {
     fn from(expected: String) -> Self {
-        expected.into()
+        HeaderValue::from(expected).into()
+    }
+}
+
+impl<F: 'static> From<F> for HeaderValueAsserter
+where
+    F: Fn(&'static str),
+{
+    fn from(fun: F) -> Self {
+        Self(Box::new(move |_, value| fun(Box::leak(Box::new(value)))))
     }
 }
 
@@ -326,15 +335,6 @@ impl From<HeaderValue> for HeaderValueAsserter {
                 "expected header '{key}' to be equal to '{expected}' but was '{actual}'"
             )
         }))
-    }
-}
-
-impl<F: 'static> From<F> for HeaderValueAsserter
-where
-    F: Fn(&'static str),
-{
-    fn from(fun: F) -> Self {
-        Self(Box::new(move |_, value| fun(Box::leak(Box::new(value)))))
     }
 }
 
@@ -350,7 +350,33 @@ pub struct HeaderValuesAsserter(Box<dyn Fn(HeaderKey, HeaderValues)>);
 
 impl<S: AsRef<str>> From<Vec<S>> for HeaderValuesAsserter {
     fn from(expected: Vec<S>) -> Self {
-        expected.into()
+        HeaderValues::from(expected).into()
+    }
+}
+
+impl<const N: usize, S: AsRef<str>> From<[S; N]> for HeaderValuesAsserter {
+    fn from(expected: [S; N]) -> Self {
+        HeaderValues::from(expected).into()
+    }
+}
+
+impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for HeaderValuesAsserter {
+    fn from(expected: &'a [S; N]) -> Self {
+        HeaderValues::from(Vec::from_iter(expected.iter())).into()
+    }
+}
+
+impl<F: 'static> From<F> for HeaderValuesAsserter
+where
+    F: Fn(Vec<&'static str>),
+{
+    fn from(fun: F) -> Self {
+        Self(Box::new(move |_, actual_values| {
+            fun(actual_values
+                .iter()
+                .map(|s| Box::leak(Box::new(s.clone())).as_str())
+                .collect::<Vec<_>>())
+        }))
     }
 }
 
@@ -367,32 +393,6 @@ impl From<HeaderValues> for HeaderValuesAsserter {
                 same_size && all_eq,
                 "expected header '{key}' to contain values '{expected:?}' but contained '{actual_values}'"
             );
-        }))
-    }
-}
-
-impl<const N: usize, S: AsRef<str>> From<[S; N]> for HeaderValuesAsserter {
-    fn from(expected: [S; N]) -> Self {
-        expected.into()
-    }
-}
-
-impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for HeaderValuesAsserter {
-    fn from(expected: &'a [S; N]) -> Self {
-        Vec::from_iter(expected.iter()).into()
-    }
-}
-
-impl<F: 'static> From<F> for HeaderValuesAsserter
-where
-    F: Fn(Vec<&'static str>),
-{
-    fn from(fun: F) -> Self {
-        Self(Box::new(move |_, actual_values| {
-            fun(actual_values
-                .iter()
-                .map(|s| Box::leak(Box::new(s.clone())).as_str())
-                .collect::<Vec<_>>())
         }))
     }
 }
