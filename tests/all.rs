@@ -343,18 +343,15 @@ mod header {
     asserhttp_test!(header_many_should_succeed, "header/many.json", HeaderMany.responses(), .expect_header("x-a", "a").expect_header("x-b", "b"));
     asserhttp_test!(header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.", .expect_header("x-m", "a"));
 
-    // asserhttp_test!(fallible_header_should_succeed, "header/one.json", HeaderOne.responses(), .try_expect_header("x-a", "a").unwrap());
-    // asserhttp_test!(fallible_header_const_should_succeed, "header/json.json", HeaderOne.responses(), .try_expect_header(headers::CONTENT_TYPE, "application/json").unwrap());
-    // asserhttp_test!(fallible_header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .try_expect_header("X-A", "a").unwrap());
-    // asserhttp_test!(fallible_header_should_fail_because_key_case_sensitive, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderValueMismatch { key: HeaderKey::from("x-a"), actual: HeaderValue::from("a"), expected: HeaderValue::from("A") }, .try_expect_header("x-a", "A"));
-
-    // asserhttp_test!(fallible_header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "expected one header named 'x-b' but none found", .expect_header("x-b", "a"));
-    // asserhttp_test!(fallible_header_const_should_fail_when_wrong_key, "header/json.json", HeaderJson.responses(), "expected one header named 'accept' but none found", .expect_header(headers::ACCEPT, "application/json"));
-    // asserhttp_test!(fallible_header_should_fail_when_wrong_value, "header/one.json", HeaderOne.responses(), "expected header 'x-a' to be equal to 'b' but was 'a'", .expect_header("x-a", "b"));
-    // asserhttp_test!(fallible_header_many_should_succeed, "header/many.json", HeaderMany.responses(), .expect_header("x-a", "a").expect_header("x-b", "b"));
-    // asserhttp_test!(fallible_header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.", .expect_header("x-m", "a"));
-
-    // asserhttp_test!(fallible_header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderAbsent { key: HeaderKey::from("x-b") }, .try_expect_header("x-b", "a"));
+    asserhttp_test!(fallible_header_should_succeed, "header/one.json", HeaderOne.responses(), .try_expect_header("x-a", "a").unwrap());
+    asserhttp_test!(fallible_header_const_should_succeed, "header/json.json", HeaderJson.responses(), .try_expect_header(headers::CONTENT_TYPE, "application/json").unwrap());
+    asserhttp_test!(fallible_header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .try_expect_header("X-A", "a").unwrap());
+    asserhttp_test!(fallible_header_should_fail_because_key_case_sensitive, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderValueMismatch { key: HeaderKey::from("x-a"), actual: HeaderValue::from("a"), expected: HeaderValue::from("A") }, .try_expect_header("x-a", "A"));
+    asserhttp_test!(fallible_header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderAbsent { key: HeaderKey::from("x-b") }, .try_expect_header("x-b", "a"));
+    asserhttp_test!(fallible_header_const_should_fail_when_wrong_key, "header/json.json", HeaderJson.responses(), AsserhttpError::HeaderAbsent { key: HeaderKey::from("accept") }, .try_expect_header(headers::ACCEPT, "application/json"));
+    asserhttp_test!(fallible_header_should_fail_when_wrong_value, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderValueMismatch { key: HeaderKey::from("x-a"), actual: HeaderValue::from("a"), expected: HeaderValue::from("b") }, .try_expect_header("x-a", "b"));
+    asserhttp_test!(fallible_header_many_should_succeed, "header/many.json", HeaderMany.responses(), .try_expect_header("x-a", "a").unwrap().try_expect_header("x-b", "b").unwrap());
+    asserhttp_test!(fallible_header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), AsserhttpError::MultivaluedHeader { key: HeaderKey::from("x-m"), values_count: 2, actual_values: HeaderValues::from(["a", "b"]) }, .try_expect_header("x-m", "a"));
 
     asserhttp_test!(header_closure_should_succeed, "header/one.json", HeaderOne.responses(), .expect_header("x-a", |h| assert_eq!(h, "a")));
     asserhttp_test!(header_closure_should_fail, "header/one.json", HeaderOne.responses(), "", .expect_header("x-a", |h| assert_eq!(h, "b")));
