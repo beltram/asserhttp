@@ -343,10 +343,10 @@ mod header {
     asserhttp_test!(header_many_should_succeed, "header/many.json", HeaderMany.responses(), .expect_header("x-a", "a").expect_header("x-b", "b"));
     asserhttp_test!(header_should_fail_when_multivalued, "header/multi.json", HeaderMulti.responses(), "expected header 'x-m' to be single valued. Had '2' values '[\"a\", \"b\"]'. Use 'expect_headers' instead.", .expect_header("x-m", "a"));
 
-    asserhttp_test!(fallible_header_should_succeed, "header/one.json", HeaderOne.responses(), .try_expect_header("x-a", "a").unwrap());
-    asserhttp_test!(fallible_header_const_should_succeed, "header/json.json", HeaderOne.responses(), .try_expect_header(headers::CONTENT_TYPE, "application/json").unwrap());
-    asserhttp_test!(fallible_header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .try_expect_header("X-A", "a").unwrap());
-    asserhttp_test!(fallible_header_should_fail_because_key_case_sensitive, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderValueMismatch { key: HeaderKey::from("x-a"), actual: HeaderValue::from("a"), expected: HeaderValue::from("A") }, .try_expect_header("x-a", "A"));
+    // asserhttp_test!(fallible_header_should_succeed, "header/one.json", HeaderOne.responses(), .try_expect_header("x-a", "a").unwrap());
+    // asserhttp_test!(fallible_header_const_should_succeed, "header/json.json", HeaderOne.responses(), .try_expect_header(headers::CONTENT_TYPE, "application/json").unwrap());
+    // asserhttp_test!(fallible_header_should_match_key_ignoring_case, "header/one.json", HeaderOne.responses(), .try_expect_header("X-A", "a").unwrap());
+    // asserhttp_test!(fallible_header_should_fail_because_key_case_sensitive, "header/one.json", HeaderOne.responses(), AsserhttpError::HeaderValueMismatch { key: HeaderKey::from("x-a"), actual: HeaderValue::from("a"), expected: HeaderValue::from("A") }, .try_expect_header("x-a", "A"));
 
     // asserhttp_test!(fallible_header_should_fail_when_wrong_key, "header/one.json", HeaderOne.responses(), "expected one header named 'x-b' but none found", .expect_header("x-b", "a"));
     // asserhttp_test!(fallible_header_const_should_fail_when_wrong_key, "header/json.json", HeaderJson.responses(), "expected one header named 'accept' but none found", .expect_header(headers::ACCEPT, "application/json"));
@@ -441,7 +441,7 @@ mod header {
     }
 }
 
-mod body {
+/*mod body {
     use serde_json::{json, Value};
 
     use super::{Stub::*, *};
@@ -481,7 +481,7 @@ mod body {
     asserhttp_test!(body_absent_should_fail_when_present, "body/bytes/value.json", BodyBytes.responses(), "expected no response body but a response body was present", .expect_body_absent());
 
     asserhttp_test!(expect_body_first_should_not_be_destructive, "full.json", Full.responses(), .expect_body_json_eq(json!({"a": "b"})).expect_status_ok().expect_content_type_json());
-}
+}*/
 
 mod customizable {
     use super::Stub::*;

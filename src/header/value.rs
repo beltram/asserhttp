@@ -3,13 +3,13 @@ pub struct HeaderValue(String);
 
 impl<'a> From<&'a str> for HeaderValue {
     fn from(value: &'a str) -> Self {
-        value.to_string().into()
+        Self(value.to_string())
     }
 }
 
 impl<'a> From<&'a String> for HeaderValue {
     fn from(value: &'a String) -> Self {
-        value.to_string().into()
+        Self(value.to_string())
     }
 }
 
@@ -21,7 +21,7 @@ impl From<String> for HeaderValue {
 
 impl From<http_types::headers::HeaderValue> for HeaderValue {
     fn from(value: http_types::headers::HeaderValue) -> Self {
-        value.as_str().into()
+        Self(value.as_str().to_string())
     }
 }
 

@@ -6,13 +6,13 @@ pub struct HeaderKey(String);
 
 impl<'a> From<&'a str> for HeaderKey {
     fn from(name: &'a str) -> Self {
-        name.to_string().into()
+        Self(name.to_string())
     }
 }
 
 impl<'a> From<&'a String> for HeaderKey {
     fn from(name: &'a String) -> Self {
-        name.to_string().into()
+        Self(name.to_string())
     }
 }
 
@@ -24,7 +24,7 @@ impl From<String> for HeaderKey {
 
 impl From<HeaderName> for HeaderKey {
     fn from(name: HeaderName) -> Self {
-        name.as_str().into()
+        Self(name.as_str().to_string())
     }
 }
 
