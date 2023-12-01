@@ -44,7 +44,7 @@ impl AsRef<str> for HeaderKey {
 
 impl std::fmt::Display for HeaderKey {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self}")
+        write!(f, "{}", self.0)
     }
 }
 

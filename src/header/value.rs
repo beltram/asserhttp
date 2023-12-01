@@ -41,6 +41,6 @@ impl AsRef<str> for HeaderValue {
 
 impl std::fmt::Display for HeaderValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{self}")
+        write!(f, "{}", self.0)
     }
 }
