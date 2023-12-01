@@ -250,7 +250,7 @@ where
         let values_count = actual_values.len();
         assert_eq!(
             values_count, 1,
-            "expected header '{key}' to be single valued. Had '{values_count}' values '{actual_values:?}'. Use 'expect_headers' instead.",
+            "expected header '{key}' to be single valued. Had '{values_count}' values '{actual_values}'. Use 'expect_headers' instead.",
         );
         let actual_value = actual_values.first().unwrap().into();
         value.into()(key, actual_value);
@@ -391,7 +391,7 @@ impl From<HeaderValues> for HeaderValuesAsserter {
             let all_eq = actual_values == expected;
             assert!(
                 same_size && all_eq,
-                "expected header '{key}' to contain values '{expected:?}' but contained '{actual_values}'"
+                "expected header '{key}' to contain values '{expected}' but contained '{actual_values}'"
             );
         }))
     }
