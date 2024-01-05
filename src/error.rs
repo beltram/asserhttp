@@ -3,7 +3,7 @@ use crate::header::{key::HeaderKey, value::HeaderValue, values::HeaderValues};
 pub type AsserhttpResult<T> = Result<T, AsserhttpError>;
 
 #[derive(Debug, thiserror::Error)]
-#[cfg_attr(test, derive(Eq, PartialEq))]
+#[cfg_attr(feature = "internal", derive(Eq, PartialEq))]
 pub enum AsserhttpError {
     #[error("expected status to be '{expected}' but was '{actual}'")]
     StatusMismatch { actual: u16, expected: u16 },
@@ -39,82 +39,81 @@ pub enum AsserhttpError {
     HttpError(String),
     #[error("Internal asserhttp error")]
     InternalError,
-    #[cfg(not(test))]
+    #[cfg(not(feature = "internal"))]
     #[error(transparent)]
     AnyError(#[from] anyhow::Error),
-    #[cfg(not(test))]
+    #[cfg(not(feature = "internal"))]
     #[error(transparent)]
     HttpTypesError(anyhow::Error),
-    #[cfg(not(test))]
+    #[cfg(not(feature = "internal"))]
     #[error(transparent)]
     JsonError(#[from] serde_json::Error),
-    #[cfg(not(test))]
+    #[cfg(not(feature = "internal"))]
     #[error(transparent)]
     IoError(#[from] std::io::Error),
-    #[cfg(not(test))]
+    #[cfg(not(feature = "internal"))]
     #[error(transparent)]
     Utf8Error(#[from] std::str::Utf8Error),
-    #[cfg(all(not(test), feature = "awc"))]
+    #[cfg(all(not(feature = "internal"), feature = "awc"))]
     #[error(transparent)]
     AwcError(#[from] actix_http::error::PayloadError),
-    #[cfg(all(not(test), feature = "reqwest"))]
+    #[cfg(all(not(feature = "internal"), feature = "reqwest"))]
     #[error(transparent)]
     ReqwestError(#[from] reqwest::Error),
-
     #[error("Error in a third party crate: {0}")]
     ExternalError(String),
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<anyhow::Error> for AsserhttpError {
     fn from(e: anyhow::Error) -> Self {
         Self::ExternalError(e.to_string())
     }
 }
 
-#[cfg(not(test))]
+#[cfg(not(feature = "internal"))]
 impl From<http_types::Error> for AsserhttpError {
     fn from(e: http_types::Error) -> Self {
         Self::HttpTypesError(e.into_inner())
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<http_types::Error> for AsserhttpError {
     fn from(e: http_types::Error) -> Self {
         Self::ExternalError(e.to_string())
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<serde_json::Error> for AsserhttpError {
     fn from(e: serde_json::Error) -> Self {
         Self::ExternalError(e.to_string())
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<std::io::Error> for AsserhttpError {
     fn from(e: std::io::Error) -> Self {
         Self::ExternalError(e.to_string())
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<std::str::Utf8Error> for AsserhttpError {
     fn from(e: std::str::Utf8Error) -> Self {
         Self::ExternalError(e.to_string())
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<actix_http::error::PayloadError> for AsserhttpError {
     fn from(e: actix_http::error::PayloadError) -> Self {
         Self::ExternalError(e.to_string())
     }
 }
 
-#[cfg(test)]
+#[cfg(feature = "internal")]
 impl From<reqwest::Error> for AsserhttpError {
     fn from(e: reqwest::Error) -> Self {
         Self::ExternalError(e.to_string())
