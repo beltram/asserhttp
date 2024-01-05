@@ -110,6 +110,76 @@ pub trait FallibleAsserhttpHeader<T> {
     /// }
     /// ```
     fn try_expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>) -> AsserhttpResult<&mut T>;
+
+    /// Expects response header to be present
+    /// * `key` - expected present header key
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use ureq::OrAnyStatus;
+    /// use asserhttp::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").expect_header_present("content-type");
+    ///     reqwest::blocking::get("http://localhost").expect_header_present(headers::CONTENT_TYPE);
+    ///     reqwest::get("http://localhost").await.expect_header_present("content-type");
+    ///     reqwest::get("http://localhost").await.expect_header_present(headers::CONTENT_TYPE);
+    ///
+    ///     isahc::get("http://localhost").expect_header_present("content-type");
+    ///     isahc::get("http://localhost").expect_header_present(headers::CONTENT_TYPE);
+    ///     isahc::get_async("http://localhost").await.expect_header_present("content-type");
+    ///     isahc::get_async("http://localhost").await.expect_header_present(headers::CONTENT_TYPE);
+    ///
+    ///     surf::get("http://localhost").await.expect_header_present("content-type");
+    ///     surf::get("http://localhost").await.expect_header_present(headers::CONTENT_TYPE);
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header_present("content-type");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header_present(headers::CONTENT_TYPE);
+    ///
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_present("content-type");
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_present(headers::CONTENT_TYPE);
+    ///
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header_present("content-type");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header_present(headers::CONTENT_TYPE);
+    /// }
+    /// ```
+    fn try_expect_header_present(&mut self, key: impl Into<HeaderKey>) -> AsserhttpResult<&mut T>;
+
+    /// Expects response header to be absent
+    /// * `key` - expected absent header key
+    ///
+    /// # Example
+    /// ```no_run
+    /// # use ureq::OrAnyStatus;
+    /// use asserhttp::*;
+    ///
+    /// #[tokio::main]
+    /// async fn main() {
+    ///     reqwest::blocking::get("http://localhost").expect_header_absent("content-type");
+    ///     reqwest::blocking::get("http://localhost").expect_header_absent(headers::CONTENT_TYPE);
+    ///     reqwest::get("http://localhost").await.expect_header_absent("content-type");
+    ///     reqwest::get("http://localhost").await.expect_header_absent(headers::CONTENT_TYPE);
+    ///
+    ///     isahc::get("http://localhost").expect_header_absent("content-type");
+    ///     isahc::get("http://localhost").expect_header_absent(headers::CONTENT_TYPE);
+    ///     isahc::get_async("http://localhost").await.expect_header_absent("content-type");
+    ///     isahc::get_async("http://localhost").await.expect_header_absent(headers::CONTENT_TYPE);
+    ///
+    ///     surf::get("http://localhost").await.expect_header_absent("content-type");
+    ///     surf::get("http://localhost").await.expect_header_absent(headers::CONTENT_TYPE);
+    ///
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header_absent("content-type");
+    ///     ureq::get("http://localhost").call().or_any_status().expect_header_absent(headers::CONTENT_TYPE);
+    ///
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_absent("content-type");
+    ///     hyper::Client::new().get("http://localhost".parse().unwrap()).await.expect_header_absent(headers::CONTENT_TYPE);
+    ///
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header_absent("content-type");
+    ///     awc::Client::default().get("http://localhost").send().await.expect_header_absent(headers::CONTENT_TYPE);
+    /// }
+    /// ```
+    fn try_expect_header_absent(&mut self, key: impl Into<HeaderKey>) -> AsserhttpResult<&mut T>;
 }
 
 impl<T> FallibleAsserhttpHeader<T> for T
@@ -140,6 +210,18 @@ impl<T> FallibleAsserhttpHeader<T> for T
         values.into()(key, actual_values)?;
         Ok(self)
     }
+
+    fn try_expect_header_present(&mut self, key: impl Into<HeaderKey>) -> AsserhttpResult<&mut T> {
+        let key = key.into();
+        key.try_assert_contained(self.get_keys())?;
+        Ok(self)
+    }
+
+    fn try_expect_header_absent(&mut self, key: impl Into<HeaderKey>) -> AsserhttpResult<&mut T> {
+        let key = key.into();
+        key.try_assert_absent(self.get_keys())?;
+        Ok(self)
+    }
 }
 
 impl<T, E> FallibleAsserhttpHeader<T> for Result<T, E>
@@ -157,6 +239,18 @@ impl<T, E> FallibleAsserhttpHeader<T> for Result<T, E>
         self.as_mut()
             .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?
             .try_expect_headers(key, values)
+    }
+
+    fn try_expect_header_present(&mut self, key: impl Into<HeaderKey>) -> AsserhttpResult<&mut T> {
+        self.as_mut()
+            .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?
+            .try_expect_header_present(key)
+    }
+
+    fn try_expect_header_absent(&mut self, key: impl Into<HeaderKey>) -> AsserhttpResult<&mut T> {
+        self.as_mut()
+            .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?
+            .try_expect_header_absent(key)
     }
 }
 
