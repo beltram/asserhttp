@@ -1,4 +1,5 @@
 use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 use serde::de::DeserializeOwned;
 
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
@@ -24,18 +25,18 @@ impl HeaderAccessor for SurfResponse {
 }
 
 impl BodyAccessor for SurfResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
-        futures_lite::future::block_on(self.body_bytes()).map_err(anyhow::Error::msg)
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
+        futures_lite::future::block_on(self.body_bytes()).map_err(AsserhttpError::from)
     }
 
-    fn get_text(&mut self) -> anyhow::Result<String> {
-        futures_lite::future::block_on(self.body_string()).map_err(anyhow::Error::msg)
+    fn get_text(&mut self) -> AsserhttpResult<String> {
+        futures_lite::future::block_on(self.body_string()).map_err(AsserhttpError::from)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    fn get_json<B>(&mut self) -> AsserhttpResult<B>
     where
         B: DeserializeOwned,
     {
-        futures_lite::future::block_on(self.body_json::<B>()).map_err(anyhow::Error::msg)
+        Ok(futures_lite::future::block_on(self.body_json::<B>()).map_err(AsserhttpError::from)?)
     }
 }

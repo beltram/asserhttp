@@ -1,4 +1,5 @@
 use crate::header::{key::HeaderKey, values::HeaderValues};
+use crate::{AsserhttpError, AsserhttpResult};
 use serde::de::DeserializeOwned;
 
 pub trait StatusAccessor {
@@ -21,19 +22,19 @@ pub trait HeaderAccessor {
 }
 
 pub trait BodyAccessor {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>>;
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>>;
 
-    fn get_text(&mut self) -> anyhow::Result<String> {
+    fn get_text(&mut self) -> AsserhttpResult<String> {
         std::str::from_utf8(self.get_bytes()?.as_slice())
-            .map_err(anyhow::Error::msg)
             .map(str::to_string)
+            .map_err(AsserhttpError::from)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    fn get_json<B>(&mut self) -> AsserhttpResult<B>
     where
         B: DeserializeOwned + Unpin,
     {
-        serde_json::from_slice::<B>(self.get_bytes()?.as_slice()).map_err(anyhow::Error::msg)
+        Ok(serde_json::from_slice::<B>(self.get_bytes()?.as_slice())?)
     }
 }
 

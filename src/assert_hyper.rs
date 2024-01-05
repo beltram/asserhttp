@@ -1,5 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 use crate::header::key::HeaderKey;
+use crate::AsserhttpResult;
 
 type HyperResponse = hyper::Response<hyper::Body>;
 
@@ -26,7 +27,7 @@ impl HeaderAccessor for HyperResponse {
 }
 
 impl BodyAccessor for HyperResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
         use hyper::body::HttpBody as _;
         while let Some(Ok(chunk)) = futures_lite::future::block_on(self.body_mut().data()) {

@@ -1,5 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 use crate::header::key::HeaderKey;
+use crate::AsserhttpResult;
 
 type AxumResponse = axum::response::Response;
 
@@ -26,7 +27,7 @@ impl HeaderAccessor for AxumResponse {
 }
 
 impl BodyAccessor for AxumResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         use axum::body::HttpBody as _;
         let mut buf: Vec<u8> = vec![];
         while let Some(Ok(chunk)) = futures_lite::future::block_on(self.body_mut().data()) {

@@ -312,13 +312,11 @@
 //! ```
 
 pub use {
-    accessor::AllAccessors, body::AsserhttpBody, header::{
-        infaillible::AsserhttpHeader,
-        key::HeaderKey,
-        value::HeaderValue,
-        values::HeaderValues,
-    }, http_types::headers,
-    http_types::StatusCode as Status, status::infaillible::AsserhttpStatus,
+    accessor::AllAccessors,
+    body::infaillible::AsserhttpBody,
+    header::{infaillible::AsserhttpHeader, key::HeaderKey, value::HeaderValue, values::HeaderValues},
+    http_types::{headers, StatusCode as Status},
+    status::infaillible::AsserhttpStatus,
 };
 
 #[cfg(feature = "fallible")]
@@ -363,16 +361,18 @@ pub trait Asserhttp<T>: AsserhttpStatus<T> + AsserhttpHeader<T> + AsserhttpBody<
 
 #[cfg(feature = "fallible")]
 pub trait Asserhttp<T>:
-AsserhttpStatus<T> + FaillibleAsserhttpStatus<T> + AsserhttpHeader<T> + FallibleAsserhttpHeader<T> + AsserhttpBody<T>
-{}
+    AsserhttpStatus<T> + FaillibleAsserhttpStatus<T> + AsserhttpHeader<T> + FallibleAsserhttpHeader<T> + AsserhttpBody<T>
+{
+}
 
 impl<T> Asserhttp<T> for T where T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor {}
 
 impl<T, E> Asserhttp<T> for Result<T, E>
-    where
-        T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor,
-        E: std::fmt::Debug,
-{}
+where
+    T: accessor::StatusAccessor + accessor::HeaderAccessor + accessor::BodyAccessor,
+    E: std::fmt::Debug,
+{
+}
 
 #[macro_export]
 macro_rules! asserhttp_customize {

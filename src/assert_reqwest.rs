@@ -1,5 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 
 type ReqwestResponse = reqwest::blocking::Response;
 type AsyncReqwestResponse = reqwest::Response;
@@ -49,14 +50,14 @@ impl HeaderAccessor for AsyncReqwestResponse {
 }
 
 impl BodyAccessor for ReqwestResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf = vec![];
-        self.copy_to(&mut buf).map(|_| buf).map_err(anyhow::Error::msg)
+        self.copy_to(&mut buf).map(|_| buf).map_err(AsserhttpError::from)
     }
 }
 
 impl BodyAccessor for AsyncReqwestResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
         while let Ok(Some(chunk)) = futures_lite::future::block_on(self.chunk()) {
             chunk.into_iter().for_each(|b| buf.push(b));

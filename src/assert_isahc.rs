@@ -1,4 +1,5 @@
 use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 use serde::de::DeserializeOwned;
 
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
@@ -51,45 +52,45 @@ impl HeaderAccessor for AsyncIsahcResponse {
 }
 
 impl BodyAccessor for IsahcResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf = vec![];
         use isahc::ReadResponseExt as _;
-        self.copy_to(&mut buf).map(|_| buf).map_err(anyhow::Error::msg)
+        self.copy_to(&mut buf).map(|_| buf).map_err(AsserhttpError::from)
     }
 
-    fn get_text(&mut self) -> anyhow::Result<String> {
+    fn get_text(&mut self) -> AsserhttpResult<String> {
         use isahc::ReadResponseExt as _;
-        self.text().map_err(anyhow::Error::msg)
+        self.text().map_err(AsserhttpError::from)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    fn get_json<B>(&mut self) -> AsserhttpResult<B>
     where
         B: DeserializeOwned + Unpin,
     {
         use isahc::ReadResponseExt as _;
-        self.json::<B>().map_err(anyhow::Error::msg)
+        Ok(self.json::<B>()?)
     }
 }
 
 impl BodyAccessor for AsyncIsahcResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf = vec![];
         use isahc::AsyncReadResponseExt as _;
         futures_lite::future::block_on(self.copy_to(&mut buf))
             .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+            .map_err(AsserhttpError::from)
     }
 
-    fn get_text(&mut self) -> anyhow::Result<String> {
+    fn get_text(&mut self) -> AsserhttpResult<String> {
         use isahc::AsyncReadResponseExt as _;
-        futures_lite::future::block_on(self.text()).map_err(anyhow::Error::msg)
+        futures_lite::future::block_on(self.text()).map_err(AsserhttpError::from)
     }
 
-    fn get_json<B>(&mut self) -> anyhow::Result<B>
+    fn get_json<B>(&mut self) -> AsserhttpResult<B>
     where
         B: DeserializeOwned + Unpin,
     {
         use isahc::AsyncReadResponseExt as _;
-        futures_lite::future::block_on(self.json::<B>()).map_err(anyhow::Error::msg)
+        Ok(futures_lite::future::block_on(self.json::<B>())?)
     }
 }

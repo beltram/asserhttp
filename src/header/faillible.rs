@@ -1,9 +1,9 @@
+use crate::header::values::HeaderValues;
 use crate::{
-    header::{value::HeaderValue, key::HeaderKey},
     accessor::HeaderAccessor,
     error::{AsserhttpError, AsserhttpResult},
+    header::{key::HeaderKey, value::HeaderValue},
 };
-use crate::header::values::HeaderValues;
 
 /// For assertions on http response headers
 pub trait FallibleAsserhttpHeader<T> {
@@ -109,7 +109,8 @@ pub trait FallibleAsserhttpHeader<T> {
     ///     awc::Client::default().get("http://localhost").send().await.expect_headers(headers::CACHE_CONTROL, |h: Vec<&str>| assert!(h.contains(&"no-cache") && h.contains(&"no-store")));
     /// }
     /// ```
-    fn try_expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>) -> AsserhttpResult<&mut T>;
+    fn try_expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>)
+        -> AsserhttpResult<&mut T>;
 
     /// Expects response header to be present
     /// * `key` - expected present header key
@@ -183,8 +184,8 @@ pub trait FallibleAsserhttpHeader<T> {
 }
 
 impl<T> FallibleAsserhttpHeader<T> for T
-    where
-        T: HeaderAccessor,
+where
+    T: HeaderAccessor,
 {
     fn try_expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<FallibleHeaderValueAsserter>) -> AsserhttpResult<&mut T> {
         let key = key.into();
@@ -203,7 +204,9 @@ impl<T> FallibleAsserhttpHeader<T> for T
         Ok(self)
     }
 
-    fn try_expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>) -> AsserhttpResult<&mut T> {
+    fn try_expect_headers(
+        &mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>,
+    ) -> AsserhttpResult<&mut T> {
         let key = key.into();
         key.try_assert_contained(self.get_keys())?;
         let actual_values = self.get_values(&key);
@@ -225,9 +228,9 @@ impl<T> FallibleAsserhttpHeader<T> for T
 }
 
 impl<T, E> FallibleAsserhttpHeader<T> for Result<T, E>
-    where
-        T: HeaderAccessor,
-        E: std::fmt::Debug,
+where
+    T: HeaderAccessor,
+    E: std::fmt::Debug,
 {
     fn try_expect_header(&mut self, key: impl Into<HeaderKey>, value: impl Into<FallibleHeaderValueAsserter>) -> AsserhttpResult<&mut T> {
         self.as_mut()
@@ -235,7 +238,9 @@ impl<T, E> FallibleAsserhttpHeader<T> for Result<T, E>
             .try_expect_header(key, value)
     }
 
-    fn try_expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>) -> AsserhttpResult<&mut T> {
+    fn try_expect_headers(
+        &mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>,
+    ) -> AsserhttpResult<&mut T> {
         self.as_mut()
             .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?
             .try_expect_headers(key, values)
@@ -275,8 +280,8 @@ impl From<String> for FallibleHeaderValueAsserter {
 }
 
 impl<F: 'static> From<F> for FallibleHeaderValueAsserter
-    where
-        F: Fn(&'static str),
+where
+    F: Fn(&'static str),
 {
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, value| {
@@ -330,8 +335,8 @@ impl<'a, const N: usize, S: AsRef<str>> From<&'a [S; N]> for FallibleHeaderValue
 }
 
 impl<F: 'static> From<F> for FallibleHeaderValuesAsserter
-    where
-        F: Fn(Vec<&'static str>) -> AsserhttpResult<()>,
+where
+    F: Fn(Vec<&'static str>) -> AsserhttpResult<()>,
 {
     fn from(fun: F) -> Self {
         Self(Box::new(move |_, actual_values| {
@@ -350,7 +355,11 @@ impl From<HeaderValues> for FallibleHeaderValuesAsserter {
                 return Err(AsserhttpError::InvalidHeaderValuesSupplied { key });
             }
             if expected != actual_values {
-                return Err(AsserhttpError::HeaderValuesMismatch { key, actual_values, expected: expected.clone() });
+                return Err(AsserhttpError::HeaderValuesMismatch {
+                    key,
+                    actual_values,
+                    expected: expected.clone(),
+                });
             }
             Ok(())
         }))

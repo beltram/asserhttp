@@ -1,5 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 
 type UreqResponse = ureq::Response;
 
@@ -20,7 +21,7 @@ impl HeaderAccessor for UreqResponse {
 }
 
 impl BodyAccessor for UreqResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         use itertools::Itertools as _;
         let headers = self
             .headers_names()
@@ -37,6 +38,6 @@ impl BodyAccessor for UreqResponse {
             .into_reader()
             .read_to_end(&mut buf)
             .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+            .map_err(AsserhttpError::from)
     }
 }

@@ -1,5 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 
 type RocketResponse<'a> = rocket::local::blocking::LocalResponse<'a>;
 type AsyncRocketResponse<'a> = rocket::local::asynchronous::LocalResponse<'a>;
@@ -37,20 +38,20 @@ impl<'a> HeaderAccessor for AsyncRocketResponse<'a> {
 }
 
 impl<'a> BodyAccessor for RocketResponse<'a> {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
         use std::io::Read as _;
-        self.read_to_end(&mut buf).map(|_| buf).map_err(anyhow::Error::msg)
+        self.read_to_end(&mut buf).map(|_| buf).map_err(AsserhttpError::from)
     }
 }
 
 impl<'a> BodyAccessor for AsyncRocketResponse<'a> {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf: Vec<u8> = vec![];
 
         use rocket::tokio::io::AsyncReadExt as _;
         futures_lite::future::block_on(self.read_to_end(&mut buf))
             .map(|_| buf)
-            .map_err(anyhow::Error::msg)
+            .map_err(AsserhttpError::from)
     }
 }

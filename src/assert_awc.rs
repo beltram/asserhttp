@@ -1,5 +1,6 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 use crate::header::key::HeaderKey;
+use crate::{AsserhttpError, AsserhttpResult};
 
 type AwcResponse = awc::ClientResponse<actix_http::BoxedPayloadStream>;
 
@@ -26,9 +27,9 @@ impl HeaderAccessor for AwcResponse {
 }
 
 impl BodyAccessor for AwcResponse {
-    fn get_bytes(&mut self) -> anyhow::Result<Vec<u8>> {
+    fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         futures_lite::future::block_on(self.body())
             .map(|b| b.to_vec())
-            .map_err(anyhow::Error::msg)
+            .map_err(AsserhttpError::from)
     }
 }

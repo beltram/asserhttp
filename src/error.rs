@@ -32,6 +32,26 @@ pub enum AsserhttpError {
     },
     #[error("Error in the http client: {0}")]
     HttpError(String),
+    #[error("Json error: {0}")]
+    JsonError(String),
     #[error("Internal asserhttp error")]
     InternalError,
+}
+
+impl From<anyhow::Error> for AsserhttpError {
+    fn from(e: anyhow::Error) -> Self {
+        Self::HttpError(e.to_string())
+    }
+}
+
+impl From<http_types::Error> for AsserhttpError {
+    fn from(e: http_types::Error) -> Self {
+        Self::HttpError(e.to_string())
+    }
+}
+
+impl From<serde_json::Error> for AsserhttpError {
+    fn from(e: serde_json::Error) -> Self {
+        Self::JsonError(e.to_string())
+    }
 }
