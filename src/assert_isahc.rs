@@ -55,7 +55,7 @@ impl BodyAccessor for IsahcResponse {
     fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf = vec![];
         use isahc::ReadResponseExt as _;
-        self.copy_to(&mut buf).map(|_| buf).map_err(AsserhttpError::from)
+        Ok(self.copy_to(&mut buf).map(|_| buf)?)
     }
 
     fn get_text(&mut self) -> AsserhttpResult<String> {
@@ -64,8 +64,8 @@ impl BodyAccessor for IsahcResponse {
     }
 
     fn get_json<B>(&mut self) -> AsserhttpResult<B>
-    where
-        B: DeserializeOwned + Unpin,
+        where
+            B: DeserializeOwned + Unpin,
     {
         use isahc::ReadResponseExt as _;
         Ok(self.json::<B>()?)
@@ -87,8 +87,8 @@ impl BodyAccessor for AsyncIsahcResponse {
     }
 
     fn get_json<B>(&mut self) -> AsserhttpResult<B>
-    where
-        B: DeserializeOwned + Unpin,
+        where
+            B: DeserializeOwned + Unpin,
     {
         use isahc::AsyncReadResponseExt as _;
         Ok(futures_lite::future::block_on(self.json::<B>())?)

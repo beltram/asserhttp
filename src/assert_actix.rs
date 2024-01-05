@@ -70,5 +70,5 @@ fn body_bytes(original: &mut ActixResponse) -> AsserhttpResult<Vec<u8>> {
     std::mem::swap(original, &mut resp_cpy);
     let (_, body) = resp_cpy.into_parts();
     use actix_http::body::MessageBody as _;
-    body.try_into_bytes().map(|b| b.to_vec()).map_err(AsserhttpError::from)
+    body.try_into_bytes().map(|b| b.to_vec()).map_err(|_| AsserhttpError::HttpError("Could not read actix response body".to_string()))
 }

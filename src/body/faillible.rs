@@ -41,9 +41,9 @@ pub trait FallibleAsserhttpBody<T> {
     /// }
     /// ```
     fn try_expect_body_json<B, F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
-        F: FnOnce(B) -> AsserhttpResult<()>;
+        where
+            B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+            F: FnOnce(B) -> AsserhttpResult<()>;
 
     /// Expects response body to be json and equal
     /// * `body` - expected json body
@@ -72,15 +72,17 @@ pub trait FallibleAsserhttpBody<T> {
     /// }
     /// ```
     fn try_expect_body_json_eq<B>(&mut self, body: B) -> AsserhttpResult<&mut T>
-    where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        where
+            B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
     {
-        /*self.try_expect_body_json(|actual: B| {
-            let actual = serde_json::to_value(&actual).unwrap();
-            let expected = serde_json::to_value(&body).unwrap();
+        self.try_expect_body_json(|actual: B| {
+            let actual = serde_json::to_value(&actual)?;
+            let expected = serde_json::to_value(&body)?;
+            let cfg = assert_json_diff::Config::new(assert_json_diff::CompareMode::Strict);
+            assert_json_diff::assert_json_matches_no_panic(&actual, &expected, cfg).map_err(|e| AsserhttpError::ExternalError(e.to_string()))?;
             assert_json_diff::assert_json_eq!(actual, expected);
-        })*/
-        todo!()
+            Ok(())
+        })
     }
 
     /// Allows verifying text body in a closure
@@ -109,8 +111,8 @@ pub trait FallibleAsserhttpBody<T> {
     /// }
     /// ```
     fn try_expect_body_text<F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        F: FnOnce(String) -> AsserhttpResult<()>;
+        where
+            F: FnOnce(String) -> AsserhttpResult<()>;
 
     /// Expects response body to be text and equal
     /// * `body` - expected text body
@@ -138,8 +140,8 @@ pub trait FallibleAsserhttpBody<T> {
     /// }
     /// ```
     fn try_expect_body_text_eq<B>(&mut self, body: B) -> AsserhttpResult<&mut T>
-    where
-        B: Into<String>,
+        where
+            B: Into<String>,
     {
         /*self.try_expect_body_text(|actual| {
             let expected = body.into();
@@ -177,8 +179,8 @@ pub trait FallibleAsserhttpBody<T> {
     /// }
     /// ```
     fn try_expect_body_text_matches<R>(&mut self, regex: R) -> AsserhttpResult<&mut T>
-    where
-        R: Into<String>,
+        where
+            R: Into<String>,
     {
         /*let regex = Regex::from_str(regex.into().as_str()).expect("'{}' is not a valid regex");
         self.try_expect_body_text(|actual| {
@@ -221,8 +223,8 @@ pub trait FallibleAsserhttpBody<T> {
     /// }
     /// ```
     fn try_expect_body_bytes<F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        F: FnOnce(&[u8]) -> AsserhttpResult<()>;
+        where
+            F: FnOnce(&[u8]) -> AsserhttpResult<()>;
 
     /// Expects response body to be equal by comparing bytes
     /// * `body` - expected bytes response body
@@ -315,50 +317,60 @@ pub trait FallibleAsserhttpBody<T> {
 }
 
 impl<T> FallibleAsserhttpBody<T> for T
-where
-    T: BodyAccessor,
+    where
+        T: BodyAccessor,
 {
     fn try_expect_body_json<B, F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
-        F: FnOnce(B) -> AsserhttpResult<()>,
+        where
+            B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+            F: FnOnce(B) -> AsserhttpResult<()>,
     {
         asserter(self.get_json()?)?;
         Ok(self)
     }
 
     fn try_expect_body_text<F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        F: FnOnce(String) -> AsserhttpResult<()>,
+        where
+            F: FnOnce(String) -> AsserhttpResult<()>,
     {
-        todo!()
+        asserter(self.get_text()?)?;
+        Ok(self)
     }
 
     fn try_expect_body_bytes<F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        F: FnOnce(&[u8]) -> AsserhttpResult<()>,
+        where
+            F: FnOnce(&[u8]) -> AsserhttpResult<()>,
     {
-        todo!()
+        asserter(&self.get_bytes()?[..])?;
+        Ok(self)
     }
 
     fn try_expect_body_present(&mut self) -> AsserhttpResult<&mut T> {
-        todo!()
+        let bytes = &self.get_bytes()?[..];
+        if bytes.is_empty() {
+            return Err(AsserhttpError::BodyAbsent);
+        }
+        Ok(self)
     }
 
     fn try_expect_body_absent(&mut self) -> AsserhttpResult<&mut T> {
-        todo!()
+        let bytes = &self.get_bytes()?[..];
+        if !bytes.is_empty() {
+            return Err(AsserhttpError::BodyPresent);
+        }
+        Ok(self)
     }
 }
 
 impl<T, E> FallibleAsserhttpBody<T> for Result<T, E>
-where
-    T: BodyAccessor,
-    E: std::fmt::Debug,
+    where
+        T: BodyAccessor,
+        E: std::fmt::Debug,
 {
     fn try_expect_body_json<B, F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
-        F: FnOnce(B) -> AsserhttpResult<()>,
+        where
+            B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+            F: FnOnce(B) -> AsserhttpResult<()>,
     {
         self.as_mut()
             .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?
@@ -366,8 +378,8 @@ where
     }
 
     fn try_expect_body_text<F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        F: FnOnce(String) -> AsserhttpResult<()>,
+        where
+            F: FnOnce(String) -> AsserhttpResult<()>,
     {
         self.as_mut()
             .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?
@@ -375,8 +387,8 @@ where
     }
 
     fn try_expect_body_bytes<F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
-    where
-        F: FnOnce(&[u8]) -> AsserhttpResult<()>,
+        where
+            F: FnOnce(&[u8]) -> AsserhttpResult<()>,
     {
         self.as_mut()
             .map_err(|e| AsserhttpError::HttpError(format!("{e:?}")))?

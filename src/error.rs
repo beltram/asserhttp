@@ -2,7 +2,8 @@ use crate::header::{key::HeaderKey, value::HeaderValue, values::HeaderValues};
 
 pub type AsserhttpResult<T> = Result<T, AsserhttpError>;
 
-#[derive(Debug, thiserror::Error, Eq, PartialEq)]
+#[derive(Debug, thiserror::Error)]
+#[cfg_attr(test, derive(Eq, PartialEq))]
 pub enum AsserhttpError {
     #[error("expected status to be '{expected}' but was '{actual}'")]
     StatusMismatch { actual: u16, expected: u16 },
@@ -30,28 +31,92 @@ pub enum AsserhttpError {
         actual_values: HeaderValues,
         expected: HeaderValues,
     },
+    #[error("expected a response body but no response body was present")]
+    BodyAbsent,
+    #[error("expected no response body but a response body was present")]
+    BodyPresent,
     #[error("Error in the http client: {0}")]
     HttpError(String),
-    #[error("Json error: {0}")]
-    JsonError(String),
     #[error("Internal asserhttp error")]
     InternalError,
+    #[cfg(not(test))]
+    #[error(transparent)]
+    AnyError(#[from] anyhow::Error),
+    #[cfg(not(test))]
+    #[error(transparent)]
+    HttpTypesError(anyhow::Error),
+    #[cfg(not(test))]
+    #[error(transparent)]
+    JsonError(#[from] serde_json::Error),
+    #[cfg(not(test))]
+    #[error(transparent)]
+    IoError(#[from] std::io::Error),
+    #[cfg(not(test))]
+    #[error(transparent)]
+    Utf8Error(#[from] std::str::Utf8Error),
+    #[cfg(all(not(test), feature = "awc"))]
+    #[error(transparent)]
+    AwcError(#[from] actix_http::error::PayloadError),
+    #[cfg(all(not(test), feature = "reqwest"))]
+    #[error(transparent)]
+    ReqwestError(#[from] reqwest::Error),
+
+    #[error("Error in a third party crate: {0}")]
+    ExternalError(String),
 }
 
+#[cfg(test)]
 impl From<anyhow::Error> for AsserhttpError {
     fn from(e: anyhow::Error) -> Self {
-        Self::HttpError(e.to_string())
+        Self::ExternalError(e.to_string())
     }
 }
 
+#[cfg(not(test))]
 impl From<http_types::Error> for AsserhttpError {
     fn from(e: http_types::Error) -> Self {
-        Self::HttpError(e.to_string())
+        Self::HttpTypesError(e.into_inner())
     }
 }
 
+#[cfg(test)]
+impl From<http_types::Error> for AsserhttpError {
+    fn from(e: http_types::Error) -> Self {
+        Self::ExternalError(e.to_string())
+    }
+}
+
+#[cfg(test)]
 impl From<serde_json::Error> for AsserhttpError {
     fn from(e: serde_json::Error) -> Self {
-        Self::JsonError(e.to_string())
+        Self::ExternalError(e.to_string())
+    }
+}
+
+#[cfg(test)]
+impl From<std::io::Error> for AsserhttpError {
+    fn from(e: std::io::Error) -> Self {
+        Self::ExternalError(e.to_string())
+    }
+}
+
+#[cfg(test)]
+impl From<std::str::Utf8Error> for AsserhttpError {
+    fn from(e: std::str::Utf8Error) -> Self {
+        Self::ExternalError(e.to_string())
+    }
+}
+
+#[cfg(test)]
+impl From<actix_http::error::PayloadError> for AsserhttpError {
+    fn from(e: actix_http::error::PayloadError) -> Self {
+        Self::ExternalError(e.to_string())
+    }
+}
+
+#[cfg(test)]
+impl From<reqwest::Error> for AsserhttpError {
+    fn from(e: reqwest::Error) -> Self {
+        Self::ExternalError(e.to_string())
     }
 }

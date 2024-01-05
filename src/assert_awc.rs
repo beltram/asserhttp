@@ -28,8 +28,7 @@ impl HeaderAccessor for AwcResponse {
 
 impl BodyAccessor for AwcResponse {
     fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
-        futures_lite::future::block_on(self.body())
-            .map(|b| b.to_vec())
-            .map_err(AsserhttpError::from)
+        Ok(futures_lite::future::block_on(self.body())
+            .map(|b| b.to_vec())?)
     }
 }

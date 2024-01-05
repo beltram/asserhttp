@@ -52,7 +52,7 @@ impl HeaderAccessor for AsyncReqwestResponse {
 impl BodyAccessor for ReqwestResponse {
     fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
         let mut buf = vec![];
-        self.copy_to(&mut buf).map(|_| buf).map_err(AsserhttpError::from)
+        Ok(self.copy_to(&mut buf).map(|_| buf)?)
     }
 }
 
