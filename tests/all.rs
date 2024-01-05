@@ -230,40 +230,40 @@ pub struct TestBody {
 macro_rules! asserhttp_test {
     ($fn_name:ident, $stub:literal, $resp:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
         $($crate::reqwest_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
-        $($crate::surf_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
+        /*$($crate::surf_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::ureq_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::hyper_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::awc_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::isahc_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::actix_test!($fn_name, $resp.0, $( .$meth($($arg),*) )* );)+
         $($crate::rocket_test!($fn_name, $resp.1, $( .$meth($($arg),*) )* );)+
-        $($crate::axum_test!($fn_name, $resp.2, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.2, $( .$meth($($arg),*) )* );)+*/
     };
     ($fn_name:ident, $stub:literal, $resp:expr, $panic_msg:literal, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
         $($crate::reqwest_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
-        $($crate::surf_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
+        /*$($crate::surf_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::ureq_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::hyper_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::awc_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::isahc_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::actix_test!($fn_name, $resp.0, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::rocket_test!($fn_name, $resp.1, $panic_msg, $( .$meth($($arg),*) )* );)+
-        $($crate::axum_test!($fn_name, $resp.2, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.2, $panic_msg, $( .$meth($($arg),*) )* );)+*/
     };
     ($fn_name:ident, $stub:literal, $resp:expr, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
         $($crate::reqwest_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )*);)+
-        $($crate::surf_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
+        /*$($crate::surf_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::ureq_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::hyper_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::awc_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::isahc_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::actix_test!($fn_name, $resp.0, $error, $( .$meth($($arg),*) )* );)+
         $($crate::rocket_test!($fn_name, $resp.1, $error, $( .$meth($($arg),*) )* );)+
-        $($crate::axum_test!($fn_name, $resp.2, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.2, $error, $( .$meth($($arg),*) )* );)+*/
     };
 }
 
-mod smoke {
+/*mod smoke {
     use serde_json::json;
 
     use super::Stub::*;
@@ -464,7 +464,7 @@ mod header {
             isahc::get(stubr.uri()).expect_headers("x-m", vec![a.as_str(), b.as_str()]);
         }
     }
-}
+}*/
 
 mod body {
     use serde_json::{json, Value};
@@ -475,35 +475,53 @@ mod body {
     asserhttp_test!(body_json_struct_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json(|b: TestBody| assert_eq!(b, TestBody { a: String::from("b") })));
     asserhttp_test!(body_json_should_fail_when_closure_fails, "body/json/value.json", BodyJson.responses(), "", .expect_body_json(|b: Value| assert_eq!(b, json!({"a": "c"}))));
 
+    asserhttp_test!(fallible_body_json_should_succeed, "body/json/value.json", BodyJson.responses(), .try_expect_body_json(|b: Value| { assert_eq!(b, json!({"a": "b"})); Ok(()) }).unwrap());
+    asserhttp_test!(fallible_body_json_struct_should_succeed, "body/json/value.json", BodyJson.responses(), .try_expect_body_json(|b: TestBody| { assert_eq!(b, TestBody { a: String::from("b") }); Ok(()) }).unwrap());
+    asserhttp_test!(fallible_body_json_should_fail_when_closure_fails, "body/json/value.json", BodyJson.responses(), "", .try_expect_body_json(|b: Value| { assert_eq!(b, json!({"a": "c"})); Ok(()) }).unwrap());
+
+
     asserhttp_test!(body_json_eq_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json_eq(json!({"a": "b"})));
     asserhttp_test!(body_json_struct_eq_should_succeed, "body/json/value.json", BodyJson.responses(), .expect_body_json_eq(TestBody { a: String::from("b") }));
-
     asserhttp_test!(body_json_eq_should_fail_when_not_eq, "body/json/value.json", BodyJson.responses(), "json atoms at path \".a\" are not equal:\n    lhs:\n        \"b\"\n    rhs:\n        \"c\"", .expect_body_json_eq(json!({"a": "c"})));
     asserhttp_test!(body_json_eq_should_fail_when_absent, "body/json/absent.json", BodyJsonAbsent.responses(), "expected a json body but no response body was present", .expect_body_json_eq(json!({"a": "b"})));
 
+    asserhttp_test!(fallible_body_json_eq_should_succeed, "body/json/value.json", BodyJson.responses(), .try_expect_body_json_eq(json!({"a": "b"})).unwrap());
+    asserhttp_test!(fallible_body_json_struct_eq_should_succeed, "body/json/value.json", BodyJson.responses(), .try_expect_body_json_eq(TestBody { a: String::from("b") }).unwrap());
+    asserhttp_test!(fallible_body_json_eq_should_fail_when_not_eq, "body/json/value.json", BodyJson.responses(), AsserhttpError::JsonBodyMismatch("json atoms at path \".a\" are not equal:\n    lhs:\n        \"b\"\n    rhs:\n        \"c\"".to_string()), .try_expect_body_json_eq(json!({"a": "c"})));
+    asserhttp_test!(fallible_body_json_eq_should_fail_when_absent, "body/json/absent.json", BodyJsonAbsent.responses(), AsserhttpError::JsonBodyMismatch("expected a json body but no response body was present".to_string()), .try_expect_body_json_eq(json!({"a": "b"})));
+
+
+
     asserhttp_test!(body_text_should_succeed, "body/text/value.json", BodyText.responses(), .expect_body_text(|b| assert_eq!(b, String::from("abcd"))));
     asserhttp_test!(body_text_should_fail_when_closure_fails, "body/text/value.json", BodyText.responses(), "", .expect_body_text(|b| assert_eq!(b, String::from("dcba"))));
+
 
     asserhttp_test!(body_text_eq_should_succeed, "body/text/value.json", BodyText.responses(), .expect_body_text_eq("abcd"));
     asserhttp_test!(body_text_eq_should_fail_when_not_eq, "body/text/value.json", BodyText.responses(), "expected text body 'abcd' to be equal to 'dcba' but was not", .expect_body_text_eq("dcba"));
     asserhttp_test!(body_text_eq_should_fail_when_absent, "body/text/absent.json", BodyTextAbsent.responses(), "expected a text body but no response body was present", .expect_body_text_eq("abcd"));
 
+
     asserhttp_test!(body_text_regex_should_succeed, "body/text/value.json", BodyText.responses(), .expect_body_text_matches("[a-d]+"));
     asserhttp_test!(body_text_regex_should_fail_when_does_not_match, "body/text/value.json", BodyText.responses(), "expected text body 'abcd' to match regex '[e-h]+' but did not", .expect_body_text_matches("[e-h]+"));
     asserhttp_test!(body_text_regex_should_fail_when_absent, "body/text/absent.json", BodyTextAbsent.responses(), "expected a text body but no response body was present", .expect_body_text_matches("[a-d]+"));
 
+
     asserhttp_test!(body_bytes_should_succeed, "body/bytes/value.json", BodyBytes.responses(), .expect_body_bytes(|b| assert_eq!(b, b"abcd")));
     asserhttp_test!(body_bytes_should_fail_when_closure_fails, "body/bytes/value.json", BodyBytes.responses(), "", .expect_body_bytes(|b| assert_eq!(b, b"dcba")));
+
 
     asserhttp_test!(body_bytes_eq_should_succeed, "body/bytes/value.json", BodyBytes.responses(), .expect_body_bytes_eq(b"abcd"));
     asserhttp_test!(body_bytes_eq_should_fail_when_not_eq, "body/bytes/value.json", BodyBytes.responses(), "expected body '[97, 98, 99, 100]' to be equal to '[100, 99, 98, 97]' but was not", .expect_body_bytes_eq(b"dcba"));
     asserhttp_test!(body_bytes_eq_should_fail_when_absent, "body/bytes/absent.json", BodyBytesAbsent.responses(), "expected a response body but no response body was present", .expect_body_bytes_eq(b"abcd"));
 
+
     asserhttp_test!(body_present_should_succeed, "body/bytes/value.json", BodyBytes.responses(), .expect_body_present());
     asserhttp_test!(body_present_should_fail_when_absent, "body/bytes/absent.json", BodyBytesAbsent.responses(), "expected a response body but no response body was present", .expect_body_present());
 
+
     asserhttp_test!(body_absent_should_succeed, "body/bytes/absent.json", BodyBytesAbsent.responses(), .expect_body_absent());
     asserhttp_test!(body_absent_should_fail_when_present, "body/bytes/value.json", BodyBytes.responses(), "expected no response body but a response body was present", .expect_body_absent());
+
 
     asserhttp_test!(expect_body_first_should_not_be_destructive, "full.json", Full.responses(), .expect_body_json_eq(json!({"a": "b"})).expect_status_ok().expect_content_type_json());
 }

@@ -31,6 +31,8 @@ pub enum AsserhttpError {
         actual_values: HeaderValues,
         expected: HeaderValues,
     },
+    #[error("{0}")]
+    JsonBodyMismatch(String),
     #[error("expected a response body but no response body was present")]
     BodyAbsent,
     #[error("expected no response body but a response body was present")]

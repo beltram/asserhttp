@@ -79,8 +79,7 @@ pub trait FallibleAsserhttpBody<T> {
             let actual = serde_json::to_value(&actual)?;
             let expected = serde_json::to_value(&body)?;
             let cfg = assert_json_diff::Config::new(assert_json_diff::CompareMode::Strict);
-            assert_json_diff::assert_json_matches_no_panic(&actual, &expected, cfg).map_err(|e| AsserhttpError::ExternalError(e.to_string()))?;
-            assert_json_diff::assert_json_eq!(actual, expected);
+            assert_json_diff::assert_json_matches_no_panic(&actual, &expected, cfg).map_err(|e| AsserhttpError::JsonBodyMismatch(e))?;
             Ok(())
         })
     }

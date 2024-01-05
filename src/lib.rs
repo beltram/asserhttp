@@ -322,8 +322,9 @@ pub use {
 #[cfg(feature = "fallible")]
 pub use {
     error::{AsserhttpError, AsserhttpResult},
-    header::faillible::FallibleAsserhttpHeader,
     status::faillible::FaillibleAsserhttpStatus,
+    header::faillible::FallibleAsserhttpHeader,
+    body::faillible::FallibleAsserhttpBody,
 };
 
 #[cfg(feature = "actix")]
