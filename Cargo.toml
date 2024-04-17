@@ -19,7 +19,7 @@ tonic-build = "0.11"
 anyhow = { version = "1.0", default-features = false }
 serde = { version = "1.0", default-features = false }
 serde_json = { version = "1.0", default-features = false }
-regex = { version = "1.7", features = ["std", "unicode"], default-features = false }
+regex = { version = "1.10", features = ["std", "unicode"], default-features = false }
 http-types = { version = "2.12", default-features = false }
 surf = { version = "2.3", features = ["curl-client"], optional = true, default-features = false }
 isahc = { version = "1.7", optional = true, default-features = false }
