@@ -67,7 +67,3 @@ surf = ["dep:surf", "futures-lite"]
 tonic = ["dep:tonic", "grpc"]
 grpc = []
 internal = []
-
-[profile.dev]
-# improves compilation performances on macos
-split-debuginfo = "unpacked"
