@@ -13,7 +13,7 @@ categories = ["development-tools::testing", "api-bindings", "web-programming::ht
 include = ["/src/*", "/tests/*", "/Cargo.toml"]
 
 [build-dependencies]
-tonic-build = "0.10"
+tonic-build = "0.11"
 
 [dependencies]
 anyhow = { version = "1.0", default-features = false }
@@ -34,7 +34,7 @@ itertools = { version = "0.12", optional = true, default-features = false }
 axum = { version = "0.6", features = ["json"], optional = true, default-features = false }
 futures-lite = { version = "2.0", features = ["std"], optional = true, default-features = false }
 assert-json-diff = "2.0"
-tonic = { version = "0.9", optional = true, default-features = false }
+tonic = { version = "0.11", optional = true, default-features = false }
 thiserror = { version = "1.0" }
 
 [dev-dependencies]
@@ -49,8 +49,8 @@ rocket = { version = "0.5.0-rc.2", features = ["json"] }
 paste = "1.0"
 tower-http = "0.4"
 tower = { version = "0.4", features = ["util"] }
-tonic = { version = "0.9", features = ["codegen"] }
-prost = "0.11"
+tonic = { version = "0.11", features = ["codegen"] }
+prost = "0.12"
 
 [features]
 default = []
