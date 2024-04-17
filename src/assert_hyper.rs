@@ -1,16 +1,13 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
-use crate::header::key::HeaderKey;
-use crate::{AsserhttpError, AsserhttpResult};
+use crate::{header::key::HeaderKey, AsserhttpError, AsserhttpResult};
 
-type HyperResponse = hyper::Response<hyper::Body>;
-
-impl StatusAccessor for HyperResponse {
+impl<B: http_body::Body> StatusAccessor for hyper::Response<B> {
     fn get_status(&self) -> u16 {
         self.status().as_u16()
     }
 }
 
-impl HeaderAccessor for HyperResponse {
+impl<B: http_body::Body> HeaderAccessor for hyper::Response<B> {
     fn get_keys(&self) -> Vec<HeaderKey> {
         self.headers().iter().map(|(k, _)| k.as_str().into()).collect::<Vec<_>>()
     }
@@ -26,13 +23,35 @@ impl HeaderAccessor for HyperResponse {
     }
 }
 
-impl BodyAccessor for HyperResponse {
+impl<B> BodyAccessor for hyper::Response<B>
+where
+    B: http_body::Body,
+    // <B as http_body::Body>::Error: std::fmt::Display,
+{
     fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
-        let mut buf: Vec<u8> = vec![];
-        use hyper::body::HttpBody as _;
-        while let Some(Ok(chunk)) = futures_lite::future::block_on(self.body_mut().data()) {
-            chunk.into_iter().for_each(|b| buf.push(b));
+        use http_body_util::BodyExt as _;
+        let buf = futures_lite::future::block_on(self.body_mut().collect())
+            // .map_err(|e| AsserhttpError::ExternalError(e.to_string()))?
+            .map_err(|_| "".to_string())
+            .unwrap()
+            .to_bytes()
+            .to_vec();
+        if buf.is_empty() {
+            return Err(AsserhttpError::BodyAbsent);
         }
+        Ok(buf)
+    }
+
+    async fn async_get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
+        use http_body_util::BodyExt as _;
+        let buf = self
+            .body_mut()
+            .collect()
+            .await
+            .map_err(|_| "".to_string())
+            .unwrap()
+            .to_bytes()
+            .to_vec();
         if buf.is_empty() {
             return Err(AsserhttpError::BodyAbsent);
         }

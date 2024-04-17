@@ -338,6 +338,9 @@ pub use {
     status::infallible::AsserhttpStatus,
 };
 
+// #[cfg(all(feature = "hyper", feature = "axum"))]
+// compile_error!("feature \"foo\" and feature \"bar\" cannot be enabled at the same time");
+
 #[cfg(feature = "fallible")]
 pub use {body::fallible::FallibleAsserhttpBody, header::fallible::FallibleAsserhttpHeader, status::fallible::FallibleAsserhttpStatus};
 

@@ -26,6 +26,8 @@ pub trait HeaderAccessor {
 pub trait BodyAccessor {
     fn get_bytes(&mut self) -> AsserhttpResult<Vec<u8>>;
 
+    async fn async_get_bytes(&mut self) -> AsserhttpResult<Vec<u8>>;
+
     fn get_text(&mut self) -> AsserhttpResult<String> {
         std::str::from_utf8(self.get_bytes()?.as_slice())
             .map(str::to_string)

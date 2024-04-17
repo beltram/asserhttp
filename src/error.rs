@@ -137,6 +137,13 @@ impl From<axum::Error> for AsserhttpError {
     }
 }
 
+#[cfg(feature = "hyper")]
+impl From<hyper::Error> for AsserhttpError {
+    fn from(e: hyper::Error) -> Self {
+        Self::ExternalError("".to_string())
+    }
+}
+
 impl From<regex::Error> for AsserhttpError {
     fn from(e: regex::Error) -> Self {
         Self::RegexError(e.to_string())

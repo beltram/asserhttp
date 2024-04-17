@@ -34,4 +34,8 @@ impl BodyAccessor for AxumResponse {
         }
         Ok(buf)
     }
+
+    async fn async_get_bytes(&mut self) -> AsserhttpResult<Vec<u8>> {
+        todo!()
+    }
 }
