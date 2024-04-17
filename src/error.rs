@@ -130,6 +130,13 @@ impl From<reqwest::Error> for AsserhttpError {
     }
 }
 
+#[cfg(feature = "axum")]
+impl From<axum::Error> for AsserhttpError {
+    fn from(e: axum::Error) -> Self {
+        Self::ExternalError(e.to_string())
+    }
+}
+
 impl From<regex::Error> for AsserhttpError {
     fn from(e: regex::Error) -> Self {
         Self::RegexError(e.to_string())
