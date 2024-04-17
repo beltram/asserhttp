@@ -23,7 +23,7 @@ regex = { version = "1.10", features = ["std", "unicode"], default-features = fa
 http-types = { version = "2.12", default-features = false }
 surf = { version = "2.3", features = ["curl-client"], optional = true, default-features = false }
 isahc = { version = "1.7", optional = true, default-features = false }
-reqwest = { version = "0.11", features = ["json", "blocking"], optional = true, default-features = false }
+reqwest = { version = "0.12", features = ["json", "blocking"], optional = true, default-features = false }
 hyper = { version = "0.14", features = ["client"], optional = true, default-features = false }
 awc = { version = "3.4", optional = true, default-features = false }
 actix-http = { version = "3.6", optional = true, default-features = false }
