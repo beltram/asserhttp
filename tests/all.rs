@@ -1,13 +1,6 @@
-use std::io::Cursor;
-
 use actix_web::HttpResponse;
 use serde::{Deserialize, Serialize};
 use serde_json::json;
-
-use rocket_test::Resp;
-
-#[path = "rocket_test.rs"]
-mod rocket_test;
 
 #[path = "reqwest_test.rs"]
 mod reqwest_test;
@@ -79,83 +72,56 @@ impl Stub {
                 HttpResponse::Ok()
                     .append_header(("content-type", "application/json"))
                     .body(json!({"a": "b"}).to_string()),
-                Resp(
-                    rocket::Response::build()
-                        .status(rocket::http::Status::Ok)
-                        .raw_header("content-type", "application/json")
-                        .streamed_body(Cursor::new(json!({"a": "b"}).to_string()))
-                        .finalize(),
-                ),
                 axum_response.into_response(),
             ),
             Stub::StatusAccepted => Responses(
                 HttpResponse::Accepted().finish(),
-                rocket::http::Status::Accepted.into(),
                 axum::http::StatusCode::ACCEPTED.into_response(),
             ),
             Stub::StatusBadRequest => Responses(
                 HttpResponse::BadRequest().finish(),
-                rocket::http::Status::BadRequest.into(),
                 axum::http::StatusCode::BAD_REQUEST.into_response(),
             ),
             Stub::StatusConflict => Responses(
                 HttpResponse::Conflict().finish(),
-                rocket::http::Status::Conflict.into(),
                 axum::http::StatusCode::CONFLICT.into_response(),
             ),
             Stub::StatusCreated => Responses(
                 HttpResponse::Created().finish(),
-                rocket::http::Status::Created.into(),
                 axum::http::StatusCode::CREATED.into_response(),
             ),
             Stub::StatusForbidden => Responses(
                 HttpResponse::Forbidden().finish(),
-                rocket::http::Status::Forbidden.into(),
                 axum::http::StatusCode::FORBIDDEN.into_response(),
             ),
-            Stub::StatusGone => Responses(
-                HttpResponse::Gone().finish(),
-                rocket::http::Status::Gone.into(),
-                axum::http::StatusCode::GONE.into_response(),
-            ),
+            Stub::StatusGone => Responses(HttpResponse::Gone().finish(), axum::http::StatusCode::GONE.into_response()),
             Stub::StatusMovedPermanently => Responses(
                 HttpResponse::MovedPermanently().finish(),
-                rocket::http::Status::MovedPermanently.into(),
                 axum::http::StatusCode::MOVED_PERMANENTLY.into_response(),
             ),
             Stub::StatusNoContent => Responses(
                 HttpResponse::NoContent().finish(),
-                rocket::http::Status::NoContent.into(),
                 axum::http::StatusCode::NO_CONTENT.into_response(),
             ),
             Stub::StatusNotFound => Responses(
                 HttpResponse::NotFound().finish(),
-                rocket::http::Status::NotFound.into(),
                 axum::http::StatusCode::NOT_FOUND.into_response(),
             ),
-            Stub::StatusOk => Responses(
-                HttpResponse::Ok().finish(),
-                rocket::http::Status::Ok.into(),
-                axum::http::StatusCode::OK.into_response(),
-            ),
+            Stub::StatusOk => Responses(HttpResponse::Ok().finish(), axum::http::StatusCode::OK.into_response()),
             Stub::StatusPartialContent => Responses(
                 HttpResponse::PartialContent().finish(),
-                rocket::http::Status::PartialContent.into(),
                 axum::http::StatusCode::PARTIAL_CONTENT.into_response(),
             ),
             Stub::StatusInternalServerError => Responses(
                 HttpResponse::InternalServerError().finish(),
-                rocket::http::Status::InternalServerError.into(),
                 axum::http::StatusCode::INTERNAL_SERVER_ERROR.into_response(),
             ),
             Stub::StatusUnauthorized => Responses(
                 HttpResponse::Unauthorized().finish(),
-                rocket::http::Status::Unauthorized.into(),
                 axum::http::StatusCode::UNAUTHORIZED.into_response(),
             ),
             Stub::HeaderJson => Responses(
                 HttpResponse::Ok().append_header(("content-type", "application/json")).finish(),
-                vec![("content-type", "application/json")].into(),
                 [("content-type", "application/json")].into_response(),
             ),
             Stub::HeaderMany => Responses(
@@ -163,63 +129,44 @@ impl Stub {
                     .append_header(("x-a", "a"))
                     .append_header(("x-b", "b"))
                     .finish(),
-                vec![("x-a", "a"), ("x-b", "b")].into(),
                 [("x-a", "a"), ("x-b", "b")].into_response(),
             ),
             Stub::HeaderMulti => Responses(
                 HttpResponse::Ok().append_header(("x-m", "a, b")).finish(),
-                vec![("x-m", vec!["a", "b"])].into(),
                 [("x-m", "a, b")].into_response(),
             ),
             Stub::HeaderCacheControl => Responses(
                 HttpResponse::Ok()
                     .append_header(("cache-control", "no-cache, no-store"))
                     .finish(),
-                vec![("cache-control", vec!["no-cache", "no-store"])].into(),
                 [("cache-control", "no-cache, no-store")].into_response(),
             ),
             Stub::HeaderOne => Responses(
                 HttpResponse::Ok().append_header(("x-a", "a")).finish(),
-                vec![("x-a", "a")].into(),
                 [("x-a", "a")].into_response(),
             ),
             Stub::HeaderText => Responses(
                 HttpResponse::Ok().append_header(("content-type", "text/plain")).finish(),
-                vec![("content-type", "text/plain")].into(),
                 [("content-type", "text/plain")].into_response(),
             ),
             Stub::HeaderXml => Responses(
                 HttpResponse::Ok().append_header(("content-type", "application/xml")).finish(),
-                vec![("content-type", "application/xml")].into(),
                 [("content-type", "application/xml")].into_response(),
             ),
             Stub::BodyJson => Responses(
                 HttpResponse::Ok().body(json!({"a": "b"}).to_string()),
-                json!({"a": "b"}).into(),
                 axum::Json(json!({"a": "b"})).into_response(),
             ),
-            Stub::BodyJsonAbsent => Responses(
-                HttpResponse::Ok().finish(),
-                rocket::http::Status::Ok.into(),
-                axum::http::StatusCode::OK.into_response(),
-            ),
-            Stub::BodyBytes => Responses(HttpResponse::Ok().body("abcd"), "abcd".into(), b"abcd".into_response()),
-            Stub::BodyBytesAbsent => Responses(
-                HttpResponse::Ok().finish(),
-                rocket::http::Status::Ok.into(),
-                axum::http::StatusCode::OK.into_response(),
-            ),
-            Stub::BodyText => Responses(HttpResponse::Ok().body("abcd"), "abcd".into(), "abcd".into_response()),
-            Stub::BodyTextAbsent => Responses(
-                HttpResponse::Ok().finish(),
-                rocket::http::Status::Ok.into(),
-                axum::http::StatusCode::OK.into_response(),
-            ),
+            Stub::BodyJsonAbsent => Responses(HttpResponse::Ok().finish(), axum::http::StatusCode::OK.into_response()),
+            Stub::BodyBytes => Responses(HttpResponse::Ok().body("abcd"), b"abcd".into_response()),
+            Stub::BodyBytesAbsent => Responses(HttpResponse::Ok().finish(), axum::http::StatusCode::OK.into_response()),
+            Stub::BodyText => Responses(HttpResponse::Ok().body("abcd"), "abcd".into_response()),
+            Stub::BodyTextAbsent => Responses(HttpResponse::Ok().finish(), axum::http::StatusCode::OK.into_response()),
         }
     }
 }
 
-pub struct Responses(pub HttpResponse, pub Resp, pub axum::response::Response);
+pub struct Responses(pub HttpResponse, pub axum::response::Response);
 
 #[derive(Deserialize, Serialize, Debug, Eq, PartialEq)]
 pub struct TestBody {
@@ -236,8 +183,7 @@ macro_rules! asserhttp_test {
         $($crate::awc_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::isahc_test!($fn_name, $stub, $( .$meth($($arg),*) )* );)+
         $($crate::actix_test!($fn_name, $resp.0, $( .$meth($($arg),*) )* );)+
-        $($crate::rocket_test!($fn_name, $resp.1, $( .$meth($($arg),*) )* );)+
-        $($crate::axum_test!($fn_name, $resp.2, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.1, $( .$meth($($arg),*) )* );)+
     };
     ($fn_name:ident, $stub:literal, $resp:expr, $panic_msg:literal, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
         $($crate::reqwest_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
@@ -247,8 +193,7 @@ macro_rules! asserhttp_test {
         $($crate::awc_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::isahc_test!($fn_name, $stub, $panic_msg, $( .$meth($($arg),*) )* );)+
         $($crate::actix_test!($fn_name, $resp.0, $panic_msg, $( .$meth($($arg),*) )* );)+
-        $($crate::rocket_test!($fn_name, $resp.1, $panic_msg, $( .$meth($($arg),*) )* );)+
-        $($crate::axum_test!($fn_name, $resp.2, $panic_msg, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.1, $panic_msg, $( .$meth($($arg),*) )* );)+
     };
     ($fn_name:ident, $stub:literal, $resp:expr, $error:expr, $($(.$meth:ident($( $arg:expr ),*))+),+) => {
         $($crate::reqwest_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )*);)+
@@ -258,8 +203,7 @@ macro_rules! asserhttp_test {
         $($crate::awc_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::isahc_test!($fn_name, $stub, $error, $( .$meth($($arg),*) )* );)+
         $($crate::actix_test!($fn_name, $resp.0, $error, $( .$meth($($arg),*) )* );)+
-        $($crate::rocket_test!($fn_name, $resp.1, $error, $( .$meth($($arg),*) )* );)+
-        $($crate::axum_test!($fn_name, $resp.2, $error, $( .$meth($($arg),*) )* );)+
+        $($crate::axum_test!($fn_name, $resp.1, $error, $( .$meth($($arg),*) )* );)+
     };
 }
 

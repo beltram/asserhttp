@@ -1,7 +1,7 @@
 use crate::grpc::grpc_client::GrpcClient;
 use asserhttp::grpc::*;
+use futures_util::future::FutureExt;
 use grpc::*;
-use rocket::futures::FutureExt;
 use tokio::net::TcpListener;
 use tonic::{
     Request, Response, Status,

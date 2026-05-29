@@ -104,13 +104,6 @@ where
     }
 }
 
-#[cfg(feature = "rocket")]
-impl From<rocket::http::Status> for FallibleAnyStatus {
-    fn from(value: rocket::http::Status) -> Self {
-        Self::from(value.code)
-    }
-}
-
 impl std::ops::Deref for FallibleAnyStatus {
     type Target = dyn Fn(u16) -> AsserhttpResult<()>;
 

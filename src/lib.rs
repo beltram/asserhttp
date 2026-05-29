@@ -1,6 +1,6 @@
 //!
 //! Allows fluent assertions for various http client responses.
-//! Supports [actix-web](https://actix.rs/docs/testing/), [rocket](https://github.com/SergioBenitez/Rocket),
+//! Supports [actix-web](https://actix.rs/docs/testing/),
 //! [reqwest](https://github.com/seanmonstar/reqwest), [hyper](https://github.com/hyperium/hyper),
 //! [awc](https://docs.rs/awc) (Actix Web Client), [surf](https://github.com/http-rs/surf) and [isahc](https://github.com/sagebind/isahc).
 //!
@@ -107,26 +107,6 @@
 //! }
 //! ```
 //!
-//! ## rocket
-//!
-//! Use `rocket` feature.
-//!
-//! ```no_run
-//! use rocket::{get, http::Status, local::asynchronous::Client, routes};
-//! use serde_json::{json, Value};
-//! use asserhttp::*;
-//!
-//! #[rocket::async_test]
-//! async fn sample_test() {
-//!     #[get("/")]
-//!     fn endpoint() -> Value { json!({"a": "b"}) }
-//!     let client = Client::tracked(rocket::build().mount("/", routes![endpoint])).await.unwrap();
-//!     client.get("/").dispatch().await
-//!         .expect_status_ok()
-//!         .expect_content_type_json()
-//!         .expect_body_json_eq(json!({"a": "b"}));
-//! }
-//! ```
 //!
 //! ## reqwest
 //!
@@ -353,8 +333,6 @@ mod assert_hyper;
 mod assert_isahc;
 #[cfg(feature = "reqwest")]
 mod assert_reqwest;
-#[cfg(feature = "rocket")]
-mod assert_rocket;
 #[cfg(feature = "surf")]
 mod assert_surf;
 #[cfg(feature = "ureq")]

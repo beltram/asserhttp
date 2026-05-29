@@ -576,13 +576,6 @@ where
     }
 }
 
-#[cfg(feature = "rocket")]
-impl From<rocket::http::Status> for AnyStatus {
-    fn from(expected: rocket::http::Status) -> Self {
-        FallibleAnyStatus::from(expected).into()
-    }
-}
-
 impl std::ops::Deref for AnyStatus {
     type Target = dyn Fn(u16);
 
