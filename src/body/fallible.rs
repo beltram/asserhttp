@@ -41,7 +41,7 @@ pub trait FallibleAsserhttpBody<T> {
     /// * [AsserhttpError::BodyAbsent] when the response body is empty
     fn try_expect_body_json<B, F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
     where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        B: DeserializeOwned + Serialize + std::fmt::Debug + Unpin,
         F: FnOnce(B) -> AsserhttpResult<()>;
 
     /// Expects response body to be json and equal
@@ -351,7 +351,7 @@ where
 {
     fn try_expect_body_json<B, F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
     where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        B: DeserializeOwned + Serialize + std::fmt::Debug + Unpin,
         F: FnOnce(B) -> AsserhttpResult<()>,
     {
         asserter(self.get_json()?)?;
@@ -396,7 +396,7 @@ where
 {
     fn try_expect_body_json<B, F>(&mut self, asserter: F) -> AsserhttpResult<&mut T>
     where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        B: DeserializeOwned + Serialize + std::fmt::Debug + Unpin,
         F: FnOnce(B) -> AsserhttpResult<()>,
     {
         self.as_mut()
