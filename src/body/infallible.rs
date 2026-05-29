@@ -39,7 +39,7 @@ pub trait AsserhttpBody<T> {
     /// ```
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        B: DeserializeOwned + Serialize + std::fmt::Debug + Unpin,
         F: FnOnce(B);
 
     /// Expects response body to be json and equal
@@ -284,7 +284,7 @@ where
 {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        B: DeserializeOwned + Serialize + std::fmt::Debug + Unpin,
         F: FnOnce(B),
     {
         #[allow(clippy::blocks_in_conditions)]
@@ -388,7 +388,7 @@ where
 {
     fn expect_body_json<B, F>(&mut self, asserter: F) -> &mut T
     where
-        B: DeserializeOwned + Serialize + PartialEq + std::fmt::Debug + Unpin,
+        B: DeserializeOwned + Serialize + std::fmt::Debug + Unpin,
         F: FnOnce(B),
     {
         self.as_mut().unwrap().expect_body_json(asserter)
