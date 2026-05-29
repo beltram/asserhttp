@@ -364,7 +364,7 @@ mod header {
             isahc::get(stubr.uri()).expect_header("x-a".to_string(), "a");
             let key: String = "x-a".to_string();
             isahc::get(stubr.uri()).expect_header(key.as_str(), "a");
-            isahc::get(stubr.uri()).expect_header(&"x-a".to_string(), "a");
+            isahc::get(stubr.uri()).expect_header("x-a".to_string(), "a");
         }
 
         #[test]
@@ -374,7 +374,7 @@ mod header {
             isahc::get(stubr.uri()).expect_header("x-a", "a".to_string());
             let value: String = "a".to_string();
             isahc::get(stubr.uri()).expect_header("x-a", value.as_str());
-            isahc::get(stubr.uri()).expect_header("x-a", &"a".to_string());
+            isahc::get(stubr.uri()).expect_header("x-a", "a".to_string());
         }
 
         #[test]
