@@ -1,4 +1,4 @@
-use crate::{header::key::HeaderKey, AsserhttpError, AsserhttpResult};
+use crate::{AsserhttpError, AsserhttpResult, header::key::HeaderKey};
 
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
 

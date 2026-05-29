@@ -1,5 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
-use crate::{header::key::HeaderKey, AsserhttpError, AsserhttpResult};
+use crate::{AsserhttpError, AsserhttpResult, header::key::HeaderKey};
 
 type ReqwestResponse = reqwest::blocking::Response;
 type AsyncReqwestResponse = reqwest::Response;

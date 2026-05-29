@@ -334,7 +334,7 @@ pub use {
     body::infallible::AsserhttpBody,
     error::{AsserhttpError, AsserhttpResult},
     header::{infallible::AsserhttpHeader, key::HeaderKey, value::HeaderValue, values::HeaderValues},
-    http_types::{headers, StatusCode as Status},
+    http_types::{StatusCode as Status, headers},
     status::infallible::AsserhttpStatus,
 };
 

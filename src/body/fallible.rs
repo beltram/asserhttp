@@ -1,6 +1,6 @@
-use serde::{de::DeserializeOwned, Serialize};
+use serde::{Serialize, de::DeserializeOwned};
 
-use crate::{accessor::BodyAccessor, AsserhttpError, AsserhttpResult};
+use crate::{AsserhttpError, AsserhttpResult, accessor::BodyAccessor};
 
 /// For assertions on http response body returning an error instead of panicking
 pub trait FallibleAsserhttpBody<T> {
