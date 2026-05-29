@@ -4,8 +4,8 @@ use grpc::*;
 use rocket::futures::FutureExt;
 use tokio::net::TcpListener;
 use tonic::{
-    transport::{server::TcpIncoming, Channel},
     Request, Response, Status,
+    transport::{Channel, server::TcpIncoming},
 };
 
 pub mod grpc {

@@ -5,6 +5,7 @@ use crate::{
 };
 
 /// For assertions on http response status returning an error instead of panicking
+#[allow(dead_code)]
 pub trait FallibleAsserhttpStatus<T> {
     /// Expects response status to be equal
     /// * `status` - expected status or asserhttp::Status or closure

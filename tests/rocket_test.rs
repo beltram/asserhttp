@@ -1,6 +1,6 @@
 use std::io::Cursor;
 
-use rocket::{http::Header, response, response::Responder, Request, Response};
+use rocket::{Request, Response, http::Header, response, response::Responder};
 use serde_json::Value;
 
 pub struct Resp(pub Response<'static>);

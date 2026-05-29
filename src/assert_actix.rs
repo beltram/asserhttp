@@ -1,5 +1,5 @@
 use super::accessor::{BodyAccessor, HeaderAccessor, StatusAccessor};
-use crate::{header::key::HeaderKey, AsserhttpError, AsserhttpResult};
+use crate::{AsserhttpError, AsserhttpResult, header::key::HeaderKey};
 
 type ActixResponse = actix_web::HttpResponse<actix_http::body::BoxBody>;
 type ActixServiceResponse = actix_web::dev::ServiceResponse;

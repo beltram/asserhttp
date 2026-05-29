@@ -123,7 +123,7 @@ pub trait FallibleAsserhttpHeader<T> {
     /// * [AsserhttpError::HeaderValuesMismatch] when expected header is found by key but the values mismatch
     /// * [AsserhttpError::InvalidHeaderValuesSupplied] when you supplied an empty list of expected header values
     fn try_expect_headers(&mut self, key: impl Into<HeaderKey>, values: impl Into<FallibleHeaderValuesAsserter>)
-        -> AsserhttpResult<&mut T>;
+    -> AsserhttpResult<&mut T>;
 
     /// Expects response header to be present
     /// * `key` - expected present header key
